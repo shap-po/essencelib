@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "essencelib:mob_essence"
+    "layer0": "essencelib:item/mob_essence"
   }
 }
