@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "essencelib",
+  "version": "${version}",
+  "name": "EssenceLib",
+  "description": "A library mod powering up the player with mob essences.",
+  "authors": [
+    "Shap",
+    "SdataG"
+  ],
+  "contact": {
+    "homepage": "https://github.com/shap-po/essencelib",
+    "sources": "https://github.com/shap-po/essencelib",
+    "issues": "https://github.com/shap-po/essencelib/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/essencelib/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.shap_po.essencelib.EssenceLib"
+    ],
+    "client": [
+      "com.github.shap_po.essencelib.EssenceLibClient"
+    ]
+  },
+  "mixins": [
+    "essencelib.mixins.json",
+    {
+      "config": "essencelib.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.7",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*",
+    "apoli": "*"
+  }
+}
