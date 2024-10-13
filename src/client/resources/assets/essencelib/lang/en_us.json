@@ -1,5 +1,6 @@
 {
   "item.essencelib.mob_essence": "Mob Essence",
   "component.item.essencelib.mob_essence": "%s essence",
-  "item.essencelib.timer": "Decay: %s"
+  "item.essencelib.timer": "Decay: %s",
+  "tooltip.apoli.stack_power.name": "%s"
 }
