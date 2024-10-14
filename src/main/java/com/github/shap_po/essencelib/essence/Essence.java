@@ -69,12 +69,28 @@ public class Essence implements Validatable {
         this.replace = replace;
     }
 
-    public boolean shouldReplace() {
-        return replace;
-    }
-
     public Identifier getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public Set<Power> getPowers() {
+        return powers;
+    }
+
+    public Set<PowerReference> getPowerReferences() {
+        return powerReferences;
+    }
+
+    public boolean shouldReplace() {
+        return replace;
     }
 
     public static Essence merge(Essence oldEssence, Essence newEssence) {
@@ -85,6 +101,20 @@ public class Essence implements Validatable {
         oldEssence.attributes.addAll(newEssence.attributes);
         return oldEssence;
     }
+
+    @Override
+    public String toString() {
+        return "Essence{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", rarity=" + rarity +
+            ", powers=" + powers +
+            ", powerReferences=" + powerReferences +
+            ", attributes=" + attributes +
+            ", replace=" + replace +
+            '}';
+    }
+
 
     @Override
     public void validate() {

@@ -3,6 +3,7 @@
   "package": "com.github.shap_po.essencelib.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ArgumentTypesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

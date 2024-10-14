@@ -1,11 +1,13 @@
 package com.github.shap_po.essencelib;
 
+import com.github.shap_po.essencelib.command.EssenceLibCommand;
 import com.github.shap_po.essencelib.essence.EssenceLoader;
 import com.github.shap_po.essencelib.networking.ModPackets;
 import com.github.shap_po.essencelib.networking.ModPacketsC2S;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -31,6 +33,8 @@ public class EssenceLib implements ModInitializer {
 
         EssenceLoader essenceLoader = new EssenceLoader();
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(essenceLoader);
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> EssenceLibCommand.register(dispatcher));
     }
 
     public static Identifier identifier(String path) {
