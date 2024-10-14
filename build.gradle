@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'fabric-loom' version '1.8-SNAPSHOT'
     id 'maven-publish'
     id "com.modrinth.minotaur" version "2.+"
 }
@@ -76,9 +76,21 @@ loom {
         "essencelib" {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
+            sourceSet sourceSets.test
         }
     }
-
+    runs {
+        client {
+            client()
+            source(sourceSets.test)
+            setConfigName("Minecraft Client")
+        }
+        server {
+            server()
+            source(sourceSets.test)
+            setConfigName("Minecraft Server")
+        }
+    }
 }
 
 dependencies {

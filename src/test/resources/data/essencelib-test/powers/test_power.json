@@ -1,0 +1,11 @@
+{
+  "name": "Test power",
+  "type": "apoli:action_on_hit",
+  "bientity_action": {
+    "type": "apoli:target_action",
+    "action": {
+      "type": "apoli:execute_command",
+      "command": "say hit"
+    }
+  }
+}
