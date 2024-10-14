@@ -1,13 +1,10 @@
 package com.github.shap_po.essencelib.item;
 
-import com.github.shap_po.essencelib.client.item.MobEssenceTrinketItemClient;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import dev.emi.trinkets.api.TrinketItem;
 import io.github.apace100.apoli.component.item.ApoliDataComponentTypes;
 import io.github.apace100.apoli.component.item.ItemPowersComponent;
 import io.github.apace100.apoli.power.PowerReference;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -30,9 +27,6 @@ public class MobEssenceTrinketItem extends TrinketItem {
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MobEssenceTrinketItemClient.appendTooltip(stack, context, tooltip);
-        }
     }
 
     @Override
@@ -60,8 +54,8 @@ public class MobEssenceTrinketItem extends TrinketItem {
         PowerReference powerReference = new PowerReference(Identifier.tryParse(powerId));
         ItemPowersComponent itemPowers = stack.getOrDefault(ApoliDataComponentTypes.POWERS, ItemPowersComponent.DEFAULT);
         itemPowers = ItemPowersComponent.builder(itemPowers)
-                .add(EnumSet.of(AttributeModifierSlot.OFFHAND), powerReference.getId(), true, false)
-                .build();
+            .add(EnumSet.of(AttributeModifierSlot.OFFHAND), powerReference.getId(), true, false)
+            .build();
         stack.set(ApoliDataComponentTypes.POWERS, itemPowers);
     }
 }

@@ -1,10 +1,14 @@
 package com.github.shap_po.essencelib;
 
+import com.github.shap_po.essencelib.networking.ModPacketsS2C;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class EssenceLibClient implements ClientModInitializer {
-	@Override
-	public void onInitializeClient() {
-		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
-	}
+    @Override
+    @Environment(EnvType.CLIENT)
+    public void onInitializeClient() {
+        ModPacketsS2C.register();
+    }
 }

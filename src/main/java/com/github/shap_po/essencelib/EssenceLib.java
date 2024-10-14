@@ -1,6 +1,8 @@
 package com.github.shap_po.essencelib;
 
 import com.github.shap_po.essencelib.essence.EssenceLoader;
+import com.github.shap_po.essencelib.networking.ModPackets;
+import com.github.shap_po.essencelib.networking.ModPacketsC2S;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
 import net.fabricmc.api.ModInitializer;
@@ -23,6 +25,9 @@ public class EssenceLib implements ModInitializer {
 
         ModDataComponentTypes.registerDataComponentTypes();
         ModItems.register();
+
+        ModPackets.register();
+        ModPacketsC2S.register();
 
         EssenceLoader essenceLoader = new EssenceLoader();
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(essenceLoader);

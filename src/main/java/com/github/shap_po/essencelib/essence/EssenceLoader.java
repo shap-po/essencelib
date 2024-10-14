@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.essence;
 
 import com.github.shap_po.essencelib.EssenceLib;
+import com.github.shap_po.essencelib.networking.s2c.SyncEssencesS2CPacket;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -12,10 +13,15 @@ import io.github.apace100.calio.data.IdentifiableMultiJsonDataLoader;
 import io.github.apace100.calio.data.MultiJsonDataContainer;
 import io.github.apace100.calio.data.SerializableData;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
@@ -43,6 +49,7 @@ public class EssenceLoader extends IdentifiableMultiJsonDataLoader implements Id
 
     public EssenceLoader() {
         super(GSON, "essence", ResourceType.SERVER_DATA);
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(ID, (player, joined) -> send(player));
     }
 
     @Override
@@ -103,46 +110,33 @@ public class EssenceLoader extends IdentifiableMultiJsonDataLoader implements Id
 
         EssenceLib.LOGGER.info("Finished reading {} essences. Merging similar ones...", loadedEssences.size());
         loadedEssences.forEach((id, entries) -> {
-
             AtomicReference<Essence> currentEssence = new AtomicReference<>();
             entries.sort(Comparator.comparing(PrioritizedEntry::priority));
 
             for (PrioritizedEntry<Essence> entry : entries) {
-
                 if (currentEssence.get() == null) {
                     currentEssence.set(entry.value());
                 } else {
-                    currentEssence.accumulateAndGet(entry.value(), EssenceLoader::merge);
+                    currentEssence.accumulateAndGet(entry.value(), Essence::merge);
                 }
-
             }
 
             ESSENCE_BY_ID.put(id, currentEssence.get());
-
         });
 
         endBuilding();
         EssenceLib.LOGGER.info("Finished merging similar essences. Total essences: {}", size());
     }
 
-    void startBuilding() {
+    private static void startBuilding() {
         LOADING_PRIORITIES.clear();
         ESSENCE_BY_ID.clear();
     }
 
-    void endBuilding() {
+    private static void endBuilding() {
         LOADING_PRIORITIES.clear();
         ESSENCE_BY_ID.trim();
     }
-
-    private static Essence merge(Essence oldEssence, Essence newEssence) {
-        if (newEssence.shouldReplace()) {
-            return newEssence;
-        }
-        // TODO: implement essence merging
-        return newEssence;
-    }
-
 
     public static int size() {
         return ESSENCE_BY_ID.size();
@@ -166,5 +160,21 @@ public class EssenceLoader extends IdentifiableMultiJsonDataLoader implements Id
     }
 
 
-    // TODO: implement sending & receiving essence data to/from clients
+    public static void send(ServerPlayerEntity player) {
+        if (player.server.isDedicated()) {
+            ServerPlayNetworking.send(player, new SyncEssencesS2CPacket(ESSENCE_BY_ID));
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void receive(SyncEssencesS2CPacket packet) {
+        startBuilding();
+
+        packet.essenceById().entrySet()
+            .stream()
+            .peek(e -> e.getValue().validate())
+            .forEach(e -> ESSENCE_BY_ID.put(e.getKey(), e.getValue()));
+
+        endBuilding();
+    }
 }
