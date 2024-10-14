@@ -1,6 +1,5 @@
 package com.github.shap_po.essencelib.item;
 
-import com.github.shap_po.essencelib.client.item.MobEssenceTrinketItemClient;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import dev.emi.trinkets.api.TrinketItem;
 import io.github.apace100.apoli.component.item.ApoliDataComponentTypes;
@@ -31,7 +30,7 @@ public class MobEssenceTrinketItem extends TrinketItem {
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MobEssenceTrinketItemClient.appendTooltip(stack, context, tooltip);
+            MobEssenceTooltips.appendTooltip(stack, context, tooltip);
         }
     }
 
