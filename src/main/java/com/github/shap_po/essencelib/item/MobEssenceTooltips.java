@@ -12,10 +12,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class MobEssenceTooltips{
+public class MobEssenceTooltips {
+
+    private static final int MAX_LINE_LENGTH = 30;
 
     public static void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip) {
         Integer decayTime = stack.get(ModDataComponentTypes.DECAY_TIMER);
@@ -37,7 +40,10 @@ public class MobEssenceTooltips{
         PowerManager.getOptional(powerId).ifPresent(power -> {
             tooltip.add(Text.literal(label).formatted(labelColor)
                     .append(power.getName().formatted(Formatting.GOLD)));
-            tooltip.add(Text.literal(power.getDescription().getString()));
+            List<String> wrappedDescription = wrapText(power.getDescription().getString(), MAX_LINE_LENGTH);
+            for (String line : wrappedDescription) {
+                tooltip.add(Text.literal(line).formatted(Formatting.GRAY));
+            }
         });
     }
 
@@ -53,5 +59,26 @@ public class MobEssenceTooltips{
         if (powerIds.size() > 1) {
             addPowerDescription(tooltip, "Passive: ", Formatting.GREEN, powerIds.get(1));
         }
+    }
+
+    private static List<String> wrapText(String text, int maxLineLength) {
+        List<String> lines = new ArrayList<>();
+        String[] words = text.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words) {
+            if (currentLine.length() + word.length() + 1 > maxLineLength) {
+                lines.add(currentLine.toString());
+                currentLine = new StringBuilder();
+            }
+            if (currentLine.length() > 0) {
+                currentLine.append(" ");
+            }
+            currentLine.append(word);
+        }
+        if (currentLine.length() > 0) {
+            lines.add(currentLine.toString());
+        }
+        return lines;
     }
 }
