@@ -1,6 +1,9 @@
 package com.github.shap_po.essencelib.essence;
 
 import com.github.shap_po.essencelib.EssenceLib;
+import com.github.shap_po.essencelib.registry.ModItems;
+import io.github.apace100.apoli.component.item.ApoliDataComponentTypes;
+import io.github.apace100.apoli.component.item.ItemPowersComponent;
 import io.github.apace100.apoli.data.ApoliDataTypes;
 import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerReference;
@@ -11,10 +14,20 @@ import io.github.apace100.calio.data.SerializableDataType;
 import io.github.apace100.calio.data.SerializableDataTypes;
 import io.github.apace100.calio.util.Validatable;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class Essence implements Validatable {
@@ -23,7 +36,7 @@ public class Essence implements Validatable {
             .add("id", SerializableDataTypes.IDENTIFIER)
             .add("name", SerializableDataTypes.STRING)
             .add("rarity", SerializableDataType.enumValue(Rarity.class), Rarity.COMMON)
-            .add("powerReferences", ApoliDataTypes.POWER_REFERENCE.list(), null)
+            .add("powers", ApoliDataTypes.POWER_REFERENCE.list(), null)
             .add("attributes", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, null)
             .add("replace", SerializableDataTypes.BOOLEAN, false)
         ,
@@ -31,7 +44,7 @@ public class Essence implements Validatable {
             data.getId("id"),
             data.getString("name"),
             data.get("rarity"),
-            data.get("powerReferences"),
+            data.get("powers"),
             data.get("attributes"),
             data.getBoolean("replace")
         ),
@@ -39,33 +52,35 @@ public class Essence implements Validatable {
             .set("id", essence.id)
             .set("name", essence.name)
             .set("rarity", essence.rarity)
-            .set("powerReferences", essence.powers)
+            .set("powers", essence.powers)
             .set("attributes", essence.attributes)
             .set("replace", essence.replace)
     );
+
+    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.OFFHAND;
 
     private final Identifier id;
     private final String name;
     private final Rarity rarity;
     private final Set<Power> powers;
-    private final Set<PowerReference> powerReferences;
-    private final Set<AttributedEntityAttributeModifier> attributes;
+    private final List<PowerReference> powerReferences;
+    private final List<AttributedEntityAttributeModifier> attributes;
     private final boolean replace;
 
     public Essence(
         Identifier id,
         String name,
         Rarity rarity,
-        @Nullable Set<PowerReference> powerReferences,
-        @Nullable Set<AttributedEntityAttributeModifier> attributes,
+        @Nullable List<PowerReference> powerReferences,
+        @Nullable List<AttributedEntityAttributeModifier> attributes,
         boolean replace
     ) {
         this.id = id;
         this.name = name;
         this.rarity = rarity;
         this.powers = new ObjectLinkedOpenHashSet<>();
-        this.powerReferences = powerReferences == null ? new ObjectLinkedOpenHashSet<>() : new ObjectLinkedOpenHashSet<>(powerReferences);
-        this.attributes = attributes == null ? new ObjectLinkedOpenHashSet<>() : new ObjectLinkedOpenHashSet<>(attributes);
+        this.powerReferences = powerReferences == null ? new LinkedList<>() : new LinkedList<>(powerReferences);
+        this.attributes = attributes == null ? new LinkedList<>() : new LinkedList<>(attributes);
         this.replace = replace;
     }
 
@@ -85,12 +100,47 @@ public class Essence implements Validatable {
         return powers;
     }
 
-    public Set<PowerReference> getPowerReferences() {
+    public List<PowerReference> getPowerReferences() {
         return powerReferences;
+    }
+
+    public List<AttributedEntityAttributeModifier> getAttributes() {
+        return attributes;
     }
 
     public boolean shouldReplace() {
         return replace;
+    }
+
+    public ComponentMap.Builder toComponent() {
+        ComponentMap.Builder builder = ComponentMap.builder();
+
+        builder.add(DataComponentTypes.ITEM_NAME, Text.of(name));
+        builder.add(DataComponentTypes.RARITY, rarity);
+
+        if (!powerReferences.isEmpty()) {
+            ItemPowersComponent.Builder itemPowers = ItemPowersComponent.builder();
+            for (PowerReference powerReference : powerReferences) {
+                itemPowers.add(EnumSet.of(SLOT), powerReference.getId(), true, false);
+            }
+            builder.add(ApoliDataComponentTypes.POWERS, itemPowers.build());
+        }
+
+        if (!attributes.isEmpty()) {
+            AttributeModifiersComponent.Builder attributeModifiers = AttributeModifiersComponent.builder();
+            for (AttributedEntityAttributeModifier attribute : attributes) {
+                attributeModifiers.add(attribute.attribute(), attribute.modifier(), SLOT);
+            }
+            builder.add(DataComponentTypes.ATTRIBUTE_MODIFIERS, attributeModifiers.build());
+        }
+
+        return builder;
+    }
+
+    public ItemStack toItemStack() {
+        ItemStack stack = new ItemStack(ModItems.MOB_ESSENCE_ITEM);
+        stack.applyComponentsFrom(toComponent().build());
+        return stack;
     }
 
     public static Essence merge(Essence oldEssence, Essence newEssence) {
@@ -115,6 +165,11 @@ public class Essence implements Validatable {
             '}';
     }
 
+    public Text toText() {
+        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(id.toString()));
+        return Text.literal(name)
+            .styled(style -> style.withHoverEvent(hoverEvent));
+    }
 
     @Override
     public void validate() {

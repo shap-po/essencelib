@@ -1,4 +1,15 @@
 {
   "name": "My Essence",
-  "rarity": "RARE"
+  "rarity": "RARE",
+  "attributes": [
+    {
+      "id": "essencelib-test/scale",
+      "attribute": "minecraft:generic.scale",
+      "amount": -0.5,
+      "operation": "ADD_MULTIPLIED_TOTAL"
+    }
+  ],
+  "powers": [
+    "essencelib-test:test_power"
+  ]
 }

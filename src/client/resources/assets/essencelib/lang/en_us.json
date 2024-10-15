@@ -5,6 +5,7 @@
   "tooltip.apoli.stack_power.name": "%s",
   "commands.essencelib.list.pass": "There are a total of %s essences registered: %s",
   "commands.essencelib.list.fail": "There are no essences registered.",
-  "essencelib.command.essence_not_found": "Essence with id %s not found.",
-  "commands.essencelib.info": "Essence %s"
+  "commands.essencelib.essence_not_found": "Essence with id %s not found.",
+  "commands.essencelib.info": "Essence %s",
+  "commands.essencelib.give": "Gave essence %s to %s"
 }

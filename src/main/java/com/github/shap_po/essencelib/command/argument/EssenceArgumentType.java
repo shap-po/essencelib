@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class EssenceArgumentType implements ArgumentType<Essence> {
     public static final DynamicCommandExceptionType ESSENCE_NOT_FOUND = new DynamicCommandExceptionType(
-        (id) -> Text.translatable("essencelib.command.essence_not_found", id)
+        (id) -> Text.translatable("commands.essencelib.essence_not_found", id)
     );
 
     public static EssenceArgumentType essence() {
