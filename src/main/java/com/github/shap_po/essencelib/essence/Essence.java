@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.essence;
 
 import com.github.shap_po.essencelib.EssenceLib;
+import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
 import io.github.apace100.apoli.component.item.ApoliDataComponentTypes;
 import io.github.apace100.apoli.component.item.ItemPowersComponent;
@@ -115,6 +116,7 @@ public class Essence implements Validatable {
     public ComponentMap.Builder toComponent() {
         ComponentMap.Builder builder = ComponentMap.builder();
 
+        builder.add(ModDataComponentTypes.ESSENCE_ID, id);
         builder.add(DataComponentTypes.ITEM_NAME, Text.of(name));
         builder.add(DataComponentTypes.RARITY, rarity);
 
