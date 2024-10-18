@@ -11,8 +11,6 @@ import net.minecraft.util.Identifier;
 import java.util.function.UnaryOperator;
 
 public class ModDataComponentTypes {
-    public static final ComponentType<Integer> DECAY_TIMER =
-            register("decay_timer", builder -> builder.codec(Codec.INT));
 
 
     private static <T>ComponentType<T> register(String name, UnaryOperator<ComponentType.Builder<T>> builderOperator) {

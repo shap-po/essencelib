@@ -21,15 +21,6 @@ public class MobEssenceTooltips {
     private static final int MAX_LINE_LENGTH = 30;
 
     public static void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip) {
-        Integer decayTime = stack.get(ModDataComponentTypes.DECAY_TIMER);
-        if (decayTime == null) {
-            MobEssenceTrinketItem.initializeDecayTimer(stack, tooltip);
-            decayTime = MobEssenceTrinketItem.INITIAL_DECAY_TIME;
-        }
-        int minutes = (decayTime / 20) / 60;
-        int seconds = (decayTime / 20) % 60;
-        tooltip.add(Text.translatable("item.essencelib.timer", String.format("%d:%02d", minutes, seconds)));
-
         ItemPowersComponent itemPowers = stack.get(ApoliDataComponentTypes.POWERS);
         if (itemPowers != null) {
             addPowerDescriptionsToTooltip(itemPowers, tooltip);

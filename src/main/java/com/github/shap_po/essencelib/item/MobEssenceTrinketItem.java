@@ -5,9 +5,14 @@ import dev.emi.trinkets.api.TrinketItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
 
@@ -15,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MobEssenceTrinketItem extends TrinketItem {
-    public static final int INITIAL_DECAY_TIME = 60 * 20 * 30;
 
     public MobEssenceTrinketItem() {
         super(new Settings().maxDamage(1200).rarity(Rarity.RARE));
@@ -31,20 +35,7 @@ public class MobEssenceTrinketItem extends TrinketItem {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (!world.isClient) {
-            Integer decayTime = stack.get(ModDataComponentTypes.DECAY_TIMER);
-            if (decayTime == null) {
-                initializeDecayTimer(stack, new ArrayList<>());
-                decayTime = INITIAL_DECAY_TIME;
-            } else {
-                decayTime -= 1;
-                stack.set(ModDataComponentTypes.DECAY_TIMER, decayTime);
-            }
-            if (decayTime <= 0) stack.decrement(1);
-        }
     }
 
-    public static void initializeDecayTimer(ItemStack stack, List<Text> tooltip) {
-        stack.set(ModDataComponentTypes.DECAY_TIMER, INITIAL_DECAY_TIME);
-    }
 }
+

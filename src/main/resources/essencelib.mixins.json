@@ -3,7 +3,9 @@
   "package": "com.github.shap_po.essencelib.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ArgumentTypesMixin"
+    "ArgumentTypesMixin",
+    "ItemEntityMixin",
+    "PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
