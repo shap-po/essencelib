@@ -104,6 +104,7 @@ dependencies {
 
     // Requirements
     modImplementation "io.github.apace100:apoli:${project.apoli_version}"
+    modImplementation 'io.github.apace100:calio:${project.calio_version}'
     modImplementation "dev.emi:trinkets:${project.trinkets_version}"
 }
 
