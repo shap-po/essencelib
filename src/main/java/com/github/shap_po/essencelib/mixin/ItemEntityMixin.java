@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.mixin;
 
 import com.github.shap_po.essencelib.item.MobEssenceTrinketItem;
+import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -14,6 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Optional;
 
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin {
@@ -33,18 +36,32 @@ public abstract class ItemEntityMixin {
                 } else {
                     long elapsed = System.currentTimeMillis() - sneakStartTime;
                     if (elapsed >= 5000) {
-                        // Try to equip the item
-                        if (TrinketsApi.getTrinketComponent(player).get().isEquipped(stack.getItem())) {
-                            itemEntity.remove(Entity.RemovalReason.DISCARDED);
-                        } else {
-                            // Drop the item if it cannot be equipped
-                            ci.cancel();
+                        Optional<TrinketComponent> optional = TrinketsApi.getTrinketComponent(player);
+                        if (optional.isPresent()) {
+                            TrinketComponent comp = optional.get();
+                            boolean hasEmptySlot = comp.getInventory().values().stream()
+                                    .flatMap(group -> group.values().stream())
+                                    .anyMatch(inv -> {
+                                        for (int i = 0; i < inv.size(); i++) {
+                                            if (inv.getStack(i).isEmpty()) {
+                                                return true;
+                                            }
+                                        }
+                                        return false;
+                                    });
+
+                            if (hasEmptySlot) {
+                                player.getInventory().insertStack(stack);
+                                itemEntity.discard();
+                            } else {
+                                player.sendMessage(Text.literal("Full of Essence").formatted(Formatting.RED), true);
+                            }
                         }
                         ci.cancel();
                         return;
                     } else {
                         int secondsLeft = 5 - (int) (elapsed / 1000);
-                        player.sendMessage(Text.literal("Shift to equip in " + secondsLeft + " seconds").formatted(Formatting.YELLOW), true);
+                        player.sendMessage(Text.literal("Shift to pick up in " + secondsLeft + " seconds").formatted(Formatting.YELLOW), true);
                     }
                 }
             } else {

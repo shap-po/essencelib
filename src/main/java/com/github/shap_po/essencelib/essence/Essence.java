@@ -2,6 +2,8 @@ package com.github.shap_po.essencelib.essence;
 
 import com.github.shap_po.essencelib.EssenceLib;
 import com.github.shap_po.essencelib.registry.ModItems;
+import com.github.shap_po.essencelib.tags.ModTags;
+import dev.emi.trinkets.api.SlotAttributes;
 import io.github.apace100.apoli.component.item.ApoliDataComponentTypes;
 import io.github.apace100.apoli.component.item.ItemPowersComponent;
 import io.github.apace100.apoli.data.ApoliDataTypes;
@@ -59,7 +61,7 @@ public class Essence implements Validatable {
             .set("replace", essence.replace)
     );
 
-    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.OFFHAND;
+    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.ARMOR ;
 
     private final Identifier id;
     private final String name;

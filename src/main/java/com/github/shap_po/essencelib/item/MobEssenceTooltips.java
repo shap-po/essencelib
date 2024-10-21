@@ -24,6 +24,7 @@ public class MobEssenceTooltips {
         ItemPowersComponent itemPowers = stack.get(ApoliDataComponentTypes.POWERS);
         if (itemPowers != null) {
             addPowerDescriptionsToTooltip(itemPowers, tooltip);
+
         }
     }
 

@@ -7,5 +7,6 @@
   "commands.essencelib.list.fail": "There are no essences registered.",
   "commands.essencelib.essence_not_found": "Essence with id %s not found.",
   "commands.essencelib.info": "Essence %s",
-  "commands.essencelib.give": "Gave essence %s to %s"
+  "commands.essencelib.give": "Gave essence %s to %s",
+  "trinkets.slot.soul.essence": "Soul Essence"
 }
