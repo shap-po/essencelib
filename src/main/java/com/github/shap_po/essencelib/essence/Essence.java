@@ -3,6 +3,8 @@ package com.github.shap_po.essencelib.essence;
 import com.github.shap_po.essencelib.EssenceLib;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
+import com.github.shap_po.essencelib.tags.ModTags;
+import dev.emi.trinkets.api.SlotAttributes;
 import io.github.apace100.apoli.component.item.ApoliDataComponentTypes;
 import io.github.apace100.apoli.component.item.ItemPowersComponent;
 import io.github.apace100.apoli.data.ApoliDataTypes;
@@ -19,7 +21,9 @@ import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -58,7 +62,7 @@ public class Essence implements Validatable {
             .set("replace", essence.replace)
     );
 
-    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.OFFHAND;
+    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.ARMOR ;
 
     private final Identifier id;
     private final String name;

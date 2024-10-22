@@ -31,6 +31,7 @@ public class EssenceLib implements ModInitializer {
         ModPackets.register();
         ModPacketsC2S.register();
 
+
         EssenceLoader essenceLoader = new EssenceLoader();
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(essenceLoader);
 

@@ -1,25 +1,38 @@
 package com.github.shap_po.essencelib.item;
 
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
-import dev.emi.trinkets.api.TrinketItem;
+import dev.emi.trinkets.TrinketSlot;
+import dev.emi.trinkets.api.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.StackReference;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.Rarity;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MobEssenceTrinketItem extends TrinketItem {
-    public static final int INITIAL_DECAY_TIME = 60 * 20 * 30;
-
+    public static final Item KEY_ITEM = Items.STONE;
     public MobEssenceTrinketItem() {
         super(new Settings().maxDamage(1200).rarity(Rarity.RARE));
     }
+
+
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
@@ -30,21 +43,28 @@ public class MobEssenceTrinketItem extends TrinketItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (!world.isClient) {
-            Integer decayTime = stack.get(ModDataComponentTypes.DECAY_TIMER);
-            if (decayTime == null) {
-                initializeDecayTimer(stack, new ArrayList<>());
-                decayTime = INITIAL_DECAY_TIME;
-            } else {
-                decayTime -= 1;
-                stack.set(ModDataComponentTypes.DECAY_TIMER, decayTime);
+    public boolean canUnequip(ItemStack stack, SlotReference slot, LivingEntity entity) {
+        if (entity instanceof PlayerEntity player) {
+            ItemStack offHandItem = player.getOffHandStack();
+            if (offHandItem.getItem() == KEY_ITEM) {
+                slot.inventory().setStack(slot.index(), ItemStack.EMPTY);
+                player.getOffHandStack().decrement(1);
+                player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                return true;
             }
-            if (decayTime <= 0) stack.decrement(1);
         }
+        return false;
     }
 
-    public static void initializeDecayTimer(ItemStack stack, List<Text> tooltip) {
-        stack.set(ModDataComponentTypes.DECAY_TIMER, INITIAL_DECAY_TIME);
+    @Override
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+        super.inventoryTick(stack, world, entity, slot, selected);
+
+        if (entity instanceof LivingEntity) {
+            MobEssenceTrinketItem.equipItem((LivingEntity) entity, stack);
+        }
     }
 }
+
+
+
