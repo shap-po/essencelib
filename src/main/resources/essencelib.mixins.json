@@ -5,9 +5,13 @@
   "mixins": [
     "ArgumentTypesMixin",
     "ItemEntityMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "PlayerEntityMixin$ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "InventoryScreenMixin"
+  ]
 }
