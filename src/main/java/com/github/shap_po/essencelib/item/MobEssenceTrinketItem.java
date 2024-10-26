@@ -1,37 +1,31 @@
 package com.github.shap_po.essencelib.item;
 
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
-import dev.emi.trinkets.TrinketSlot;
-import dev.emi.trinkets.api.*;
+import dev.emi.trinkets.api.SlotReference;
+import dev.emi.trinkets.api.TrinketItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.StackReference;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.*;
+import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
 
-import java.util.*;
+import java.util.List;
 
 public class MobEssenceTrinketItem extends TrinketItem {
     public static final Item KEY_ITEM = Items.STONE;
+
     public MobEssenceTrinketItem() {
         super(new Settings().maxDamage(1200).rarity(Rarity.RARE));
     }
-
 
 
     @Override
@@ -44,6 +38,10 @@ public class MobEssenceTrinketItem extends TrinketItem {
 
     @Override
     public boolean canUnequip(ItemStack stack, SlotReference slot, LivingEntity entity) {
+        if (stack.getComponents().getOrDefault(ModDataComponentTypes.CAN_UNEQUIP, false)) {
+            return true;
+        }
+
         if (entity instanceof PlayerEntity player) {
             ItemStack offHandItem = player.getOffHandStack();
             if (offHandItem.getItem() == KEY_ITEM) {

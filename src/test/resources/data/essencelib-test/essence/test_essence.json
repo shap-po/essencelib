@@ -11,5 +11,6 @@
   ],
   "powers": [
     "essencelib-test:test_power"
-  ]
+  ],
+  "can_unequip": true
 }

@@ -3,8 +3,7 @@ package com.github.shap_po.essencelib.essence;
 import com.github.shap_po.essencelib.EssenceLib;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
-import com.github.shap_po.essencelib.tags.ModTags;
-import dev.emi.trinkets.api.SlotAttributes;
+import dev.emi.trinkets.api.TrinketsAttributeModifiersComponent;
 import io.github.apace100.apoli.component.item.ApoliDataComponentTypes;
 import io.github.apace100.apoli.component.item.ItemPowersComponent;
 import io.github.apace100.apoli.data.ApoliDataTypes;
@@ -20,10 +19,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -44,6 +40,7 @@ public class Essence implements Validatable {
             .add("powers", ApoliDataTypes.POWER_REFERENCE.list(), null)
             .add("attributes", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, null)
             .add("replace", SerializableDataTypes.BOOLEAN, false)
+            .add("can_unequip", SerializableDataTypes.BOOLEAN, false)
         ,
         data -> new Essence(
             data.getId("id"),
@@ -51,7 +48,8 @@ public class Essence implements Validatable {
             data.get("rarity"),
             data.get("powers"),
             data.get("attributes"),
-            data.getBoolean("replace")
+            data.getBoolean("replace"),
+            data.getBoolean("can_unequip")
         ),
         (essence, serializableData) -> serializableData.instance()
             .set("id", essence.id)
@@ -60,9 +58,10 @@ public class Essence implements Validatable {
             .set("powers", essence.powers)
             .set("attributes", essence.attributes)
             .set("replace", essence.replace)
+            .set("can_unequip", essence.canUnequip)
     );
 
-    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.ANY ;
+    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.ANY;
 
     private final Identifier id;
     private final String name;
@@ -71,6 +70,7 @@ public class Essence implements Validatable {
     private final List<PowerReference> powerReferences;
     private final List<AttributedEntityAttributeModifier> attributes;
     private final boolean replace;
+    private final boolean canUnequip;
 
     public Essence(
         Identifier id,
@@ -78,7 +78,8 @@ public class Essence implements Validatable {
         Rarity rarity,
         @Nullable List<PowerReference> powerReferences,
         @Nullable List<AttributedEntityAttributeModifier> attributes,
-        boolean replace
+        boolean replace,
+        boolean canUnequip
     ) {
         this.id = id;
         this.name = name;
@@ -87,6 +88,7 @@ public class Essence implements Validatable {
         this.powerReferences = powerReferences == null ? new LinkedList<>() : new LinkedList<>(powerReferences);
         this.attributes = attributes == null ? new LinkedList<>() : new LinkedList<>(attributes);
         this.replace = replace;
+        this.canUnequip = canUnequip;
     }
 
     public Identifier getId() {
@@ -117,6 +119,10 @@ public class Essence implements Validatable {
         return replace;
     }
 
+    public boolean canUnequip() {
+        return canUnequip;
+    }
+
     public ComponentMap.Builder toComponent() {
         ComponentMap.Builder builder = ComponentMap.builder();
 
@@ -133,12 +139,14 @@ public class Essence implements Validatable {
         }
 
         if (!attributes.isEmpty()) {
-            AttributeModifiersComponent.Builder attributeModifiers = AttributeModifiersComponent.builder();
+            TrinketsAttributeModifiersComponent.Builder attributeModifiers = TrinketsAttributeModifiersComponent.builder();
             for (AttributedEntityAttributeModifier attribute : attributes) {
-                attributeModifiers.add(attribute.attribute(), attribute.modifier(), SLOT);
+                attributeModifiers.add(attribute.attribute(), attribute.modifier());
             }
-            builder.add(DataComponentTypes.ATTRIBUTE_MODIFIERS, attributeModifiers.build());
+            builder.add(TrinketsAttributeModifiersComponent.TYPE, attributeModifiers.build());
         }
+
+        builder.add(ModDataComponentTypes.CAN_UNEQUIP, canUnequip);
 
         return builder;
     }
@@ -168,6 +176,7 @@ public class Essence implements Validatable {
             ", powerReferences=" + powerReferences +
             ", attributes=" + attributes +
             ", replace=" + replace +
+            ", canUnequip=" + canUnequip +
             '}';
     }
 

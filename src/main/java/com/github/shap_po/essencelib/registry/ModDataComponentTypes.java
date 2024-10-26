@@ -11,10 +11,10 @@ import net.minecraft.util.Identifier;
 import java.util.function.UnaryOperator;
 
 public class ModDataComponentTypes {
-    public static final ComponentType<Integer> DECAY_TIMER = register("decay_timer", builder -> builder.codec(Codec.INT));
     public static final ComponentType<Identifier> ESSENCE_ID = register("essence_id", builder -> builder.codec(Identifier.CODEC));
+    public static final ComponentType<Boolean> CAN_UNEQUIP = register("can_unequip", builder -> builder.codec(Codec.BOOL));
 
-
+    @SuppressWarnings({"SameParameterValue"})
     private static <T> ComponentType<T> register(String name, UnaryOperator<ComponentType.Builder<T>> builderOperator) {
         return Registry.register(
             Registries.DATA_COMPONENT_TYPE,
