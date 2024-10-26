@@ -62,7 +62,7 @@ public class Essence implements Validatable {
             .set("replace", essence.replace)
     );
 
-    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.ARMOR ;
+    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.ANY ;
 
     private final Identifier id;
     private final String name;
