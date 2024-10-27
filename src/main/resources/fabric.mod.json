@@ -23,9 +23,6 @@
     "client": [
       "com.github.shap_po.essencelib.EssenceLibClient"
     ],
-    "fabric-datagen": [
-      "com.github.shap_po.essencelib.EssencelibDataGen"
-    ],
     "cardinal-components-entity": [
       "com.github.shap_po.essencelib.EssenceLib"
     ]
