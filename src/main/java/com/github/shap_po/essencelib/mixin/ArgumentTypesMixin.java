@@ -26,7 +26,7 @@ public abstract class ArgumentTypesMixin {
     }
 
     @Inject(method = "register(Lnet/minecraft/registry/Registry;)Lnet/minecraft/command/argument/serialize/ArgumentSerializer;", at = @At("RETURN"))
-    private static void registerApoliArgumentTypes(Registry<ArgumentSerializer<?, ?>> registry, CallbackInfoReturnable<ArgumentSerializer<?, ?>> cir) {
-        register(registry, EssenceLib.MOD_ID + ":origin", EssenceArgumentType.class, ConstantArgumentSerializer.of(EssenceArgumentType::essence));
+    private static void registerEssenceLibArgumentTypes(Registry<ArgumentSerializer<?, ?>> registry, CallbackInfoReturnable<ArgumentSerializer<?, ?>> cir) {
+        register(registry, EssenceLib.identifier("essence").toString(), EssenceArgumentType.class, ConstantArgumentSerializer.of(EssenceArgumentType::essence));
     }
 }
