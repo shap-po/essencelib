@@ -25,6 +25,9 @@
     ],
     "fabric-datagen": [
       "com.github.shap_po.essencelib.EssencelibDataGen"
+    ],
+    "cardinal-components-entity": [
+      "com.github.shap_po.essencelib.EssenceLib"
     ]
   },
   "mixins": [
@@ -34,6 +37,11 @@
       "environment": "client"
     }
   ],
+  "custom": {
+    "cardinal-components": [
+      "essencelib:unique_kills"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.16.7",
     "minecraft": "~1.21.1",

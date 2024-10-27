@@ -1,6 +1,8 @@
 package com.github.shap_po.essencelib;
 
 import com.github.shap_po.essencelib.command.EssenceLibCommand;
+import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
+import com.github.shap_po.essencelib.component.UniqueKillsCounterComponentImpl;
 import com.github.shap_po.essencelib.essence.EssenceLoader;
 import com.github.shap_po.essencelib.networking.ModPackets;
 import com.github.shap_po.essencelib.networking.ModPacketsC2S;
@@ -11,10 +13,13 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
+import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
+import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EssenceLib implements ModInitializer {
+public class EssenceLib implements ModInitializer, EntityComponentInitializer {
     public static final String MOD_ID = "essencelib";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -40,5 +45,10 @@ public class EssenceLib implements ModInitializer {
 
     public static Identifier identifier(String path) {
         return Identifier.of(MOD_ID, path);
+    }
+
+    @Override
+    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
+        registry.registerForPlayers(UniqueKillsCounterComponent.KEY, UniqueKillsCounterComponentImpl::new, RespawnCopyStrategy.ALWAYS_COPY);
     }
 }

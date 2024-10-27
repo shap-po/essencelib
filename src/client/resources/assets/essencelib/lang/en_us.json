@@ -8,5 +8,8 @@
   "commands.essencelib.essence_not_found": "Essence with id %s not found.",
   "commands.essencelib.info": "Essence %s",
   "commands.essencelib.give": "Gave essence %s to %s",
+  "commands.essencelib.level.fail": "Player %s has no level data.",
+  "commands.essencelib.level.kills.pass": "Player %s has %s unique kills: %s",
+  "commands.essencelib.level.reset.pass": "Player %s's level data has been reset.",
   "trinkets.slot.soul.essence": "Soul Essence"
 }

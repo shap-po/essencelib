@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.command;
 
 import com.github.shap_po.essencelib.command.argument.EssenceArgumentType;
+import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
 import com.github.shap_po.essencelib.essence.Essence;
 import com.github.shap_po.essencelib.essence.EssenceLoader;
 import com.mojang.brigadier.Command;
@@ -13,10 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
+import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -38,6 +41,19 @@ public class EssenceLibCommand {
                     .then(argument("player", EntityArgumentType.player())
                         .then(argument("essence", EssenceArgumentType.essence())
                             .executes(EssenceLibCommand::giveEssence)
+                        )
+                    )
+                )
+
+                .then(literal("level")
+                    .then(literal("kills")
+                        .then(argument("player", EntityArgumentType.player())
+                            .executes(EssenceLibCommand::getPlayerKills)
+                        )
+                    )
+                    .then(literal("reset")
+                        .then(argument("player", EntityArgumentType.player())
+                            .executes(EssenceLibCommand::resetPlayerKills)
                         )
                     )
                 )
@@ -97,6 +113,45 @@ public class EssenceLibCommand {
         }
 
         source.sendFeedback(() -> Text.translatable("commands.essencelib.give", essence.toText(), serverPlayerEntity.getDisplayName()), true);
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int getPlayerKills(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerCommandSource source = context.getSource();
+        ServerPlayerEntity serverPlayerEntity = EntityArgumentType.getPlayer(context, "player");
+
+        UniqueKillsCounterComponent component = UniqueKillsCounterComponent.getNullable(serverPlayerEntity);
+        if (component == null) {
+            source.sendError(Text.translatable("commands.essencelib.level.fail", serverPlayerEntity.getDisplayName()));
+            return -1;
+        }
+
+        Set<Identifier> kills = component.getUniqueKills();
+        int count = kills.size();
+
+        List<Text> texts = new LinkedList<>();
+        for (Identifier id : kills) {
+            texts.add(Text.literal(id.toString()));
+        }
+
+        source.sendFeedback(() -> Text.translatable("commands.essencelib.level.kills.pass", serverPlayerEntity.getDisplayName(), count, Texts.join(texts, Text.of(", "))), true);
+
+        return count;
+    }
+
+    private static int resetPlayerKills(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerCommandSource source = context.getSource();
+        ServerPlayerEntity serverPlayerEntity = EntityArgumentType.getPlayer(context, "player");
+
+        UniqueKillsCounterComponent component = UniqueKillsCounterComponent.getNullable(serverPlayerEntity);
+        if (component == null) {
+            source.sendError(Text.translatable("commands.essencelib.level.fail", serverPlayerEntity.getDisplayName()));
+            return -1;
+        }
+
+        component.clearUniqueKills();
+        source.sendFeedback(() -> Text.translatable("commands.essencelib.level.reset.pass", serverPlayerEntity.getDisplayName()), true);
 
         return Command.SINGLE_SUCCESS;
     }
