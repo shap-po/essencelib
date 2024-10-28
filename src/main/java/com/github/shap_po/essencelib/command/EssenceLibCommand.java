@@ -4,6 +4,7 @@ import com.github.shap_po.essencelib.command.argument.EssenceArgumentType;
 import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
 import com.github.shap_po.essencelib.essence.Essence;
 import com.github.shap_po.essencelib.essence.EssenceLoader;
+import com.github.shap_po.essencelib.util.LevelingUtil;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -54,6 +55,11 @@ public class EssenceLibCommand {
                     .then(literal("reset")
                         .then(argument("player", EntityArgumentType.player())
                             .executes(EssenceLibCommand::resetPlayerKills)
+                        )
+                    )
+                    .then(literal("progress")
+                        .then(argument("player", EntityArgumentType.player())
+                            .executes(EssenceLibCommand::getPlayerLevelProgress)
                         )
                     )
                 )
@@ -152,6 +158,18 @@ public class EssenceLibCommand {
 
         component.clearUniqueKills();
         source.sendFeedback(() -> Text.translatable("commands.essencelib.level.reset.pass", serverPlayerEntity.getDisplayName()), true);
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int getPlayerLevelProgress(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerCommandSource source = context.getSource();
+        ServerPlayerEntity serverPlayerEntity = EntityArgumentType.getPlayer(context, "player");
+
+        int currentKills = LevelingUtil.getCurrentEntityCount(serverPlayerEntity);
+        int nextLevelKills = LevelingUtil.getTotalEntityCount();
+
+        source.sendFeedback(() -> Text.translatable("commands.essencelib.level.progress.pass", serverPlayerEntity.getDisplayName(), currentKills, nextLevelKills), true);
 
         return Command.SINGLE_SUCCESS;
     }

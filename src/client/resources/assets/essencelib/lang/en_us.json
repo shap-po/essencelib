@@ -11,5 +11,6 @@
   "commands.essencelib.level.fail": "Player %s has no level data.",
   "commands.essencelib.level.kills.pass": "Player %s has %s unique kills: %s",
   "commands.essencelib.level.reset.pass": "Player %s's level data has been reset.",
+  "commands.essencelib.level.progress.pass": "Player %s has killed %s/%s unique mobs.",
   "trinkets.slot.soul.essence": "Soul Essence"
 }
