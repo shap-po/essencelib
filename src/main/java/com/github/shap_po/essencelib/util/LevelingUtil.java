@@ -28,4 +28,25 @@ public class LevelingUtil {
             )
             .orElse(0);
     }
+
+    public static int getLevel(int uniqueKills, int totalEntities) {
+        if (totalEntities <= 0) return 0;
+
+        int level = 1;
+        int baseRequirement = totalEntities / 20;
+
+        while (uniqueKills >= baseRequirement) {
+            uniqueKills -= baseRequirement;
+            level++;
+            baseRequirement = (int) Math.pow(level, 2) * (totalEntities / 100);
+        }
+
+        return level;
+    }
+
+    public static int getKillsToNextLevel(int currentLevel, int totalEntities) {
+        if (totalEntities <= 0) return 0;
+
+        return (int) Math.pow(currentLevel + 1, 2) * (totalEntities / 100);
+    }
 }

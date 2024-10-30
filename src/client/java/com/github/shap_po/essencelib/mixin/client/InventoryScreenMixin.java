@@ -1,4 +1,4 @@
-package com.github.shap_po.essencelib.mixinclient;
+package com.github.shap_po.essencelib.mixin.client;
 
 import com.github.shap_po.essencelib.util.LevelingUtil;
 import net.minecraft.client.MinecraftClient;
@@ -21,8 +21,9 @@ public class InventoryScreenMixin {
         if (player != null) {
             int uniqueKills = LevelingUtil.getCurrentEntityCount(player);
             int totalEntities = LevelingUtil.getTotalEntityCount();
-            int level = calculateLevel(uniqueKills, totalEntities);
-            int requiredKills = getRequiredKillsForNextLevel(level, totalEntities);
+
+            int level = LevelingUtil.getLevel(uniqueKills, totalEntities);
+            int requiredKills = LevelingUtil.getKillsToNextLevel(level, totalEntities);
 
             String levelText = "Level: " + level;
             int x = context.getScaledWindowWidth() / 2 + 90;
@@ -31,31 +32,10 @@ public class InventoryScreenMixin {
             context.drawText(client.textRenderer, Text.literal(levelText), x, y, 0xFFFFFF, true);
 
             if (mouseX >= x && mouseX <= x + client.textRenderer.getWidth(levelText) &&
-                    mouseY >= y && mouseY <= y + client.textRenderer.fontHeight) {
+                mouseY >= y && mouseY <= y + client.textRenderer.fontHeight) {
                 context.drawTooltip(client.textRenderer, Text.literal(uniqueKills + " / " + requiredKills + " kills for next level"),
-                        mouseX, mouseY);
+                    mouseX, mouseY);
             }
         }
-    }
-
-    private int calculateLevel(int uniqueKills, int totalEntities) {
-        if (totalEntities <= 0) return 0;
-
-        int level = 1;
-        int baseRequirement = totalEntities / 20;
-
-        while (uniqueKills >= baseRequirement) {
-            uniqueKills -= baseRequirement;
-            level++;
-            baseRequirement = (int) Math.pow(level, 2) * (totalEntities / 100);
-        }
-
-        return level;
-    }
-
-    private int getRequiredKillsForNextLevel(int currentLevel, int totalEntities) {
-        if (totalEntities <= 0) return 0;
-
-        return (int) Math.pow(currentLevel + 1, 2) * (totalEntities / 100);
     }
 }

@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.github.shap_po.essencelib.mixinclient",
+  "package": "com.github.shap_po.essencelib.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
     "InventoryScreenMixin"
