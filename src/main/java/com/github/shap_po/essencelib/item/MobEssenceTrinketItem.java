@@ -58,7 +58,7 @@ public class MobEssenceTrinketItem extends TrinketItem {
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, world, entity, slot, selected);
 
-        if (entity instanceof LivingEntity) {
+        if (entity instanceof LivingEntity && stack.getComponents().getOrDefault(ModDataComponentTypes.AUTO_EQUIP, true)) {
             MobEssenceTrinketItem.equipItem((LivingEntity) entity, stack);
         }
     }

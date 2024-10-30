@@ -82,18 +82,18 @@ public class EssenceLoader extends IdentifiableMultiJsonDataLoader implements Id
 
                 jsonObject.addProperty("id", id.toString());
 
-                Essence layer = Essence.DATA_TYPE.read(dynamicRegistries.getOps(JsonOps.INSTANCE), jsonObject).getOrThrow();
+                Essence essence = Essence.DATA_TYPE.read(dynamicRegistries.getOps(JsonOps.INSTANCE), jsonObject).getOrThrow();
                 int currLoadingPriority = JsonHelper.getInt(jsonObject, "loading_priority", 0);
 
-                PrioritizedEntry<Essence> entry = new PrioritizedEntry<>(layer, currLoadingPriority);
+                PrioritizedEntry<Essence> entry = new PrioritizedEntry<>(essence, currLoadingPriority);
                 int prevLoadingPriority = LOADING_PRIORITIES.getOrDefault(id, Integer.MIN_VALUE);
 
-                if (layer.shouldReplace() && currLoadingPriority <= prevLoadingPriority) {
+                if (essence.shouldReplace() && currLoadingPriority <= prevLoadingPriority) {
                     EssenceLib.LOGGER.warn("Ignoring essence \"{}\" with 'replace' set to true from data pack [{}]. Its loading priority ({}) must be higher than {} to replace the essence!", id, packName, currLoadingPriority, prevLoadingPriority);
                     return; // break
                 }
 
-                if (layer.shouldReplace()) {
+                if (essence.shouldReplace()) {
                     EssenceLib.LOGGER.info("Essence \"{}\" has been replaced by data pack [{}]!", id, packName);
                 }
 

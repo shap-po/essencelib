@@ -41,6 +41,7 @@ public class Essence implements Validatable {
             .add("attributes", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, null)
             .add("replace", SerializableDataTypes.BOOLEAN, false)
             .add("can_unequip", SerializableDataTypes.BOOLEAN, false)
+            .add("auto_equip", SerializableDataTypes.BOOLEAN, true)
         ,
         data -> new Essence(
             data.getId("id"),
@@ -49,7 +50,8 @@ public class Essence implements Validatable {
             data.get("powers"),
             data.get("attributes"),
             data.getBoolean("replace"),
-            data.getBoolean("can_unequip")
+            data.getBoolean("can_unequip"),
+            data.getBoolean("auto_equip")
         ),
         (essence, serializableData) -> serializableData.instance()
             .set("id", essence.id)
@@ -59,6 +61,7 @@ public class Essence implements Validatable {
             .set("attributes", essence.attributes)
             .set("replace", essence.replace)
             .set("can_unequip", essence.canUnequip)
+            .set("auto_equip", essence.autoEquip)
     );
 
     public static final AttributeModifierSlot SLOT = AttributeModifierSlot.ANY;
@@ -71,6 +74,7 @@ public class Essence implements Validatable {
     private final List<AttributedEntityAttributeModifier> attributes;
     private final boolean replace;
     private final boolean canUnequip;
+    private final boolean autoEquip;
 
     public Essence(
         Identifier id,
@@ -79,7 +83,8 @@ public class Essence implements Validatable {
         @Nullable List<PowerReference> powerReferences,
         @Nullable List<AttributedEntityAttributeModifier> attributes,
         boolean replace,
-        boolean canUnequip
+        boolean canUnequip,
+        boolean autoEquip
     ) {
         this.id = id;
         this.name = name;
@@ -89,6 +94,7 @@ public class Essence implements Validatable {
         this.attributes = attributes == null ? new LinkedList<>() : new LinkedList<>(attributes);
         this.replace = replace;
         this.canUnequip = canUnequip;
+        this.autoEquip = autoEquip;
     }
 
     public Identifier getId() {
@@ -123,6 +129,10 @@ public class Essence implements Validatable {
         return canUnequip;
     }
 
+    public boolean autoEquip() {
+        return autoEquip;
+    }
+
     public ComponentMap.Builder toComponent() {
         ComponentMap.Builder builder = ComponentMap.builder();
 
@@ -147,6 +157,7 @@ public class Essence implements Validatable {
         }
 
         builder.add(ModDataComponentTypes.CAN_UNEQUIP, canUnequip);
+        builder.add(ModDataComponentTypes.AUTO_EQUIP, autoEquip);
 
         return builder;
     }
@@ -177,6 +188,7 @@ public class Essence implements Validatable {
             ", attributes=" + attributes +
             ", replace=" + replace +
             ", canUnequip=" + canUnequip +
+            ", autoEquip=" + autoEquip +
             '}';
     }
 
