@@ -11,6 +11,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -36,7 +37,7 @@ public class UniqueKillsCounterComponentImpl implements UniqueKillsCounterCompon
 
     @Override
     public void addUniqueKill(Identifier id) {
-        if (uniqueKills.contains(id)) {
+        if (provider.isCreative() || uniqueKills.contains(id)) {
             return;
         }
         uniqueKills.add(id);

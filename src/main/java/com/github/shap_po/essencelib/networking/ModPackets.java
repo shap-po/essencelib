@@ -6,5 +6,6 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 public class ModPackets {
     public static void register() {
         PayloadTypeRegistry.playS2C().register(SyncEssencesS2CPacket.PACKET_ID, SyncEssencesS2CPacket.PACKET_CODEC);
+
     }
 }
