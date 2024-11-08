@@ -108,8 +108,8 @@ dependencies {
 
     // Requirements
     modImplementation "io.github.apace100:apoli:${project.apoli_version}"
-    modImplementation 'io.github.apace100:calio:${project.calio_version}'
     modImplementation "dev.emi:trinkets:${project.trinkets_version}"
+    modImplementation "com.github.shap_po.shappoli:shappoli:${project.shappoli_version}" // local maven
 }
 
 processResources {

@@ -3,9 +3,9 @@ package com.github.shap_po.essencelib.essence;
 import com.github.shap_po.essencelib.EssenceLib;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
+import com.github.shap_po.shappoli.integration.trinkets.component.item.ShappoliTrinketsDataComponentTypes;
+import com.github.shap_po.shappoli.integration.trinkets.component.item.TrinketItemPowersComponent;
 import dev.emi.trinkets.api.TrinketsAttributeModifiersComponent;
-import io.github.apace100.apoli.component.item.ApoliDataComponentTypes;
-import io.github.apace100.apoli.component.item.ItemPowersComponent;
 import io.github.apace100.apoli.data.ApoliDataTypes;
 import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerReference;
@@ -18,7 +18,6 @@ import io.github.apace100.calio.util.Validatable;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
@@ -26,7 +25,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -63,8 +61,6 @@ public class Essence implements Validatable {
             .set("can_unequip", essence.canUnequip)
             .set("auto_equip", essence.autoEquip)
     );
-
-    public static final AttributeModifierSlot SLOT = AttributeModifierSlot.ANY;
 
     private final Identifier id;
     private final String name;
@@ -141,11 +137,11 @@ public class Essence implements Validatable {
         builder.add(DataComponentTypes.RARITY, rarity);
 
         if (!powerReferences.isEmpty()) {
-            ItemPowersComponent.Builder itemPowers = ItemPowersComponent.builder();
+            TrinketItemPowersComponent.Builder itemPowers = TrinketItemPowersComponent.builder();
             for (PowerReference powerReference : powerReferences) {
-                itemPowers.add(EnumSet.of(SLOT), powerReference.getId(), true, false);
+                itemPowers.add(powerReference.getId(), false, false, false);
             }
-            builder.add(ApoliDataComponentTypes.POWERS, itemPowers.build());
+            builder.add(ShappoliTrinketsDataComponentTypes.POWERS, itemPowers.build());
         }
 
         if (!attributes.isEmpty()) {
