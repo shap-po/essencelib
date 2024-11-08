@@ -3,6 +3,7 @@
   "package": "com.github.shap_po.essencelib.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "HandledScreenAccessor",
     "InventoryScreenMixin"
   ],
   "injectors": {

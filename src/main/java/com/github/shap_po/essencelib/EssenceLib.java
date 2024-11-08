@@ -32,7 +32,6 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
 
         ModDataComponentTypes.registerDataComponentTypes();
         ModItems.register();
-
         ModPackets.register();
         ModPacketsC2S.register();
 

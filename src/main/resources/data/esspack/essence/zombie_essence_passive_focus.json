@@ -1,0 +1,42 @@
+{
+  "name": "Zombie Essence: Passive Focus",
+  "rarity": "Epic",
+  "attributes": [
+    {
+      "id": "health",
+      "attribute": "minecraft:generic.max_health",
+      "amount": 0.2,
+      "operation": "ADD_MULTIPLIED_TOTAL"
+    },
+    {
+      "id": "melee_resistance",
+      "attribute": "puffish_attributes:player.melee_resistance",
+      "amount": 0.15,
+      "operation": "ADD_MULTIPLIED_TOTAL"
+    },
+    {
+      "id": "knockback_resistance",
+      "attribute": "minecraft:generic.knockback_resistance",
+      "amount": 0.1,
+      "operation": "ADD_MULTIPLIED_TOTAL"
+    },
+    {
+      "id": "natural_regeneration",
+      "attribute": "puffish_attributes:player.natural_regeneration",
+      "amount": 0.05,
+      "operation": "ADD_MULTIPLIED_TOTAL"
+    },
+    {
+      "id": "movement_speed",
+      "attribute": "minecraft:generic.movement_speed",
+      "amount": -0.10,
+      "operation": "ADD_MULTIPLIED_TOTAL"
+    }
+    
+  ],
+  "powers": [
+    "esspack:undead_fortification",
+    "esspack:zombie_camouflage",
+    "esspack:solar_damage"
+  ]
+}

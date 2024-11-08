@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ArgumentTypesMixin",
-    "ItemEntityMixin",
-    "LivingEntityMixin"
+    "ItemEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
