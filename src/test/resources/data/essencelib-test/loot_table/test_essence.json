@@ -1,0 +1,22 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "essencelib:mob_essence",
+          "functions": [
+            {
+              "function": "essencelib:set_essence",
+              "essence": "essencelib-test:test_essence"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:empty"
+        }
+      ]
+    }
+  ]
+}

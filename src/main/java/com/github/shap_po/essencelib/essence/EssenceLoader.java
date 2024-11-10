@@ -6,7 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import io.github.apace100.apoli.power.PowerManager;
 import io.github.apace100.apoli.util.PrioritizedEntry;
 import io.github.apace100.calio.CalioServer;
 import io.github.apace100.calio.data.IdentifiableMultiJsonDataLoader;
@@ -49,6 +51,8 @@ public class EssenceLoader extends IdentifiableMultiJsonDataLoader implements Id
 
     public EssenceLoader() {
         super(GSON, "essence", ResourceType.SERVER_DATA);
+        // FIXME: Datapacks need to be reloaded in order for loot tables to get essences
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.addPhaseOrdering(ID, PowerManager.ID);
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(ID, (player, joined) -> send(player));
     }
 
@@ -142,9 +146,23 @@ public class EssenceLoader extends IdentifiableMultiJsonDataLoader implements Id
         return ESSENCE_BY_ID.size();
     }
 
+    public static DataResult<Essence> getResult(Identifier id) {
+        return contains(id)
+            ? DataResult.success(ESSENCE_BY_ID.get(id))
+            : DataResult.error(() -> "Couldn't get essence from ID \"" + id + "\", as it wasn't registered!");
+    }
+
+    public static Optional<Essence> getOptional(Identifier id) {
+        return getResult(id).result();
+    }
+
     @Nullable
     public static Essence getNullable(Identifier id) {
         return ESSENCE_BY_ID.get(id);
+    }
+
+    public static Essence getOrThrow(Identifier id) {
+        return getResult(id).getOrThrow();
     }
 
     public static Collection<Essence> values() {

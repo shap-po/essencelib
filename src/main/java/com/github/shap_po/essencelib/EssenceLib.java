@@ -4,6 +4,7 @@ import com.github.shap_po.essencelib.command.EssenceLibCommand;
 import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
 import com.github.shap_po.essencelib.component.UniqueKillsCounterComponentImpl;
 import com.github.shap_po.essencelib.essence.EssenceLoader;
+import com.github.shap_po.essencelib.loot.function.ModLootFunctionTypes;
 import com.github.shap_po.essencelib.networking.ModPackets;
 import com.github.shap_po.essencelib.networking.ModPacketsC2S;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
@@ -34,7 +35,7 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
         ModItems.register();
         ModPackets.register();
         ModPacketsC2S.register();
-
+        ModLootFunctionTypes.register();
 
         EssenceLoader essenceLoader = new EssenceLoader();
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(essenceLoader);

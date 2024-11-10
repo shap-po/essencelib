@@ -129,6 +129,10 @@ public class Essence implements Validatable {
         return autoEquip;
     }
 
+    public EssenceReference getReference() {
+        return new EssenceReference(id);
+    }
+
     public ComponentMap.Builder toComponent() {
         ComponentMap.Builder builder = ComponentMap.builder();
 
@@ -160,6 +164,11 @@ public class Essence implements Validatable {
 
     public ItemStack toItemStack() {
         ItemStack stack = new ItemStack(ModItems.MOB_ESSENCE_ITEM);
+        stack.applyComponentsFrom(toComponent().build());
+        return stack;
+    }
+
+    public ItemStack applyToItemStack(ItemStack stack) {
         stack.applyComponentsFrom(toComponent().build());
         return stack;
     }
