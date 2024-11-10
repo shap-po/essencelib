@@ -51,7 +51,7 @@ public class EssenceManager extends IdentifiableMultiJsonDataLoader implements I
 
     public EssenceManager() {
         super(GSON, "essence", ResourceType.SERVER_DATA);
-        // FIXME: Datapacks need to be reloaded in order for loot tables to get essences
+
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.addPhaseOrdering(ID, PowerManager.ID);
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(ID, (player, joined) -> send(player));
     }
