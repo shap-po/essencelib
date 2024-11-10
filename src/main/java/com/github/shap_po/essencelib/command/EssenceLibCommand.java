@@ -3,7 +3,7 @@ package com.github.shap_po.essencelib.command;
 import com.github.shap_po.essencelib.command.argument.EssenceArgumentType;
 import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
 import com.github.shap_po.essencelib.essence.Essence;
-import com.github.shap_po.essencelib.essence.EssenceLoader;
+import com.github.shap_po.essencelib.essence.EssenceManager;
 import com.github.shap_po.essencelib.util.LevelingUtil;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -69,7 +69,7 @@ public class EssenceLibCommand {
     private static int sendEssenceList(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();
 
-        Collection<Essence> essences = EssenceLoader.values();
+        Collection<Essence> essences = EssenceManager.values();
 
         int count = essences.size();
         if (count == 0) {

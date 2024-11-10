@@ -3,7 +3,7 @@ package com.github.shap_po.essencelib;
 import com.github.shap_po.essencelib.command.EssenceLibCommand;
 import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
 import com.github.shap_po.essencelib.component.UniqueKillsCounterComponentImpl;
-import com.github.shap_po.essencelib.essence.EssenceLoader;
+import com.github.shap_po.essencelib.essence.EssenceManager;
 import com.github.shap_po.essencelib.loot.function.ModLootFunctionTypes;
 import com.github.shap_po.essencelib.networking.ModPackets;
 import com.github.shap_po.essencelib.networking.ModPacketsC2S;
@@ -37,8 +37,7 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
         ModPacketsC2S.register();
         ModLootFunctionTypes.register();
 
-        EssenceLoader essenceLoader = new EssenceLoader();
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(essenceLoader);
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new EssenceManager());
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> EssenceLibCommand.register(dispatcher));
     }

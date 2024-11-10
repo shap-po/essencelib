@@ -1,7 +1,7 @@
 package com.github.shap_po.essencelib.command.argument;
 
 import com.github.shap_po.essencelib.essence.Essence;
-import com.github.shap_po.essencelib.essence.EssenceLoader;
+import com.github.shap_po.essencelib.essence.EssenceManager;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -32,7 +32,7 @@ public class EssenceArgumentType implements ArgumentType<Essence> {
     @Override
     public Essence parse(StringReader reader) throws CommandSyntaxException {
         Identifier id = Identifier.fromCommandInputNonEmpty(reader);
-        Essence essence = EssenceLoader.getNullable(id);
+        Essence essence = EssenceManager.getNullable(id);
         if (essence == null) {
             throw ESSENCE_NOT_FOUND.create(id);
         }
@@ -41,6 +41,6 @@ public class EssenceArgumentType implements ArgumentType<Essence> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return CommandSource.suggestIdentifiers(EssenceLoader.values().stream().map(Essence::getId), builder);
+        return CommandSource.suggestIdentifiers(EssenceManager.values().stream().map(Essence::getId), builder);
     }
 }

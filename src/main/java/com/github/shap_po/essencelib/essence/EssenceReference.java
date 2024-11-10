@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public record EssenceReference(Identifier id) {
     public Optional<Essence> getOptionalEssence() {
-        return EssenceLoader.getOptional(id);
+        return EssenceManager.getOptional(id);
     }
 }

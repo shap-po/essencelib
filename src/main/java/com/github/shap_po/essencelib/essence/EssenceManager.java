@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <br>
  * The code is heavily based on the {@link io.github.apace100.origins.origin.OriginLayerManager} class.
  */
-public class EssenceLoader extends IdentifiableMultiJsonDataLoader implements IdentifiableResourceReloadListener {
+public class EssenceManager extends IdentifiableMultiJsonDataLoader implements IdentifiableResourceReloadListener {
     public static final Identifier ID = EssenceLib.identifier("essence");
 
     private static final Object2ObjectOpenHashMap<Identifier, Essence> ESSENCE_BY_ID = new Object2ObjectOpenHashMap<>();
@@ -49,7 +49,7 @@ public class EssenceLoader extends IdentifiableMultiJsonDataLoader implements Id
         .create();
 
 
-    public EssenceLoader() {
+    public EssenceManager() {
         super(GSON, "essence", ResourceType.SERVER_DATA);
         // FIXME: Datapacks need to be reloaded in order for loot tables to get essences
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.addPhaseOrdering(ID, PowerManager.ID);
