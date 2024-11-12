@@ -2,6 +2,7 @@ package com.github.shap_po.essencelib.essence;
 
 import com.github.shap_po.essencelib.EssenceLib;
 import com.github.shap_po.essencelib.networking.s2c.SyncEssencesS2CPacket;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -177,6 +178,9 @@ public class EssenceManager extends IdentifiableMultiJsonDataLoader implements I
         return ESSENCE_BY_ID.containsValue(essence);
     }
 
+    public static ImmutableList<Essence> getAll() {
+        return ImmutableList.copyOf(ESSENCE_BY_ID.values());
+    }
 
     public static void send(ServerPlayerEntity player) {
         if (player.server.isDedicated()) {

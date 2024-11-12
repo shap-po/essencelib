@@ -18,6 +18,7 @@ import io.github.apace100.calio.util.Validatable;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
@@ -35,8 +36,13 @@ public class Essence implements Validatable {
             .add("id", SerializableDataTypes.IDENTIFIER)
             .add("name", SerializableDataTypes.STRING)
             .add("rarity", SerializableDataType.enumValue(Rarity.class), Rarity.COMMON)
+
             .add("powers", ApoliDataTypes.POWER_REFERENCE.list(), null)
             .add("attributes", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, null)
+
+            .add("dropped_by", SerializableDataTypes.ENTITY_TYPE, null)
+            .add("chance", SerializableDataTypes.DOUBLE, null)
+
             .add("replace", SerializableDataTypes.BOOLEAN, false)
             .add("can_unequip", SerializableDataTypes.BOOLEAN, false)
             .add("auto_equip", SerializableDataTypes.BOOLEAN, true)
@@ -45,8 +51,13 @@ public class Essence implements Validatable {
             data.getId("id"),
             data.getString("name"),
             data.get("rarity"),
+
             data.get("powers"),
             data.get("attributes"),
+
+            data.get("dropped_by"),
+            data.get("chance"),
+
             data.getBoolean("replace"),
             data.getBoolean("can_unequip"),
             data.getBoolean("auto_equip")
@@ -55,8 +66,10 @@ public class Essence implements Validatable {
             .set("id", essence.id)
             .set("name", essence.name)
             .set("rarity", essence.rarity)
+
             .set("powers", essence.powers)
             .set("attributes", essence.attributes)
+
             .set("replace", essence.replace)
             .set("can_unequip", essence.canUnequip)
             .set("auto_equip", essence.autoEquip)
@@ -68,6 +81,8 @@ public class Essence implements Validatable {
     private final Set<Power> powers;
     private final List<PowerReference> powerReferences;
     private final List<AttributedEntityAttributeModifier> attributes;
+    private final @Nullable EntityType<?> droppedBy;
+    private final @Nullable Double chance;
     private final boolean replace;
     private final boolean canUnequip;
     private final boolean autoEquip;
@@ -78,6 +93,8 @@ public class Essence implements Validatable {
         Rarity rarity,
         @Nullable List<PowerReference> powerReferences,
         @Nullable List<AttributedEntityAttributeModifier> attributes,
+        @Nullable EntityType<?> droppedBy,
+        @Nullable Double chance,
         boolean replace,
         boolean canUnequip,
         boolean autoEquip
@@ -85,9 +102,14 @@ public class Essence implements Validatable {
         this.id = id;
         this.name = name;
         this.rarity = rarity;
+
         this.powers = new ObjectLinkedOpenHashSet<>();
         this.powerReferences = powerReferences == null ? new LinkedList<>() : new LinkedList<>(powerReferences);
         this.attributes = attributes == null ? new LinkedList<>() : new LinkedList<>(attributes);
+
+        this.droppedBy = droppedBy;
+        this.chance = chance;
+
         this.replace = replace;
         this.canUnequip = canUnequip;
         this.autoEquip = autoEquip;
@@ -115,6 +137,18 @@ public class Essence implements Validatable {
 
     public List<AttributedEntityAttributeModifier> getAttributes() {
         return attributes;
+    }
+
+    public @Nullable EntityType<?> getDroppedBy() {
+        return droppedBy;
+    }
+
+    public @Nullable Double getChance() {
+        return chance;
+    }
+
+    public boolean hasDropRules() {
+        return droppedBy != null || chance != null;
     }
 
     public boolean shouldReplace() {
@@ -191,6 +225,8 @@ public class Essence implements Validatable {
             ", powers=" + powers +
             ", powerReferences=" + powerReferences +
             ", attributes=" + attributes +
+            ", droppedBy=" + droppedBy +
+            ", chance=" + chance +
             ", replace=" + replace +
             ", canUnequip=" + canUnequip +
             ", autoEquip=" + autoEquip +

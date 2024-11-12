@@ -1,17 +1,6 @@
 {
   "name": "My Essence",
   "rarity": "RARE",
-  "attributes": [
-    {
-      "id": "essencelib-test/scale",
-      "attribute": "minecraft:generic.scale",
-      "amount": -0.5,
-      "operation": "ADD_MULTIPLIED_TOTAL"
-    }
-  ],
-  "powers": [
-    "essencelib-test:test_power"
-  ],
-  "can_unequip": true,
-  "auto_equip": false
+  "dropped_by": "minecraft:zombie",
+  "chance": 0.5
 }
