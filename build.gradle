@@ -109,7 +109,7 @@ dependencies {
     // Requirements
     modImplementation "io.github.apace100:apoli:${project.apoli_version}"
     modImplementation "dev.emi:trinkets:${project.trinkets_version}"
-    modImplementation "com.github.shap_po.shappoli:shappoli:${project.shappoli_version}" // local maven
+    modImplementation "com.github.shap-po:shappoli:${project.shappoli_version}" // TODO: switch from jitpack to modrinth
 }
 
 processResources {
