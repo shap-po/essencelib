@@ -1,0 +1,30 @@
+{
+  "name": "Item Whisperer",
+  "description": "Automatically attracts nearby items within a 10-block radius to the player.",
+  "type": "apoli:action_over_time",
+  "interval": 5,
+  "entity_action": {
+    "type": "apoli:area_of_effect",
+    "radius": 10,
+    "bientity_condition": {
+      "type": "apoli:target_condition",
+      "condition": {
+        "type": "apoli:entity_type",
+        "entity_type": "item"
+      }
+    },
+    "bientity_action": {
+      "type": "apoli:and",
+      "actions": [
+        {
+          "type": "apoli:add_velocity",
+          "x": -0.1,
+          "y": -0.1,
+          "z": -0.1,
+          "client": true,
+          "server": true
+        }
+      ]
+    }
+  }
+}
