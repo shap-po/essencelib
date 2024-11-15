@@ -24,6 +24,9 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
     public static final String MOD_ID = "essencelib";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+    public static final String KEYBINDINGS_CATEGORY = "key.category." + EssenceLib.MOD_ID;
+    public static final int MAX_SLOT_COUNT = 4;
+
     @Override
     public void onInitialize() {// This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
