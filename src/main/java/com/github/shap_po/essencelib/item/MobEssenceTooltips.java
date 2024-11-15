@@ -21,10 +21,11 @@ public class MobEssenceTooltips {
     private static final int MAX_LINE_LENGTH = 30;
 
     public static void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip) {
+        tooltip.clear(); // Clear the current tooltip
+
         ItemPowersComponent itemPowers = stack.get(ApoliDataComponentTypes.POWERS);
         if (itemPowers != null) {
             addPowerDescriptionsToTooltip(itemPowers, tooltip);
-
         }
     }
 
@@ -50,6 +51,9 @@ public class MobEssenceTooltips {
 
         if (powerIds.size() > 1) {
             addPowerDescription(tooltip, "Passive: ", Formatting.GREEN, powerIds.get(1));
+        }
+        if (powerIds.size() > 2) {
+            addPowerDescription(tooltip, "LifeStyle: ", Formatting.YELLOW, powerIds.get(2));
         }
     }
 

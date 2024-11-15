@@ -29,6 +29,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
         UniqueKillsCounterComponent.getOptional(player).ifPresent(component -> {
             component.addUniqueKill(((LivingEntity) (Object) this));
+
         });
     }
 
@@ -39,7 +40,7 @@ public abstract class LivingEntityMixin extends Entity {
             .filter(Essence::hasDropRules)
             .filter(e -> this.getType().equals(e.getDroppedBy()))
             .forEach(e -> {
-                if (e.getChance() == null || e.getChance() >= this.getRandom().nextDouble()) {
+                if (e.getChance() == null || e.getChance() <= this.getRandom().nextDouble()) {
                     return;
                 }
                 ItemStack stack = e.toItemStack();

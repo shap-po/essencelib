@@ -1,0 +1,25 @@
+{
+    "name": "Fragile Wings",
+    "description": " Increases flight speed by 50%, but fall damage is increased by 25%.",
+    "type": "origins:multiple",
+
+    "0": {
+        "condition": {
+            "type": "origins:fall_flying"
+        },
+        "type": "origins:modify_air_speed",
+        "modifier": {
+            "operation": "multiply_total_additive",
+            "value": 0.5,
+            "amount": 0.5
+        }
+    },
+    "1": {
+        "type": "origins:modify_damage_taken",
+        "damage_condition": {
+            "type": "origins:from_falling"
+        },
+            "operation": "multiply_total_multiplicative",
+            "value": 1.25
+        }
+    }

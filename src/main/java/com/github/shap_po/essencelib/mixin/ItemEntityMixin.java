@@ -80,6 +80,6 @@ public abstract class ItemEntityMixin {
             cir.setReturnValue(false);
         }
     }
-}
 
+}
 

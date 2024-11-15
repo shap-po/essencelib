@@ -1,0 +1,55 @@
+{
+    "name": "Allay Essence",
+    "rarity": "Epic",
+    "attributes": [
+        {
+            "id": "1",
+            "attribute": "minecraft:generic.movement_speed",
+            "amount": 0.15,
+            "operation": "ADD_MULTIPLIED_TOTAL"
+        },
+        {
+            "id": "2",
+            "attribute": "puffish_attributes:player.fortune",
+            "amount": 2,
+            "operation": "ADD_VALUE"
+        },
+        {
+            "id": "3",
+            "attribute": "additionalentityattributes:player.collection_range",
+            "amount": 5,
+            "operation": "ADD_VALUE"
+        },
+        {
+            "id": "4",
+            "attribute": "minecraft:player.block_interaction_range",
+            "amount": 2,
+            "operation": "ADD_VALUE"
+        },
+        {
+            "id": "5",
+            "attribute": "puffish_attributes:player.stamina",
+            "amount": 0.1,
+            "operation": "ADD_MULTIPLIED_TOTAL"
+        },
+        {
+            "id": "-1",
+            "attribute": "minecraft:generic.armor",
+            "amount": -2,
+            "operation": "ADD_VALUE"
+        },
+        {
+            "id": "-2",
+            "attribute": "minecraft:generic.attack_damage",
+            "amount": -0.1,
+            "operation": "ADD_MULTIPLIED_TOTAL"
+        }
+    ],
+    "powers": [
+        "esspack:activepull",
+        "esspack:item_whisperer",
+        "esspack:fragile_wings"
+    ],
+    "dropped_by": "minecraft:allay",
+    "chance": 0
+}
