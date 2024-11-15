@@ -38,7 +38,7 @@ public class MobEssenceTrinketItem extends TrinketItem {
 
     @Override
     public boolean canUnequip(ItemStack stack, SlotReference slot, LivingEntity entity) {
-        if (stack.getComponents().getOrDefault(ModDataComponentTypes.CAN_UNEQUIP, false)) {
+        if (stack.getComponents().getOrDefault(ModDataComponentTypes.CAN_UNEQUIP, false) || (entity instanceof PlayerEntity player && player.isCreative())) {
             return true;
         }
 
@@ -54,14 +54,14 @@ public class MobEssenceTrinketItem extends TrinketItem {
         return false;
     }
 
-/*    @Override
+    @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, world, entity, slot, selected);
 
-        if (entity instanceof LivingEntity && stack.getComponents().getOrDefault(ModDataComponentTypes.AUTO_EQUIP, true)) {
+        if (entity instanceof LivingEntity && stack.getComponents().getOrDefault(ModDataComponentTypes.AUTO_EQUIP, true) && !(entity instanceof PlayerEntity player && player.isCreative())) {
             MobEssenceTrinketItem.equipItem((LivingEntity) entity, stack);
         }
-    }*/
+    }
 }
 
 
