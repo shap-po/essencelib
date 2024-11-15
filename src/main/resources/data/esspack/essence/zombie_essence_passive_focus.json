@@ -32,11 +32,11 @@
       "amount": -0.10,
       "operation": "ADD_MULTIPLIED_TOTAL"
     }
-    
+
   ],
   "powers": [
-    "esspack:undead_fortification",
-    "esspack:zombie_camouflage",
-    "esspack:solar_damage"
+    "*:zombie_essence_passive_focus/undead_fortification",
+    "*:zombie_essence_passive_focus/zombie_camouflage",
+    "*:zombie_essence_passive_focus/solar_damage"
   ]
 }
