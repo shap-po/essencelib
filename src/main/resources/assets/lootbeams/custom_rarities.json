@@ -1,0 +1,111 @@
+{
+    "custom_rarities": [
+        {
+            "id": "snowy",
+            "name": "Snowy",
+            "color": "#ddeeff",
+            "config": {
+                "trails": false,
+                "particle_use_constant_vertical_speed": true,
+                "render_name_color": false,
+                "render_rarity_color": true,
+                "particle_random_y": false,
+                "particle_y_offset": 2,
+                "particle_lifetime": 40,
+                "particle_size": 0.5,
+                "particle_speed": 0.00001,
+                "particle_speed_x": 0.1,
+                "particle_speed_y": -0.004,
+                "particle_speed_z": 0.1,
+                "particle_count": 10
+            },
+            "selectors": [
+                "%Snow", "%snow"
+            ]
+        },
+        {
+            "id": "rainbow_0",
+            "name": "§k0000 0000",
+            "color": "#FF8000",
+            "animated_color": "3_#FF0000_#FF8000_#FFFF00_#00FF00_#00FFFF_#0000FF_#8000FF",
+            "config": {
+                "trails": true,
+                "particle_texture": "lootbeams:star_2",
+                "particle_use_constant_vertical_speed": true,
+                "render_name_color": false,
+                "render_rarity_color": true,
+                "particle_lifetime": 30,
+                "particle_size": 1,
+                "particle_speed": 0.00001,
+                "particle_speed_x": 0.1,
+                "particle_speed_y": 0.004,
+                "particle_speed_z": 0.1,
+                "particle_count": 10,
+                "trail_chance": 0.4,
+                "trail_particles_invisible": false
+            },
+            "selectors": [
+                "minecraft:nether_star"
+            ]
+        },
+        {
+            "id": "fire_infused",
+            "name": "Fire infused",
+            "color": "#ff4400",
+            "animated_color": "2_#ff4400_#ff0000_#ffff00",
+            "config": {
+                "glow_effect_radius": 1,
+                "trails": false,
+                "render_name_color": false,
+                "render_rarity_color": true,
+                "particle_random_y": false,
+                "spin_around_beam": false,
+                "particle_texture": "lootbeams:animated_fire",
+                "particle_size": 2,
+                "particle_radius": 0.4,
+                "particle_speed": 0.00001,
+                "particle_speed_y": 0,
+                "particle_count": 20
+            },
+            "selectors": [
+                "%ether+~%erite+~%Wart+~%Sprouts+~%Star+~%Quartz"
+            ]
+        },
+        {
+            "id": "love",
+            "name": "Love",
+            "color": "#ff6666",
+            "config": {
+                "beam_height": 3,
+                "beam_alpha": 0.6,
+                "trails": false,
+                "render_name_color": false,
+                "render_rarity_color": true,
+                "particle_texture": "lootbeams:heart",
+                "particle_size": 1,
+                "particle_speed_y": 0.0003,
+                "particle_count": 20
+            },
+            "selectors": [
+                "minecraft:pink_bed"
+            ]
+        },
+        {
+            "id": "essences",
+            "name": "essences",
+            "color": "#8A2BE2.",
+            "config": {
+                "beam_height": 10,
+                "beam_alpha": 0.6,
+                "render_item_rarity": true,
+                "glow_effect_texture": "lootbeams:magic_cir",
+                "glow_effect_radius": 2,
+                "glow_effect_alpha": 0.6,
+                "animate_glow": false
+            },
+            "selectors": [
+                "essencelib:mob_essence"
+            ]
+        }
+    ]
+}
