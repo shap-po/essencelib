@@ -20,8 +20,7 @@ public class MobEssenceTooltips {
 
     private static final int MAX_LINE_LENGTH = 30;
 
-    public static void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip) {
-        tooltip.clear(); // Clear the current tooltip
+    public static void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip) {// Clear the current tooltip
 
         ItemPowersComponent itemPowers = stack.get(ApoliDataComponentTypes.POWERS);
         if (itemPowers != null) {

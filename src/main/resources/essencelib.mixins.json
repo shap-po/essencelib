@@ -6,7 +6,8 @@
     "ArgumentTypesMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",
-    "SlotLinkedKeyManagerMixin"
+    "SlotLinkedKeyManagerMixin",
+    "TrinketItemPowersComponentMixin"
   ],
   "injectors": {
     "defaultRequire": 1
