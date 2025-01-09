@@ -53,7 +53,7 @@ public class EssenceManager extends IdentifiableMultiJsonDataLoader implements I
     public EssenceManager() {
         super(GSON, "essence", ResourceType.SERVER_DATA);
 
-        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.addPhaseOrdering(ID, PowerManager.ID);
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.addPhaseOrdering(PowerManager.ID, ID);
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(ID, (player, joined) -> send(player));
     }
 

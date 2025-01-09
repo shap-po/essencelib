@@ -177,7 +177,7 @@ public class Essence implements Validatable {
         if (!powerReferences.isEmpty()) {
             TrinketItemPowersComponent.Builder itemPowers = TrinketItemPowersComponent.builder();
             for (PowerReference powerReference : powerReferences) {
-                itemPowers.add(powerReference.getId(), false, false, false);
+                itemPowers.add(powerReference.id(), false, false, false);
             }
             builder.add(ShappoliTrinketsDataComponentTypes.POWERS, itemPowers.build());
         }
@@ -244,9 +244,9 @@ public class Essence implements Validatable {
         this.powers.clear();
         for (PowerReference powerReference : powerReferences) {
             try {
-                powers.add(powerReference.getStrictReference());
+                powers.add(powerReference.getPower());
             } catch (Exception e) {
-                EssenceLib.LOGGER.error("Essence \"{}\" contained unregistered power \"{}\"!", id, powerReference.getId());
+                EssenceLib.LOGGER.error("Essence \"{}\" contained unregistered power \"{}\"!", id, powerReference.id());
             }
         }
     }
