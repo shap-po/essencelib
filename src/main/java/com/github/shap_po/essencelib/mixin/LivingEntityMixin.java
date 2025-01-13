@@ -28,8 +28,7 @@ public abstract class LivingEntityMixin extends Entity {
             return;
         }
         UniqueKillsCounterComponent.getOptional(player).ifPresent(component -> {
-            component.addUniqueKill(((LivingEntity) (Object) this));
-
+            component.addUniqueKill(this);
         });
     }
 

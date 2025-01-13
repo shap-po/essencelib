@@ -27,15 +27,15 @@ public interface UniqueKillsCounterComponent extends AutoSyncedComponent {
 
     void addUniqueKill(Identifier id);
 
-    void addUniqueKill(LivingEntity entity);
+    void addUniqueKill(Entity entity);
 
     void removeUniqueKill(Identifier id);
 
-    void removeUniqueKill(LivingEntity entity);
+    void removeUniqueKill(Entity entity);
 
     boolean hasUniqueKill(Identifier id);
 
-    boolean hasUniqueKill(LivingEntity entity);
+    boolean hasUniqueKill(Entity entity);
 
     void clearUniqueKills();
 

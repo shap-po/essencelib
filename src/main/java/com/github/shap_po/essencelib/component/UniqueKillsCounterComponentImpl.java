@@ -1,7 +1,7 @@
 package com.github.shap_po.essencelib.component;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -11,7 +11,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -37,7 +36,7 @@ public class UniqueKillsCounterComponentImpl implements UniqueKillsCounterCompon
 
     @Override
     public void addUniqueKill(Identifier id) {
-        if (provider.isCreative() || uniqueKills.contains(id)) {
+        if (uniqueKills.contains(id)) {
             return;
         }
         uniqueKills.add(id);
@@ -45,7 +44,7 @@ public class UniqueKillsCounterComponentImpl implements UniqueKillsCounterCompon
     }
 
     @Override
-    public void addUniqueKill(LivingEntity entity) {
+    public void addUniqueKill(Entity entity) {
         addUniqueKill(getEntityId(entity));
     }
 
@@ -59,7 +58,7 @@ public class UniqueKillsCounterComponentImpl implements UniqueKillsCounterCompon
     }
 
     @Override
-    public void removeUniqueKill(LivingEntity entity) {
+    public void removeUniqueKill(Entity entity) {
         removeUniqueKill(getEntityId(entity));
     }
 
@@ -69,7 +68,7 @@ public class UniqueKillsCounterComponentImpl implements UniqueKillsCounterCompon
     }
 
     @Override
-    public boolean hasUniqueKill(LivingEntity entity) {
+    public boolean hasUniqueKill(Entity entity) {
         return hasUniqueKill(getEntityId(entity));
     }
 
@@ -82,7 +81,7 @@ public class UniqueKillsCounterComponentImpl implements UniqueKillsCounterCompon
         sync();
     }
 
-    private Identifier getEntityId(LivingEntity entity) {
+    private Identifier getEntityId(Entity entity) {
         return Registries.ENTITY_TYPE.getId(entity.getType());
     }
 
@@ -94,10 +93,10 @@ public class UniqueKillsCounterComponentImpl implements UniqueKillsCounterCompon
     @Override
     public void readFromNbt(@NotNull NbtCompound compoundTag, RegistryWrapper.WrapperLookup lookup) {
         uniqueKills.clear();
-        NbtList powersTag = compoundTag.getList("unique_kills", NbtElement.STRING_TYPE);
+        NbtList killsTag = compoundTag.getList("unique_kills", NbtElement.STRING_TYPE);
 
-        for (int i = 0; i < powersTag.size(); i++) {
-            String id = powersTag.getString(i);
+        for (int i = 0; i < killsTag.size(); i++) {
+            String id = killsTag.getString(i);
             if (id == null) {
                 continue;
             }
