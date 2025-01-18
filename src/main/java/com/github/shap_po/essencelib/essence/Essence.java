@@ -179,7 +179,7 @@ public class Essence implements Validatable {
             for (PowerReference powerReference : powerReferences) {
                 itemPowers.add(powerReference.id(), false, false, false);
             }
-            builder.add(ShappoliTrinketsDataComponentTypes.POWERS, itemPowers.build());
+            builder.add(ShappoliTrinketsDataComponentTypes.TRINKET_POWERS, itemPowers.build());
         }
 
         if (!attributes.isEmpty()) {

@@ -10,7 +10,6 @@
     "type": "apoli:modify_air_speed",
     "modifier": {
       "operation": "multiply_total_additive",
-      "value": 0.5,
       "amount": 0.5
     }
   },
@@ -19,7 +18,9 @@
     "damage_condition": {
       "type": "apoli:from_falling"
     },
-    "operation": "multiply_total_multiplicative",
-    "value": 1.25
+    "modifier": {
+      "operation": "multiply_total_multiplicative",
+      "amount": 1.25
+    }
   }
 }

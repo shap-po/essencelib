@@ -82,7 +82,7 @@
       "type": "apoli:target_condition",
       "condition": {
         "type": "apoli:in_tag",
-        "tag": "*:zombie"
+        "tag": "minecraft:zombies"
       }
     },
     "cooldown": 1,
@@ -105,7 +105,7 @@
       "type": "apoli:target_condition",
       "condition": {
         "type": "apoli:in_tag",
-        "tag": "*:zombie"
+        "tag": "minecraft:zombies"
       }
     },
     "cooldown": 1,

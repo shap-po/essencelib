@@ -3,10 +3,6 @@
   "description": "Pull all items to you from 50 blocks radius",
   "type": "apoli:multiple",
   "pull": {
-    "condition": {
-      "type": "apoli:power_active",
-      "power": "*:pull"
-    },
     "type": "apoli:action_over_time",
     "interval": 1,
     "entity_action": {
@@ -39,19 +35,23 @@
       "type": "apoli:revoke_power",
       "power": "*:*_pull",
       "source": "*:*"
+    }
+  },
+  "keypresspull": {
+    "type": "shappoli:action_on_trinket_key_press",
+    "slot_linked_key": "essencelib:essencelib",
+    "item_condition": {
+      "type": "shappoli:has_trinket_power",
+      "power": "*:*"
     },
-    "keypresspull": {
-      "type": "shappoli:slot_linked_active",
-      "slot_linked_key": "essencelib:essencelib",
-      "entity_action": {
-        "type": "apoli:grant_power",
-        "power": "*:*_pull_active",
-        "source": "*:*"
-      },
-      "cooldown": 6000,
-      "hud_render": {
-        "should_render": true
-      }
+    "entity_action": {
+      "type": "apoli:grant_power",
+      "power": "*:*_pull_active",
+      "source": "*:*"
+    },
+    "cooldown": 6000,
+    "hud_render": {
+      "should_render": true
     }
   }
 }
