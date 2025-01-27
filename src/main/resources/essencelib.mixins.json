@@ -6,7 +6,7 @@
     "ArgumentTypesMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",
-    "SlotLinkedKeyManagerMixin",
+    "TrinketKeyBindingManagerMixin",
     "TrinketItemPowersComponentMixin"
   ],
   "injectors": {

@@ -39,7 +39,7 @@
   },
   "keypresspull": {
     "type": "shappoli:action_on_trinket_key_press",
-    "slot_linked_key": "essencelib:essencelib",
+    "key": "essencelib:essencelib",
     "item_condition": {
       "type": "shappoli:has_trinket_power",
       "power": "*:*"

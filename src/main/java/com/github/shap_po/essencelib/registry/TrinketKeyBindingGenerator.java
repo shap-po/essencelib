@@ -5,12 +5,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-public class SlotLinkedKeysGenerator {
-    public static JsonObject createSlotLinkedKeys(int count) {
+public class TrinketKeyBindingGenerator {
+    public static JsonObject createTrinketKeyBindings(int count) {
         JsonArray values = new JsonArray();
 
         for (int i = 0; i < count; i++) {
-            values.add(createSlotLinkedKey(i, "soul", "essence"));
+            values.add(createTrinketKeyBinding(i, "soul", "essence"));
         }
 
         JsonObject object = new JsonObject();
@@ -19,7 +19,7 @@ public class SlotLinkedKeysGenerator {
         return object;
     }
 
-    private static JsonObject createSlotLinkedKey(int index, String group, String slotName) {
+    private static JsonObject createTrinketKeyBinding(int index, String group, String slotName) {
         JsonObject slot = new JsonObject();
         slot.add("group", new JsonPrimitive(group));
         slot.add("slot", new JsonPrimitive(slotName));
@@ -28,11 +28,11 @@ public class SlotLinkedKeysGenerator {
         JsonObject key = new JsonObject();
         key.add("key", new JsonPrimitive(slotTranslationKey(index)));
 
-        JsonObject slotLinkedKey = new JsonObject();
-        slotLinkedKey.add("slot", slot);
-        slotLinkedKey.add("key", key);
+        JsonObject trinketKeyBinding = new JsonObject();
+        trinketKeyBinding.add("slot", slot);
+        trinketKeyBinding.add("key", key);
 
-        return slotLinkedKey;
+        return trinketKeyBinding;
     }
 
     public static String slotTranslationKey(int index) {

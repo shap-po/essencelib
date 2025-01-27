@@ -1,8 +1,8 @@
 package com.github.shap_po.essencelib.mixin;
 
 import com.github.shap_po.essencelib.EssenceLib;
-import com.github.shap_po.essencelib.registry.SlotLinkedKeysGenerator;
-import com.github.shap_po.shappoli.integration.trinkets.slk.SlotLinkedKeyManager;
+import com.github.shap_po.essencelib.registry.TrinketKeyBindingGenerator;
+import com.github.shap_po.shappoli.integration.trinkets.keybinding.TrinketKeyBindingManager;
 import io.github.apace100.calio.data.MultiJsonDataContainer;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Mixin(SlotLinkedKeyManager.class)
-public class SlotLinkedKeyManagerMixin {
+@Mixin(TrinketKeyBindingManager.class)
+public class TrinketKeyBindingManagerMixin {
     @Inject(method = "apply(Lio/github/apace100/calio/data/MultiJsonDataContainer;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"), remap = false)
     private void apply(MultiJsonDataContainer prepared, ResourceManager manager, Profiler profiler, CallbackInfo ci) {
         Identifier id = EssenceLib.identifier(EssenceLib.MOD_ID);
 
         Set<MultiJsonDataContainer.Entry> entries = prepared.getOrDefault(id, new LinkedHashSet<>());
-        entries.add(new MultiJsonDataContainer.Entry(EssenceLib.MOD_ID, SlotLinkedKeysGenerator.createSlotLinkedKeys(EssenceLib.MAX_SLOT_COUNT)));
+        entries.add(new MultiJsonDataContainer.Entry(EssenceLib.MOD_ID, TrinketKeyBindingGenerator.createTrinketKeyBindings(EssenceLib.MAX_SLOT_COUNT)));
 
         prepared.put(id, entries);
     }

@@ -1,7 +1,7 @@
 package com.github.shap_po.essencelib;
 
 import com.github.shap_po.essencelib.networking.ModPacketsS2C;
-import com.github.shap_po.essencelib.registry.SlotLinkedKeysGenerator;
+import com.github.shap_po.essencelib.registry.TrinketKeyBindingGenerator;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -22,7 +22,7 @@ public class EssenceLibClient implements ClientModInitializer {
         ModPacketsS2C.register();
 
         for (int i = 0; i < EssenceLib.MAX_SLOT_COUNT; i++) {
-            KeyBinding keyBinding = new KeyBinding(SlotLinkedKeysGenerator.slotTranslationKey(i), GLFW.GLFW_KEY_UNKNOWN, EssenceLib.KEYBINDINGS_CATEGORY);
+            KeyBinding keyBinding = new KeyBinding(TrinketKeyBindingGenerator.slotTranslationKey(i), GLFW.GLFW_KEY_UNKNOWN, EssenceLib.KEYBINDINGS_CATEGORY);
             KEY_BINDINGS.add(keyBinding);
             KeyBindingHelper.registerKeyBinding(keyBinding);
         }
