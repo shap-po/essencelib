@@ -1,6 +1,6 @@
 package com.github.shap_po.essencelib.mixin;
 
-import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
+import com.github.shap_po.essencelib.component.LevelComponent;
 import com.github.shap_po.essencelib.essence.Essence;
 import com.github.shap_po.essencelib.essence.EssenceManager;
 import net.minecraft.entity.Entity;
@@ -27,7 +27,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (!(source.getAttacker() instanceof PlayerEntity player)) {
             return;
         }
-        UniqueKillsCounterComponent.getOptional(player).ifPresent(component -> {
+        LevelComponent.getOptional(player).ifPresent(component -> {
             component.addUniqueKill(this);
         });
     }

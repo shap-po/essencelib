@@ -36,7 +36,7 @@
   ],
   "custom": {
     "cardinal-components": [
-      "essencelib:unique_kills"
+      "essencelib:level"
     ]
   },
   "depends": {

@@ -1,9 +1,10 @@
 package com.github.shap_po.essencelib;
 
 import com.github.shap_po.essencelib.command.EssenceLibCommand;
-import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
-import com.github.shap_po.essencelib.component.UniqueKillsCounterComponentImpl;
+import com.github.shap_po.essencelib.component.LevelComponent;
+import com.github.shap_po.essencelib.component.LevelComponentImpl;
 import com.github.shap_po.essencelib.essence.EssenceManager;
+import com.github.shap_po.essencelib.level.LevelManager;
 import com.github.shap_po.essencelib.loot.function.ModLootFunctionTypes;
 import com.github.shap_po.essencelib.networking.ModPackets;
 import com.github.shap_po.essencelib.networking.ModPacketsC2S;
@@ -41,6 +42,7 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
         ModLootFunctionTypes.register();
 
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new EssenceManager());
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new LevelManager());
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> EssenceLibCommand.register(dispatcher));
     }
@@ -51,6 +53,6 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(UniqueKillsCounterComponent.KEY, UniqueKillsCounterComponentImpl::new, RespawnCopyStrategy.ALWAYS_COPY);
+        registry.registerForPlayers(LevelComponent.KEY, LevelComponentImpl::new, RespawnCopyStrategy.ALWAYS_COPY);
     }
 }

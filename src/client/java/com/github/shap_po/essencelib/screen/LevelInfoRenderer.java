@@ -1,7 +1,7 @@
 package com.github.shap_po.essencelib.screen;
 
 import com.github.shap_po.essencelib.EssenceLib;
-import com.github.shap_po.essencelib.util.LevelingUtil;
+import com.github.shap_po.essencelib.level.LevelManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -22,11 +22,7 @@ public class LevelInfoRenderer {
             return;
         }
 
-        int uniqueKills = LevelingUtil.getCurrentEntityCount(player);
-        int totalEntities = LevelingUtil.getTotalEntityCount();
-
-        int level = LevelingUtil.getLevel(uniqueKills, totalEntities);
-        int requiredKills = LevelingUtil.getKillsToNextLevel(level, totalEntities);
+        int level = LevelManager.getLevel(player);
 
         int badgeX = x + 77;
         int badgeY = y + 26;
@@ -54,6 +50,14 @@ public class LevelInfoRenderer {
         // Add hover-over functionality
         if (mouseX >= badgeX && mouseX <= badgeX + 16 &&
             mouseY >= badgeY && mouseY <= badgeY + 16) {
+            if (level >= LevelManager.MAX_LEVEL) {
+                context.drawTooltip(client.textRenderer, Text.literal("You have reached the maximum level!"), mouseX, mouseY);
+                return;
+            }
+
+            int requiredKills = LevelManager.getRequiredKills(level + 1);
+            int uniqueKills = LevelManager.getCurrentUniqueKillsCount(player);
+
             context.drawTooltip(client.textRenderer, Text.literal(uniqueKills + " / " + requiredKills + " Unique kills for next level"),
                 mouseX, mouseY);
         }

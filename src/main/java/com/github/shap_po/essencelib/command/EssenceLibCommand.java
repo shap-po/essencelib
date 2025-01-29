@@ -1,10 +1,10 @@
 package com.github.shap_po.essencelib.command;
 
 import com.github.shap_po.essencelib.command.argument.EssenceArgumentType;
-import com.github.shap_po.essencelib.component.UniqueKillsCounterComponent;
+import com.github.shap_po.essencelib.component.LevelComponent;
 import com.github.shap_po.essencelib.essence.Essence;
 import com.github.shap_po.essencelib.essence.EssenceManager;
-import com.github.shap_po.essencelib.util.LevelingUtil;
+import com.github.shap_po.essencelib.level.LevelManager;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -127,7 +127,7 @@ public class EssenceLibCommand {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity serverPlayerEntity = EntityArgumentType.getPlayer(context, "player");
 
-        UniqueKillsCounterComponent component = UniqueKillsCounterComponent.getNullable(serverPlayerEntity);
+        LevelComponent component = LevelComponent.getNullable(serverPlayerEntity);
         if (component == null) {
             source.sendError(Text.translatable("commands.essencelib.level.fail", serverPlayerEntity.getDisplayName()));
             return -1;
@@ -150,7 +150,7 @@ public class EssenceLibCommand {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity serverPlayerEntity = EntityArgumentType.getPlayer(context, "player");
 
-        UniqueKillsCounterComponent component = UniqueKillsCounterComponent.getNullable(serverPlayerEntity);
+        LevelComponent component = LevelComponent.getNullable(serverPlayerEntity);
         if (component == null) {
             source.sendError(Text.translatable("commands.essencelib.level.fail", serverPlayerEntity.getDisplayName()));
             return -1;
@@ -166,10 +166,10 @@ public class EssenceLibCommand {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity serverPlayerEntity = EntityArgumentType.getPlayer(context, "player");
 
-        int currentKills = LevelingUtil.getCurrentEntityCount(serverPlayerEntity);
-        int nextLevelKills = LevelingUtil.getTotalEntityCount();
+        int currentKills = LevelManager.getCurrentUniqueKillsCount(serverPlayerEntity);
+        int totalMobs = LevelManager.getTotalEntityCount();
 
-        source.sendFeedback(() -> Text.translatable("commands.essencelib.level.progress.pass", serverPlayerEntity.getDisplayName(), currentKills, nextLevelKills), true);
+        source.sendFeedback(() -> Text.translatable("commands.essencelib.level.progress.pass", serverPlayerEntity.getDisplayName(), currentKills, totalMobs), true);
 
         return Command.SINGLE_SUCCESS;
     }
