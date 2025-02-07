@@ -1,28 +1,26 @@
 package com.github.shap_po.essencelib.mixin;
 
 import com.github.shap_po.shappoli.integration.trinkets.component.item.TrinketItemPowersComponent;
+import dev.emi.trinkets.api.TrinketsAttributeModifiersComponent;
+import io.github.apace100.apoli.power.Power;
+import io.github.apace100.apoli.power.PowerManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.emi.trinkets.api.TrinketsAttributeModifiersComponent;
-
-import io.github.apace100.apoli.power.Power;
-import io.github.apace100.apoli.power.PowerManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvType;
-
 
 
 @Environment(EnvType.CLIENT)
@@ -48,7 +46,7 @@ public abstract class TrinketItemPowersComponentMixin {
         addPowerWithCategory(orderedEntries, 1, "Passive", Formatting.GREEN, stack, tooltip, type);
         addPowerWithCategory(orderedEntries, 2, "Lifestyle", Formatting.YELLOW, stack, tooltip, type);
         tooltip.add(Text.literal(""));
-        
+
 
         // Add stats section
         tooltip.add(Text.literal(""));
@@ -71,8 +69,8 @@ public abstract class TrinketItemPowersComponentMixin {
         ci.cancel();
     }
 
-    private void addPowerWithCategory(List<TrinketItemPowersComponent.Entry> entries, int index, String category, 
-                                     Formatting color, ItemStack stack, List<Text> tooltip, TooltipType type) {
+    private void addPowerWithCategory(List<TrinketItemPowersComponent.Entry> entries, int index, String category,
+                                      Formatting color, ItemStack stack, List<Text> tooltip, TooltipType type) {
         if (index < entries.size()) {
             TrinketItemPowersComponent.Entry entry = entries.get(index);
             Power power = PowerManager.getNullable(entry.powerId());
@@ -96,20 +94,20 @@ public abstract class TrinketItemPowersComponentMixin {
             attributes.modifiers().forEach(entry -> {
                 var attribute = entry.attribute();
                 var modifier = entry.modifier();
-                
+
                 // Get attribute-specific scaling
                 double scale = getScaleFactor(Registries.ATTRIBUTE.getId(attribute.value()));
                 double scaledValue = modifier.value() * scale;
                 String displayValue = String.format(scaledValue % 1 == 0 ? "%.0f" : "%.1f", scaledValue);
-                
+
                 if (scaledValue == 0) return;
 
                 Formatting color = scaledValue > 0 ? Formatting.DARK_GREEN : Formatting.RED;
-                    tooltip.add(
-                        Text.translatable(getSimpleAttributeKey(Registries.ATTRIBUTE.getId(attribute.value())))
-                            .append(Text.literal(":").formatted(Formatting.DARK_GRAY))
-                            .append(Text.literal(" " + (scaledValue > 0 ? "+" : "") + displayValue).formatted(color))
-                    );
+                tooltip.add(
+                    Text.translatable(getSimpleAttributeKey(Registries.ATTRIBUTE.getId(attribute.value())))
+                        .append(Text.literal(":").formatted(Formatting.DARK_GRAY))
+                        .append(Text.literal(" " + (scaledValue > 0 ? "+" : "") + displayValue).formatted(color))
+                );
             });
             tooltip.add(Text.literal(""));
         }
@@ -132,7 +130,7 @@ public abstract class TrinketItemPowersComponentMixin {
             case "generic.movement_speed" -> "essencelib.speed";
             case "generic.luck" -> "essencelib.luck";
             case "generic.max_health" -> "essencelib.max_health";
-            
+
             // Pufferfish's Attributes
             case "crit_chance" -> "essencelib.critical_chance";
             case "reach_distance" -> "essencelib.reach";
@@ -163,7 +161,7 @@ public abstract class TrinketItemPowersComponentMixin {
             case "fall_reduction" -> "essencelib.fall_reduction";
             case "bow_projectile_speed" -> "essencelib.bow_speed";
             case "crossbow_projectile_speed" -> "essencelib.crossbow_speed";
-            
+
             // Additional Entity Attributes
             case "water_speed" -> "essencelib.water_speed";
             case "lava_speed" -> "essencelib.lava_speed";
@@ -187,7 +185,7 @@ public abstract class TrinketItemPowersComponentMixin {
             case "model_scale" -> "essencelib.model_scale";
             case "model_width" -> "essencelib.model_width";
             case "model_height" -> "essencelib.model_height";
-            
+
             // Default case
             default -> attributeId.toTranslationKey("attribute");
         };
@@ -216,7 +214,7 @@ public abstract class TrinketItemPowersComponentMixin {
             Identifier.of("minecraft:generic.sprinting_speed"),
             Identifier.of("minecraft:generic.tempt_range"),
             Identifier.of("minecraft:generic.step_height"),
-            
+
             Identifier.of("pufferfish_attributes:crit_chance"),
             Identifier.of("apoli:swimming_speed"),
             // Pufferfish percentage-based attributes
@@ -236,7 +234,7 @@ public abstract class TrinketItemPowersComponentMixin {
             Identifier.of("pufferfish_attributes:pickaxe_speed"),
             Identifier.of("pufferfish_attributes:axe_speed"),
             Identifier.of("pufferfish_attributes:shovel_speed"),
-            
+
             // Additional Entity Attributes scaled attributes
             Identifier.of("additionalentityattributes:water_speed"),
             Identifier.of("additionalentityattributes:lava_speed"),
@@ -253,7 +251,7 @@ public abstract class TrinketItemPowersComponentMixin {
             Identifier.of("additionalentityattributes:model_width"),
             Identifier.of("additionalentityattributes:model_height")
         );
-        
+
         return scaledAttributes.contains(attributeId) ? 10 : 1;
     }
 }

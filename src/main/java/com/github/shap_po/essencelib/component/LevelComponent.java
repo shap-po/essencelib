@@ -22,28 +22,6 @@ public interface LevelComponent extends AutoSyncedComponent {
 
     Identifier MODIFIER_ID = EssenceLib.identifier("level");
 
-    ImmutableSet<Identifier> getUniqueKills();
-
-    void addUniqueKill(Identifier id);
-
-    void addUniqueKill(Entity entity);
-
-    void removeUniqueKill(Identifier id);
-
-    void removeUniqueKill(Entity entity);
-
-    boolean hasUniqueKill(Identifier id);
-
-    boolean hasUniqueKill(Entity entity);
-
-    void clearUniqueKills();
-
-    int getLevel();
-
-    void updateLevel(boolean shouldSync);
-
-    void sync();
-
     /**
      * Queries the {@link LevelComponent} from an {@link Entity}. This is safer and preferred than directly using
      * {@link #KEY} as it handles certain scenarios where unexpected errors may occur.
@@ -74,4 +52,26 @@ public interface LevelComponent extends AutoSyncedComponent {
     static LevelComponent getNullable(@Nullable PlayerEntity entity) {
         return getOptional(entity).orElse(null);
     }
+
+    ImmutableSet<Identifier> getUniqueKills();
+
+    void addUniqueKill(Identifier id);
+
+    void addUniqueKill(Entity entity);
+
+    void removeUniqueKill(Identifier id);
+
+    void removeUniqueKill(Entity entity);
+
+    boolean hasUniqueKill(Identifier id);
+
+    boolean hasUniqueKill(Entity entity);
+
+    void clearUniqueKills();
+
+    int getLevel();
+
+    void updateLevel(boolean shouldSync);
+
+    void sync();
 }

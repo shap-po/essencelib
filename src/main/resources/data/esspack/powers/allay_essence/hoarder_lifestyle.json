@@ -2,7 +2,6 @@
   "type": "apoli:multiple",
   "name": "Collector's Rush",
   "description": "Gain boosts from discovering new items, but suffer if you stop collecting",
-  
   "resource": {
     "type": "apoli:resource",
     "name": "esspack:collection_charge",
@@ -13,7 +12,6 @@
       "should_render": false
     }
   },
-
   "item_pickup": {
     "type": "apoli:action_on_item_pickup",
     "entity_action": {
@@ -56,7 +54,6 @@
       }
     }
   },
-
   "drain": {
     "type": "apoli:action_over_time",
     "interval": 20,
@@ -67,7 +64,6 @@
       "value": -1
     }
   },
-
   "low_charge_warning": {
     "type": "apoli:action_over_time",
     "interval": 100,
@@ -82,7 +78,6 @@
       "command": "title @s actionbar {\"text\":\"Collection Drive Low - Find new items!\",\"color\":\"red\"}"
     }
   },
-
   "boost_effects": {
     "type": "apoli:action_over_time",
     "interval": 20,
@@ -101,7 +96,6 @@
       }
     }
   },
-
   "crash_penalty": {
     "type": "apoli:action_over_time",
     "interval": 20,
@@ -120,7 +114,6 @@
       }
     }
   },
-
   "item_cooldown": {
     "type": "apoli:action_over_time",
     "interval": 200,
@@ -129,7 +122,6 @@
       "command": "data remove storage esspack:memory RecentItems[0]"
     }
   },
-
   "spell_synergy": {
     "type": "apoli:action_over_time",
     "interval": 20,
@@ -153,7 +145,6 @@
       "command": "spell_engine add_modifier @s essence_charge 1 600"
     }
   },
-
   "hidden": true
 }
 

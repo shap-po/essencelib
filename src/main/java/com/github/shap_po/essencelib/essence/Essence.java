@@ -115,6 +115,15 @@ public class Essence implements Validatable {
         this.autoEquip = autoEquip;
     }
 
+    public static Essence merge(Essence oldEssence, Essence newEssence) {
+        if (newEssence.shouldReplace()) {
+            return newEssence;
+        }
+        oldEssence.powerReferences.addAll(newEssence.powerReferences);
+        oldEssence.attributes.addAll(newEssence.attributes);
+        return oldEssence;
+    }
+
     public Identifier getId() {
         return id;
     }
@@ -205,15 +214,6 @@ public class Essence implements Validatable {
     public ItemStack applyToItemStack(ItemStack stack) {
         stack.applyComponentsFrom(toComponent().build());
         return stack;
-    }
-
-    public static Essence merge(Essence oldEssence, Essence newEssence) {
-        if (newEssence.shouldReplace()) {
-            return newEssence;
-        }
-        oldEssence.powerReferences.addAll(newEssence.powerReferences);
-        oldEssence.attributes.addAll(newEssence.attributes);
-        return oldEssence;
     }
 
     @Override

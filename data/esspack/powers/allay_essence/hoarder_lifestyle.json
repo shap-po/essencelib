@@ -1,0 +1,17 @@
+{
+  "type": "apoli:multiple",
+  "item_pickup": {
+    "type": "apoli:action_over_time",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:sneaking",
+          "inverted": true
+        }
+        // ... other conditions ...
+      ]
+    }
+    // ... rest of power definition ...
+  }
+} 

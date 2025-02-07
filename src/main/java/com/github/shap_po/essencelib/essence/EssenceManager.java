@@ -33,11 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * A loader for essence data.
- * <br>
- * The code is heavily based on the {@link io.github.apace100.origins.origin.OriginLayerManager} class.
- */
+
 public class EssenceManager extends IdentifiableMultiJsonDataLoader implements IdentifiableResourceReloadListener {
     public static final Identifier ID = EssenceLib.identifier("essence");
 
@@ -55,6 +51,73 @@ public class EssenceManager extends IdentifiableMultiJsonDataLoader implements I
 
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.addPhaseOrdering(PowerManager.ID, ID);
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(ID, (player, joined) -> send(player));
+    }
+
+    private static void startBuilding() {
+        LOADING_PRIORITIES.clear();
+        ESSENCE_BY_ID.clear();
+    }
+
+    private static void endBuilding() {
+        LOADING_PRIORITIES.clear();
+        ESSENCE_BY_ID.trim();
+    }
+
+    public static int size() {
+        return ESSENCE_BY_ID.size();
+    }
+
+    public static DataResult<Essence> getResult(Identifier id) {
+        return contains(id)
+            ? DataResult.success(ESSENCE_BY_ID.get(id))
+            : DataResult.error(() -> "Couldn't get essence from ID \"" + id + "\", as it wasn't registered!");
+    }
+
+    public static Optional<Essence> getOptional(Identifier id) {
+        return getResult(id).result();
+    }
+
+    @Nullable
+    public static Essence getNullable(Identifier id) {
+        return ESSENCE_BY_ID.get(id);
+    }
+
+    public static Essence getOrThrow(Identifier id) {
+        return getResult(id).getOrThrow();
+    }
+
+    public static Collection<Essence> values() {
+        return ESSENCE_BY_ID.values();
+    }
+
+    public static boolean contains(Identifier id) {
+        return ESSENCE_BY_ID.containsKey(id);
+    }
+
+    public static boolean contains(Essence essence) {
+        return ESSENCE_BY_ID.containsValue(essence);
+    }
+
+    public static ImmutableList<Essence> getAll() {
+        return ImmutableList.copyOf(ESSENCE_BY_ID.values());
+    }
+
+    public static void send(ServerPlayerEntity player) {
+        if (player.server.isDedicated()) {
+            ServerPlayNetworking.send(player, new SyncEssencesS2CPacket(ESSENCE_BY_ID));
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void receive(SyncEssencesS2CPacket packet) {
+        startBuilding();
+
+        packet.essenceById().entrySet()
+            .stream()
+            .peek(e -> e.getValue().validate())
+            .forEach(e -> ESSENCE_BY_ID.put(e.getKey(), e.getValue()));
+
+        endBuilding();
     }
 
     @Override
@@ -131,72 +194,5 @@ public class EssenceManager extends IdentifiableMultiJsonDataLoader implements I
 
         endBuilding();
         EssenceLib.LOGGER.info("Finished merging similar essences. Total essences: {}", size());
-    }
-
-    private static void startBuilding() {
-        LOADING_PRIORITIES.clear();
-        ESSENCE_BY_ID.clear();
-    }
-
-    private static void endBuilding() {
-        LOADING_PRIORITIES.clear();
-        ESSENCE_BY_ID.trim();
-    }
-
-    public static int size() {
-        return ESSENCE_BY_ID.size();
-    }
-
-    public static DataResult<Essence> getResult(Identifier id) {
-        return contains(id)
-            ? DataResult.success(ESSENCE_BY_ID.get(id))
-            : DataResult.error(() -> "Couldn't get essence from ID \"" + id + "\", as it wasn't registered!");
-    }
-
-    public static Optional<Essence> getOptional(Identifier id) {
-        return getResult(id).result();
-    }
-
-    @Nullable
-    public static Essence getNullable(Identifier id) {
-        return ESSENCE_BY_ID.get(id);
-    }
-
-    public static Essence getOrThrow(Identifier id) {
-        return getResult(id).getOrThrow();
-    }
-
-    public static Collection<Essence> values() {
-        return ESSENCE_BY_ID.values();
-    }
-
-    public static boolean contains(Identifier id) {
-        return ESSENCE_BY_ID.containsKey(id);
-    }
-
-    public static boolean contains(Essence essence) {
-        return ESSENCE_BY_ID.containsValue(essence);
-    }
-
-    public static ImmutableList<Essence> getAll() {
-        return ImmutableList.copyOf(ESSENCE_BY_ID.values());
-    }
-
-    public static void send(ServerPlayerEntity player) {
-        if (player.server.isDedicated()) {
-            ServerPlayNetworking.send(player, new SyncEssencesS2CPacket(ESSENCE_BY_ID));
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static void receive(SyncEssencesS2CPacket packet) {
-        startBuilding();
-
-        packet.essenceById().entrySet()
-            .stream()
-            .peek(e -> e.getValue().validate())
-            .forEach(e -> ESSENCE_BY_ID.put(e.getKey(), e.getValue()));
-
-        endBuilding();
     }
 }

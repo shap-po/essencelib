@@ -36,6 +36,10 @@ public class LevelComponentImpl implements LevelComponent {
         this.provider = provider;
     }
 
+    private static void setSlotCount(TrinketInventory trinketInventory, int count) {
+        TrinketsSlotModifierUtil.setSlotCountModifierValue(trinketInventory, MODIFIER_ID, count);
+    }
+
     @Override
     public ImmutableSet<Identifier> getUniqueKills() {
         return ImmutableSet.copyOf(uniqueKills);
@@ -156,10 +160,6 @@ public class LevelComponentImpl implements LevelComponent {
                 .getOrDefault("soul", null)
                 .getOrDefault("essence", null)
         ).orElse(null);
-    }
-
-    private static void setSlotCount(TrinketInventory trinketInventory, int count) {
-        TrinketsSlotModifierUtil.setSlotCountModifierValue(trinketInventory, MODIFIER_ID, count);
     }
 
     private Identifier getEntityId(Entity entity) {

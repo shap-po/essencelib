@@ -21,23 +21,6 @@ public class LevelManager implements SimpleSynchronousResourceReloadListener {
     private static final List<Integer> REQUIRED_KILLS = new ArrayList<>();
     private static @Nullable Integer totalEntityCount = null;
 
-    @Override
-    public void reload(ResourceManager manager) {
-        totalEntityCount = null; // reset count so it will be recalculated
-        setUpRequiredKills();
-        EssenceLib.LOGGER.info("Reloaded leveling data.");
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return ID;
-    }
-
-    private void setUpRequiredKills() {
-        REQUIRED_KILLS.clear();
-        REQUIRED_KILLS.addAll(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)); // TODO: calculate by formula
-    }
-
     public static int getRequiredKills(int level) {
         return REQUIRED_KILLS.get(level - 1);
     }
@@ -54,7 +37,6 @@ public class LevelManager implements SimpleSynchronousResourceReloadListener {
     public static int getLevel(PlayerEntity player) {
         return getLevelFromKills(getCurrentUniqueKillsCount(player));
     }
-
 
     /**
      * Gets the total number of unique entities in the game that aren't in the ignore list
@@ -89,5 +71,22 @@ public class LevelManager implements SimpleSynchronousResourceReloadListener {
                 .sum()
             )
             .orElse(0);
+    }
+
+    @Override
+    public void reload(ResourceManager manager) {
+        totalEntityCount = null; // reset count so it will be recalculated
+        setUpRequiredKills();
+        EssenceLib.LOGGER.info("Reloaded leveling data.");
+    }
+
+    @Override
+    public Identifier getFabricId() {
+        return ID;
+    }
+
+    private void setUpRequiredKills() {
+        REQUIRED_KILLS.clear();
+        REQUIRED_KILLS.addAll(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)); // TODO: calculate by formula
     }
 }

@@ -16,6 +16,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.github.shap_po.essencelib.networking.ManaPackets;
+import com.github.shap_po.essencelib.registry.ManaAttributeRegistry;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
     public LivingEntityMixin(EntityType<?> type, World world) {
@@ -45,5 +50,43 @@ public abstract class LivingEntityMixin extends Entity {
                 ItemStack stack = e.toItemStack();
                 this.dropStack(stack);
             });
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void onTick(CallbackInfo ci) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+        
+        if (!entity.getWorld().isClient) {
+            // Get attribute values
+            double maxMana = entity.getAttributeValue(ManaAttributeRegistry.getMaxManaEntry());
+            double currentMana = entity.getAttributeValue(ManaAttributeRegistry.getCurrentManaEntry());
+            double regenRate = entity.getAttributeValue(ManaAttributeRegistry.getManaRegenEntry());
+            
+            // Convert regen rate from mana/minute to mana/tick
+            // Scale regen rate: each +1 adds 5 mana per minute
+            double scaledRegen = regenRate * 5.0;
+            double regenPerTick = scaledRegen / 1200.0;
+            
+            // Regenerate mana
+            if (currentMana < maxMana) {
+                double newMana = Math.min(currentMana + regenPerTick, maxMana);
+                entity.getAttributeInstance(ManaAttributeRegistry.getCurrentManaEntry()).setBaseValue(newMana);
+            }
+        }
+
+        // Sync with client
+        if (entity instanceof ServerPlayerEntity player) {
+            double current = entity.getAttributeValue(ManaAttributeRegistry.getCurrentManaEntry());
+            double max = entity.getAttributeValue(ManaAttributeRegistry.getMaxManaEntry());
+            ManaPackets.sendManaUpdate(player, (float) current, (float) max);
+        }
+    }
+
+    @Inject(method = "createLivingAttributes", at = @At("RETURN"))
+    private static void addAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
+        cir.getReturnValue()
+            .add(ManaAttributeRegistry.getMaxManaEntry())
+            .add(ManaAttributeRegistry.getCurrentManaEntry())
+            .add(ManaAttributeRegistry.getManaRegenEntry());
     }
 }

@@ -39,15 +39,15 @@ public abstract class ItemEntityMixin {
                         if (optional.isPresent()) {
                             TrinketComponent comp = optional.get();
                             boolean hasEmptySlot = comp.getInventory().values().stream()
-                                    .flatMap(group -> group.values().stream())
-                                    .anyMatch(inv -> {
-                                        for (int i = 0; i < inv.size(); i++) {
-                                            if (inv.getStack(i).isEmpty()) {
-                                                return true;
-                                            }
+                                .flatMap(group -> group.values().stream())
+                                .anyMatch(inv -> {
+                                    for (int i = 0; i < inv.size(); i++) {
+                                        if (inv.getStack(i).isEmpty()) {
+                                            return true;
                                         }
-                                        return false;
-                                    });
+                                    }
+                                    return false;
+                                });
 
                             if (hasEmptySlot) {
                                 player.getInventory().insertStack(stack);

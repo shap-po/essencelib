@@ -110,6 +110,8 @@ dependencies {
     modImplementation "io.github.apace100:apoli:${project.apoli_version}"
     modImplementation "dev.emi:trinkets:${project.trinkets_version}"
     modImplementation "com.github.shap-po:shappoli:${project.shappoli_version}" // TODO: switch from jitpack to modrinth
+    modImplementation "net.fabricmc.fabric-api:fabric-entity-events-v1:1.5.3"
+    modImplementation "net.fabricmc.fabric-api:fabric-lifecycle-events-v1:1.5.7"
 }
 
 processResources {

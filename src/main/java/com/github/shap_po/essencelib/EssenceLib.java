@@ -8,6 +8,7 @@ import com.github.shap_po.essencelib.level.LevelManager;
 import com.github.shap_po.essencelib.loot.function.ModLootFunctionTypes;
 import com.github.shap_po.essencelib.networking.ModPackets;
 import com.github.shap_po.essencelib.networking.ModPacketsC2S;
+import com.github.shap_po.essencelib.registry.ManaAttributeRegistry;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
 import net.fabricmc.api.ModInitializer;
@@ -28,27 +29,42 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
     public static final String KEYBINDINGS_CATEGORY = "key.category." + EssenceLib.MOD_ID;
     public static final int MAX_SLOT_COUNT = 4;
 
+    public static Identifier identifier(String path) {
+        return Identifier.of(MOD_ID, path);
+    }
+
     @Override
-    public void onInitialize() {// This code runs as soon as Minecraft is in a mod-load-ready state.
-        // However, some things (like resources) may still be uninitialized.
-        // Proceed with mild caution.
+    public void onInitialize() {
+        LOGGER.info("Initializing EssenceLib...");
 
-        LOGGER.info("Hello Fabric world from EssenceLib!");
-
+        // Register everything in proper order
         ModDataComponentTypes.registerDataComponentTypes();
+        ManaAttributeRegistry.register();
         ModItems.register();
+
+        // Register attributes
+        LOGGER.debug("Registering attributes...");
+        ManaAttributeRegistry.register();
+
+        // Register networking before it's needed
+        LOGGER.debug("Setting up networking...");
         ModPackets.register();
         ModPacketsC2S.register();
+
+        // Register other components
+        LOGGER.debug("Registering components...");
         ModLootFunctionTypes.register();
 
+        // Register resource reloaders
+        LOGGER.debug("Registering resource reloaders...");
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new EssenceManager());
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new LevelManager());
 
+        // Register commands last
+        LOGGER.debug("Registering commands...");
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> EssenceLibCommand.register(dispatcher));
-    }
 
-    public static Identifier identifier(String path) {
-        return Identifier.of(MOD_ID, path);
+        LOGGER.info("EssenceLib initialized successfully!");
     }
 
     @Override

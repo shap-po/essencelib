@@ -5,7 +5,6 @@
     "type": "shappoli:has_trinket_power",
     "power": "*:*"
   },
-
   "name": "Test power",
   "entity_action": {
     "type": "apoli:execute_command",

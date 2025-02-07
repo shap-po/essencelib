@@ -67,6 +67,7 @@
   "command.essencelib.give": "Gives the specified player an essence item",
   "attribute.name.essencelib.max_mana": "MAX Mana",
   "attribute.name.essencelib.mana_regen": "MANA REGEN",
-  "attribute.essencelib.max_mana": "Maximum Mana",
+  "attribute.essencelib.current_mana": "Current Mana",
+  "attribute.essencelib.max_mana": "Max Mana",
   "attribute.essencelib.mana_regen": "Mana Regeneration"
 } 

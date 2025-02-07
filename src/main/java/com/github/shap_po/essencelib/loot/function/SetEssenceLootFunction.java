@@ -27,6 +27,11 @@ public class SetEssenceLootFunction extends ConditionalLootFunction {
         this.essenceRef = essenceRef;
     }
 
+    @SuppressWarnings({"unused"})
+    public static ConditionalLootFunction.Builder<?> builder(EssenceReference essence) {
+        return builder((conditions) -> new SetEssenceLootFunction(conditions, essence));
+    }
+
     @Override
     public LootFunctionType<SetEssenceLootFunction> getType() {
         return ModLootFunctionTypes.SET_ESSENCE;
@@ -37,10 +42,5 @@ public class SetEssenceLootFunction extends ConditionalLootFunction {
         return essenceRef.getOptionalEssence()
             .map(essence -> essence.applyToItemStack(stack))
             .orElse(stack);
-    }
-
-    @SuppressWarnings({"unused"})
-    public static ConditionalLootFunction.Builder<?> builder(EssenceReference essence) {
-        return builder((conditions) -> new SetEssenceLootFunction(conditions, essence));
     }
 }
