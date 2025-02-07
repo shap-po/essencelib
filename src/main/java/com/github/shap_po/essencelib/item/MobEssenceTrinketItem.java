@@ -32,7 +32,6 @@ public class MobEssenceTrinketItem extends TrinketItem {
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MobEssenceTooltips.appendTooltip(stack, context, tooltip);
         }
     }
 

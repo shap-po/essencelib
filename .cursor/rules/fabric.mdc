@@ -1,0 +1,36 @@
+---
+description: 
+globs: 
+---
+# FABRIC MOD CODING STANDARDS
+PROJECT_LAYOUT:
+  - src/main/java/[modid]/
+    - block/
+    - item/
+    - screen/
+    - world/gen/
+    - util/
+  - src/main/resources/assets/[modid]/
+    - textures/
+    - models/
+    - lang/
+
+CODING_PRACTICES:
+  - Follow Fabric API patterns
+  - Use @Environment annotations
+  - Encapsulate fields
+  - Implement proper registry registration
+  - Validate mixin targets
+  - Maintain package-private access
+
+VERSION_SPECIFIC:
+  - Target fabric-loader 0.15.11+
+  - Use Mojang mappings 2024.6.6
+  - Match fabric-api 0.96.7+ for 1.21.1
+
+VALIDATION_RULES:
+  - Check registry order
+  - Verify client/server separation
+  - Confirm mixin compatibility
+  - Validate advancement triggers
+  - Audit NBT serialization

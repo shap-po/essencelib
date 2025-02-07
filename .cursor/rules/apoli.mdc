@@ -1,0 +1,49 @@
+---
+description: 
+globs: 
+---
+# Apoli Power Development Rules
+PRIMARY_REPO: https://github.com/apace100/apoli/tree/1.21.x/dev
+BRANCH: 1.21.x
+VALIDATE_PATHS:
+  - src/main/java/io/github/apace100/apoli/**
+
+
+# Validation Rules
+ENFORCE:
+  - Follow Apoli power structure
+  - Use correct serialization patterns
+  - Match existing condition types
+  - Verify action implementations
+  - Check registry patterns
+
+# Type Definitions
+POWER_TYPES:
+  - ActionOnKeyPower
+  - ActionOnHitPower
+  - ModifyAttributePower
+  - PreventItemUsePower
+  - ActionOverTime
+  - VariableIntPower
+  - ModifyDamageDealtPower
+  - ModifyBreakSpeedPower
+
+CONDITIONS:
+  - AndCondition
+  - OrCondition
+  - BiomeCondition
+  - BlockCondition
+  - DamageCondition
+  - EntityCondition
+  - FluidCondition
+  - HealthCondition
+  - InvertedCondition
+  - StatusEffectCondition
+
+ACTIONS:
+  - EntityAction
+  - BlockAction
+  - ItemAction
+  - BiEntityAction
+  - BlockEntityAction
+
