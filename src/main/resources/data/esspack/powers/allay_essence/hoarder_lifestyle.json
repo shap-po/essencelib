@@ -1,0 +1,161 @@
+{
+  "type": "apoli:multiple",
+  "name": "Collector's Rush",
+  "description": "Gain boosts from discovering new items, but suffer if you stop collecting",
+  
+  "resource": {
+    "type": "apoli:resource",
+    "name": "esspack:collection_charge",
+    "min": 0,
+    "max": 600,
+    "initial_value": 600,
+    "hud_render": {
+      "should_render": false
+    }
+  },
+
+  "item_pickup": {
+    "type": "apoli:action_on_item_pickup",
+    "entity_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "apoli:execute_command",
+          "command": "execute unless data storage esspack:memory RecentItems[{id:\"{{item}}\"}] run data modify storage esspack:memory RecentItems append value {id:\"{{item}}\", Time:{{world_time}}}"
+        },
+        {
+          "type": "apoli:conditioned",
+          "condition": {
+            "type": "apoli:compare_resource",
+            "resource": "esspack:collection_charge",
+            "comparison": "<",
+            "compare_to": 600
+          },
+          "action": {
+            "type": "apoli:change_resource",
+            "resource": "esspack:collection_charge",
+            "operation": "add",
+            "value": 100
+          }
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "essencelib:mana",
+          "operation": "add",
+          "value": 10
+        }
+      ]
+    },
+    "condition": {
+      "type": "apoli:inverted",
+      "condition": {
+        "type": "apoli:nbt",
+        "nbt": "{RecentItems:[{id:\"{{item}}\"}]}",
+        "target": "storage",
+        "storage": "esspack:memory"
+      }
+    }
+  },
+
+  "drain": {
+    "type": "apoli:action_over_time",
+    "interval": 20,
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:collection_charge",
+      "operation": "add",
+      "value": -1
+    }
+  },
+
+  "low_charge_warning": {
+    "type": "apoli:action_over_time",
+    "interval": 100,
+    "condition": {
+      "type": "apoli:compare_resource",
+      "resource": "esspack:collection_charge",
+      "comparison": "<=",
+      "compare_to": 200
+    },
+    "entity_action": {
+      "type": "apoli:execute_command",
+      "command": "title @s actionbar {\"text\":\"Collection Drive Low - Find new items!\",\"color\":\"red\"}"
+    }
+  },
+
+  "boost_effects": {
+    "type": "apoli:action_over_time",
+    "interval": 20,
+    "condition": {
+      "type": "apoli:compare_resource",
+      "resource": "esspack:collection_charge",
+      "comparison": ">=",
+      "compare_to": 400
+    },
+    "entity_action": {
+      "type": "apoli:apply_effect",
+      "effect": {
+        "effect": "minecraft:haste",
+        "duration": 100,
+        "amplifier": 1
+      }
+    }
+  },
+
+  "crash_penalty": {
+    "type": "apoli:action_over_time",
+    "interval": 20,
+    "condition": {
+      "type": "apoli:compare_resource",
+      "resource": "esspack:collection_charge",
+      "comparison": "<=",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:apply_effect",
+      "effect": {
+        "effect": "minecraft:slowness",
+        "duration": 200,
+        "amplifier": 2
+      }
+    }
+  },
+
+  "item_cooldown": {
+    "type": "apoli:action_over_time",
+    "interval": 200,
+    "entity_action": {
+      "type": "apoli:execute_command",
+      "command": "data remove storage esspack:memory RecentItems[0]"
+    }
+  },
+
+  "spell_synergy": {
+    "type": "apoli:action_over_time",
+    "interval": 20,
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:collection_charge",
+          "comparison": ">=",
+          "compare_to": 300
+        },
+        {
+          "type": "apoli:mod_loaded",
+          "modid": "spell_engine"
+        }
+      ]
+    },
+    "entity_action": {
+      "type": "apoli:execute_command",
+      "command": "spell_engine add_modifier @s essence_charge 1 600"
+    }
+  },
+
+  "hidden": true
+}
+
+
+

@@ -48,7 +48,7 @@
   "powers": [
     "*:allay_essence/activepull",
     "*:allay_essence/item_whisperer",
-    "*:allay_essence/fragile_wings"
+    "*:allay_essence/hoarder_lifestyle"
   ],
   "dropped_by": "minecraft:allay",
   "chance": 0

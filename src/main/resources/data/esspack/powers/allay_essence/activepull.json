@@ -17,7 +17,23 @@
       },
       "bientity_action": {
         "type": "apoli:add_velocity",
-        "z": -0.1,
+        "direction": {
+          "type": "apoli:relative_position",
+          "target": "actor"
+        },
+        "speed": 1.2,
+        "modifier": {
+          "operation": "multiply_base",
+          "value": {
+            "type": "apoli:loot_item_distance",
+            "target": "actor",
+            "inverted": true,
+            "scaling": "quadratic",
+            "min": 0.1,
+            "max": 2.0
+          }
+        },
+        "vertical_boost": 0.3,
         "client": true,
         "server": true
       }
@@ -25,15 +41,15 @@
   },
   "pull_active": {
     "type": "apoli:action_over_time",
-    "interval": 400,
+    "interval": 20,
     "rising_action": {
       "type": "apoli:grant_power",
-      "power": "*:*_pull",
+      "power": "esspack:*_pull",
       "source": "*:*"
     },
     "falling_action": {
       "type": "apoli:revoke_power",
-      "power": "*:*_pull",
+      "power": "esspack:*_pull",
       "source": "*:*"
     }
   },
@@ -42,14 +58,13 @@
     "key": "essencelib:essencelib",
     "item_condition": {
       "type": "shappoli:has_trinket_power",
-      "power": "*:*"
+      "power": "*:*_pull_active"
     },
     "entity_action": {
-      "type": "apoli:grant_power",
-      "power": "*:*_pull_active",
-      "source": "*:*"
+      "type": "apoli:toggle",
+      "power": "*:*"
     },
-    "cooldown": 6000,
+    "cooldown": 100,
     "hud_render": {
       "should_render": true
     }
