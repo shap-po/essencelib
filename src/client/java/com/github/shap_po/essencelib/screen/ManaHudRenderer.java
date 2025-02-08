@@ -37,7 +37,6 @@ public class ManaHudRenderer implements HudRenderCallback {
     // Modify glow constants
     private static final int GLOW_COLOR_BRIGHT = 0x90FFFFFF;  // Brighter center
     private static final int GLOW_COLOR_DIM = 0x5000FFFF;    // More visible outer glow
-    private static final int GLOW_SIZE = 2;                  // Size of the glow effect
 
     private float gradientOffset1 = 0f;
     private float gradientOffset2 = 0f;

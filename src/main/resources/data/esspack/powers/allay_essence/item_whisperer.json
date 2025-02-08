@@ -1,30 +1,50 @@
 {
-  "name": "Item Whisperer",
-  "description": "Automatically attracts nearby items within a 10-block radius to the player.",
-  "type": "apoli:action_over_time",
-  "interval": 5,
-  "entity_action": {
-    "type": "apoli:area_of_effect",
-    "radius": 10,
-    "bientity_condition": {
-      "type": "apoli:target_condition",
-      "condition": {
-        "type": "apoli:entity_type",
-        "entity_type": "item"
-      }
-    },
-    "bientity_action": {
-      "type": "apoli:and",
-      "actions": [
-        {
-          "type": "apoli:add_velocity",
-          "x": -0.1,
-          "y": -0.1,
-          "z": -0.1,
-          "client": true,
-          "server": true
+  "name": "Collector's Intuition",
+  "description": "Your connection to items lets you sense uncollected treasures through walls within 30 blocks.",
+  "type": "apoli:multiple",
+  "glow": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "entity_action": {
+      "type": "apoli:area_of_effect",
+      "radius": 30,
+      "bientity_action": {
+        "type": "apoli:target_action",
+        "action": {
+          "type": "apoli:apply_effect",
+          "effects": [
+            {
+              "effect": "minecraft:glowing",
+              "duration": 5,
+              "amplifier": 0,
+              "is_ambient": true,
+              "show_particles": false,
+              "show_icon": false
+            }
+          ]
         }
-      ]
+      },
+      "bientity_condition": {
+        "type": "apoli:and",
+        "conditions": [
+          {
+            "type": "apoli:target_condition",
+            "condition": {
+              "type": "apoli:entity_type",
+              "entity_type": "minecraft:item"
+            }
+          },
+          {
+            "type": "apoli:target_condition",
+            "condition": {
+              "type": "apoli:command",
+              "command": "execute if entity @s[nbt={Item:{id:\"minecraft:diamond\"}}] run function esspack:allay_essence/check_collected",
+              "comparison": "==",
+              "compare_to": 0
+            }
+          }
+        ]
+      }
     }
   }
 }

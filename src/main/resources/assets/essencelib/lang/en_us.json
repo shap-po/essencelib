@@ -69,5 +69,6 @@
   "attribute.name.essencelib.mana_regen": "MANA REGEN",
   "attribute.essencelib.current_mana": "Current Mana",
   "attribute.essencelib.max_mana": "Max Mana",
-  "attribute.essencelib.mana_regen": "Mana Regeneration"
+  "attribute.essencelib.mana_regen": "Mana Regeneration",
+  "message.essencelib.insufficient_mana": "§cNot enough mana!"
 } 

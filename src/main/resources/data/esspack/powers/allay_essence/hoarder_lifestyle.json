@@ -1,56 +1,73 @@
 {
   "type": "apoli:multiple",
   "name": "Collector's Rush",
-  "description": "Gain boosts from discovering new items, but suffer if you stop collecting",
+  "description": "Gain speed and haste from discovering new items. Your collection drive drains over time - keep finding new items to maintain the buffs!",
   "resource": {
     "type": "apoli:resource",
     "name": "esspack:collection_charge",
     "min": 0,
     "max": 600,
-    "initial_value": 600,
+    "initial_value": 300,
     "hud_render": {
-      "should_render": false
+      "should_render": true,
+      "sprite_location": "origins:textures/gui/resource_bar.png",
+      "bar_index": 2,
+      "condition": {
+        "type": "apoli:compare_resource",
+        "resource": "*",
+        "comparison": "<",
+        "compare_to": 600
+      }
     }
   },
   "item_pickup": {
     "type": "apoli:action_on_item_pickup",
     "entity_action": {
-      "type": "apoli:sequence",
-      "actions": [
-        {
-          "type": "apoli:execute_command",
-          "command": "execute unless data storage esspack:memory RecentItems[{id:\"{{item}}\"}] run data modify storage esspack:memory RecentItems append value {id:\"{{item}}\", Time:{{world_time}}}"
-        },
-        {
-          "type": "apoli:conditioned",
-          "condition": {
+      "type": "apoli:if_else",
+      "condition": {
+        "type": "apoli:and",
+        "conditions": [
+          {
             "type": "apoli:compare_resource",
             "resource": "esspack:collection_charge",
             "comparison": "<",
             "compare_to": 600
           },
-          "action": {
+          {
+            "type": "apoli:inverted",
+            "condition": {
+              "type": "apoli:nbt",
+              "nbt": "{RecentItems:[{id:\"{{item}}\"}]}",
+              "target": "storage",
+              "storage": "esspack:memory"
+            }
+          }
+        ]
+      },
+      "if_action": {
+        "type": "apoli:sequence",
+        "actions": [
+          {
+            "type": "apoli:execute_command",
+            "command": "data modify storage esspack:memory RecentItems append value {id:\"{{item}}\", Time:{{world_time}}}"
+          },
+          {
             "type": "apoli:change_resource",
             "resource": "esspack:collection_charge",
             "operation": "add",
             "value": 100
+          },
+          {
+            "type": "apoli:change_resource",
+            "resource": "essencelib:current_mana",
+            "operation": "add",
+            "value": 15
+          },
+          {
+            "type": "apoli:execute_command",
+            "command": "particle minecraft:note ~ ~1 ~ 0.5 0.5 0.5 1 3"
           }
-        },
-        {
-          "type": "apoli:change_resource",
-          "resource": "essencelib:mana",
-          "operation": "add",
-          "value": 10
-        }
-      ]
-    },
-    "condition": {
-      "type": "apoli:inverted",
-      "condition": {
-        "type": "apoli:nbt",
-        "nbt": "{RecentItems:[{id:\"{{item}}\"}]}",
-        "target": "storage",
-        "storage": "esspack:memory"
+        ]
       }
     }
   },
@@ -85,15 +102,55 @@
       "type": "apoli:compare_resource",
       "resource": "esspack:collection_charge",
       "comparison": ">=",
-      "compare_to": 400
+      "compare_to": 300
     },
     "entity_action": {
       "type": "apoli:apply_effect",
-      "effect": {
-        "effect": "minecraft:haste",
-        "duration": 100,
-        "amplifier": 1
-      }
+      "effects": [
+        {
+          "effect": "minecraft:haste",
+          "duration": 40,
+          "amplifier": 0,
+          "is_ambient": true,
+          "show_particles": false
+        },
+        {
+          "effect": "minecraft:speed",
+          "duration": 40,
+          "amplifier": 0,
+          "is_ambient": true,
+          "show_particles": false
+        }
+      ]
+    }
+  },
+  "high_charge_boost": {
+    "type": "apoli:action_over_time",
+    "interval": 20,
+    "condition": {
+      "type": "apoli:compare_resource",
+      "resource": "esspack:collection_charge",
+      "comparison": ">=",
+      "compare_to": 500
+    },
+    "entity_action": {
+      "type": "apoli:apply_effect",
+      "effects": [
+        {
+          "effect": "minecraft:haste",
+          "duration": 40,
+          "amplifier": 1,
+          "is_ambient": true,
+          "show_particles": false
+        },
+        {
+          "effect": "minecraft:speed",
+          "duration": 40,
+          "amplifier": 1,
+          "is_ambient": true,
+          "show_particles": false
+        }
+      ]
     }
   },
   "crash_penalty": {
@@ -108,9 +165,11 @@
     "entity_action": {
       "type": "apoli:apply_effect",
       "effect": {
-        "effect": "minecraft:slowness",
-        "duration": 200,
-        "amplifier": 2
+        "effect": "minecraft:mining_fatigue",
+        "duration": 40,
+        "amplifier": 0,
+        "is_ambient": true,
+        "show_particles": false
       }
     }
   },
@@ -120,29 +179,6 @@
     "entity_action": {
       "type": "apoli:execute_command",
       "command": "data remove storage esspack:memory RecentItems[0]"
-    }
-  },
-  "spell_synergy": {
-    "type": "apoli:action_over_time",
-    "interval": 20,
-    "condition": {
-      "type": "apoli:and",
-      "conditions": [
-        {
-          "type": "apoli:resource",
-          "resource": "esspack:collection_charge",
-          "comparison": ">=",
-          "compare_to": 300
-        },
-        {
-          "type": "apoli:mod_loaded",
-          "modid": "spell_engine"
-        }
-      ]
-    },
-    "entity_action": {
-      "type": "apoli:execute_command",
-      "command": "spell_engine add_modifier @s essence_charge 1 600"
     }
   },
   "hidden": true
