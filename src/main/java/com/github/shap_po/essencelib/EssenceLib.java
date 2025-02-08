@@ -3,6 +3,7 @@ package com.github.shap_po.essencelib;
 import com.github.shap_po.essencelib.command.EssenceLibCommand;
 import com.github.shap_po.essencelib.component.LevelComponent;
 import com.github.shap_po.essencelib.component.LevelComponentImpl;
+import com.github.shap_po.essencelib.condition.EssenceLibConditionTypes;
 import com.github.shap_po.essencelib.essence.EssenceManager;
 import com.github.shap_po.essencelib.level.LevelManager;
 import com.github.shap_po.essencelib.loot.function.ModLootFunctionTypes;
@@ -45,6 +46,9 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
         // Register attributes
         LOGGER.debug("Registering attributes...");
         ManaAttributeRegistry.register();
+
+        // Register Apoli additions
+        EssenceLibConditionTypes.register();
 
         // Register networking before it's needed
         LOGGER.debug("Setting up networking...");
