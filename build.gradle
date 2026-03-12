@@ -112,6 +112,7 @@ dependencies {
     modImplementation "com.github.shap-po:shappoli:${project.shappoli_version}" // TODO: switch from jitpack to modrinth
     modImplementation "net.fabricmc.fabric-api:fabric-entity-events-v1:1.5.3"
     modImplementation "net.fabricmc.fabric-api:fabric-lifecycle-events-v1:1.5.7"
+    compileOnly "com.demonwav.mcdev:annotations:2.1.0"
 }
 
 processResources {
@@ -142,10 +143,11 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-jar {
+tasks.withType(Jar).configureEach {
     from("LICENSE") {
         rename { "${it}_${project.base.archivesName.get()}" }
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 // modrinth configuration

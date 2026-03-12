@@ -1,9 +1,23 @@
 package com.github.shap_po.essencelib.component;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.github.shap_po.essencelib.EssenceLib;
 import com.github.shap_po.essencelib.level.LevelManager;
 import com.github.shap_po.shappoli.integration.trinkets.util.TrinketsSlotModifierUtil;
 import com.google.common.collect.ImmutableSet;
+
 import dev.emi.trinkets.api.TrinketInventory;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.entity.Entity;
@@ -21,11 +35,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class LevelComponentImpl implements LevelComponent {
     private final PlayerEntity provider;
