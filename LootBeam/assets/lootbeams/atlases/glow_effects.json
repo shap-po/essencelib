@@ -1,9 +1,0 @@
-{
-  "sources": [
-    {
-      "type": "directory",
-      "source": "ground_glow_effects",
-      "prefix": ""
-    }
-  ]
-}
