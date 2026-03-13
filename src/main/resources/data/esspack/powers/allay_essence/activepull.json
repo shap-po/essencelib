@@ -1,40 +1,48 @@
 {
-  "name": "Magnetic Collection",
-  "description": "Channel your essence to pull all nearby items towards you. [Costs 25 mana]",
   "type": "apoli:multiple",
-  "pull": {
-    "type": "apoli:action_over_time",
-    "interval": 20,
-    "entity_action": {
-      "type": "apoli:area_of_effect",
-      "radius": 50,
-      "bientity_action": {
-        "type": "apoli:target_action",
-        "action": {
-          "type": "apoli:add_velocity",
-          "x": 0,
-          "y": -0.3,
-          "z": 0,
-          "space": "local",
-          "client": true
-        }
-      },
-      "bientity_condition": {
-        "type": "apoli:target_condition",
-        "condition": {
-          "type": "apoli:entity_type",
-          "entity_type": "minecraft:item"
-        }
-      }
-    },
-    "cooldown": 40
+  "name": "Magnetic Collection",
+  "description": "Channel your essence to pull nearby items toward you. Active while held. Costs 10 mana per second.",
+  "magnet_resource": {
+    "type": "apoli:resource",
+    "name": "esspack:magnet_active",
+    "min": 0,
+    "max": 300,
+    "initial_value": 0
   },
-  "activate": {
-    "type": "shappoli:action_on_trinket_key_press",
-    "key": "essencelib:essencelib",
-    "item_condition": {
-      "type": "shappoli:has_trinket_power",
-      "power": "*:*"
+  "pull_loop": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:allay_essence/activepull_magnet_resource",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "apoli:area_of_effect",
+          "radius": 28,
+          "bientity_action": {
+            "type": "apoli:add_velocity",
+            "z": -0.6
+          },
+          "bientity_condition": {
+            "type": "apoli:target_condition",
+            "condition": {
+              "type": "apoli:entity_type",
+              "entity_type": "minecraft:item"
+            }
+          }
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:allay_essence/activepull_magnet_resource",
+          "change": -1
+        }
+      ]
     }
-  }
-}  
+  },
+  "hidden": true
+}

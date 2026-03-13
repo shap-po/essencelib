@@ -93,7 +93,7 @@
     },
     {
       "id": "essences",
-      "name": "essences",
+      "name": "*",
       "color": "#8A2BE2.",
       "config": {
         "beam_height": 10,

@@ -69,6 +69,8 @@ public class ManaHudRenderer implements HudRenderCallback {
         // Don't render mana bar in creative mode
         if (client.player.getAbilities().creativeMode) return;
 
+        ClientManaData.tick();
+
         int width = client.getWindow().getScaledWidth();
         int height = client.getWindow().getScaledHeight();
         

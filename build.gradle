@@ -66,6 +66,9 @@ repositories {
     maven {
         url "https://maven.terraformersmc.com/"
     }
+    maven {
+        url "https://maven.nucleoid.xyz/"
+    }
 }
 
 
@@ -106,8 +109,18 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
+    // Loot Beams Up (Client-side, Optional dependencies below)
+    modImplementation "maven.modrinth:loot-beams-up:3.6.1-mc1.21-.1"
+    modImplementation "maven.modrinth:modmenu:11.0.1"
+
+    // Legendary Tooltips: REMOVED - Shift-scroll conflicts with crouch and hides essence tooltips.
+    // Add legendary-tooltips, iceberg, prism-lib to run/mods/ manually if desired.
+
+    // Pufferfish's Attributes: add puffish_attributes-0.8.2-1.21-fabric.jar to run/mods/ manually
+
     // Requirements
     modImplementation "io.github.apace100:apoli:${project.apoli_version}"
+    modImplementation "maven.modrinth:origins:1.13.0-alpha.12+mc.1.21.1"  // action_on_item_pickup for Collector's Rush
     modImplementation "dev.emi:trinkets:${project.trinkets_version}"
     modImplementation "com.github.shap-po:shappoli:${project.shappoli_version}" // TODO: switch from jitpack to modrinth
     modImplementation "net.fabricmc.fabric-api:fabric-entity-events-v1:1.5.3"

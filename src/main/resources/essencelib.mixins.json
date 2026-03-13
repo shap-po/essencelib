@@ -8,7 +8,6 @@
     "ItemEntityMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
-    "TrinketItemPowersComponentMixin",
     "TrinketItemPowersComponentAccessor",
     "TrinketKeyBindingManagerMixin"
   ],
@@ -16,6 +15,14 @@
     "defaultRequire": 1
   },
   "client": [
+    "CollectorIntuitionHaloMixin",
+    "ItemEntityRendererMixin",
+    "MobEssenceTrinketItemTooltipMixin",
+    "TrinketItemPowersComponentMixin",
+    "LootBeamsTooltipManagerMixin",
+    "LootBeamsViewHelperMixin",
+    "LootBeamsTooltipRendererMixin",
+    "LootBeamsNameTagRendererMixin"
   ]
 
 }

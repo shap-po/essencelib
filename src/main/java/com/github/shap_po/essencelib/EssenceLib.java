@@ -1,8 +1,11 @@
 package com.github.shap_po.essencelib;
 
 import com.github.shap_po.essencelib.command.EssenceLibCommand;
+import com.github.shap_po.essencelib.component.CollectorRushComponent;
+import com.github.shap_po.essencelib.component.CollectorRushComponentImpl;
 import com.github.shap_po.essencelib.component.LevelComponent;
 import com.github.shap_po.essencelib.component.LevelComponentImpl;
+import com.github.shap_po.essencelib.action.type.EssenceLibEntityActionTypes;
 import com.github.shap_po.essencelib.condition.EssenceLibConditionTypes;
 import com.github.shap_po.essencelib.essence.EssenceManager;
 import com.github.shap_po.essencelib.level.LevelManager;
@@ -14,6 +17,7 @@ import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -28,7 +32,8 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static final String KEYBINDINGS_CATEGORY = "key.category." + EssenceLib.MOD_ID;
-    public static final int MAX_SLOT_COUNT = 4;
+    /** Maximum essence slots / keybinds; matches {@link LevelManager#MAX_LEVEL}. */
+    public static final int MAX_SLOT_COUNT = LevelManager.MAX_LEVEL;
 
     public static Identifier identifier(String path) {
         return Identifier.of(MOD_ID, path);
@@ -49,6 +54,7 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
 
         // Register Apoli additions
         EssenceLibConditionTypes.register();
+        EssenceLibEntityActionTypes.register();
 
         // Register networking before it's needed
         LOGGER.debug("Setting up networking...");
@@ -64,6 +70,12 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new EssenceManager());
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new LevelManager());
 
+        // Apply slot count on join (skipped during NBT load when networkHandler is null)
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            LevelComponent comp = LevelComponent.KEY.get(handler.player);
+            if (comp != null) comp.updateLevel(false);
+        });
+
         // Register commands last
         LOGGER.debug("Registering commands...");
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> EssenceLibCommand.register(dispatcher));
@@ -74,5 +86,6 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
         registry.registerForPlayers(LevelComponent.KEY, LevelComponentImpl::new, RespawnCopyStrategy.ALWAYS_COPY);
+        registry.registerForPlayers(CollectorRushComponent.KEY, CollectorRushComponentImpl::new, RespawnCopyStrategy.ALWAYS_COPY);
     }
 }

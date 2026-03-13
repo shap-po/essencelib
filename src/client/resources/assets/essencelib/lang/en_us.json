@@ -1,4 +1,15 @@
 {
+  "key.category.essencelib": "Essence Lib",
+  "key.essencelib.active.slot_0": "Essence Ability (Slot 1)",
+  "key.essencelib.active.slot_1": "Essence Ability (Slot 2)",
+  "key.essencelib.active.slot_2": "Essence Ability (Slot 3)",
+  "key.essencelib.active.slot_3": "Essence Ability (Slot 4)",
+  "key.essencelib.active.slot_4": "Essence Ability (Slot 5)",
+  "key.essencelib.active.slot_5": "Essence Ability (Slot 6)",
+  "key.essencelib.active.slot_6": "Essence Ability (Slot 7)",
+  "key.essencelib.active.slot_7": "Essence Ability (Slot 8)",
+  "key.essencelib.active.slot_8": "Essence Ability (Slot 9)",
+  "key.essencelib.active.slot_9": "Essence Ability (Slot 10)",
   "item.essencelib.mob_essence": "Mob Essence",
   "component.item.essencelib.mob_essence": "%s essence",
   "item.essencelib.timer": "Decay: %s",
@@ -12,5 +23,11 @@
   "commands.essencelib.level.kills.pass": "Player %s has %s unique kills: %s",
   "commands.essencelib.level.reset.pass": "Player %s's level data has been reset.",
   "commands.essencelib.level.progress.pass": "Player %s has killed %s/%s unique mobs.",
-  "trinkets.slot.soul.essence": "Soul Essence"
+  "trinkets.slot.soul.essence": "Soul Essence",
+  "screen.essencelib.keybinds": "Essence Keybinds",
+  "screen.essencelib.keybind.change": "Change",
+  "screen.essencelib.keybind.tooltip": "Change essence keybinds",
+  "screen.essencelib.keybind.press_key": "Press a key",
+  "screen.essencelib.keybind.press_key.hint": "Press ESC to cancel",
+  "tooltip.essencelib.dropped_by": "Dropped by"
 }

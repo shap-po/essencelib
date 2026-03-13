@@ -47,9 +47,9 @@ public class LevelInfoRenderer {
         // Draw main text with shadow
         context.drawTextWithShadow(client.textRenderer, Text.literal(levelText), textX, textY, 0xFFFFFF);
 
-        // Add hover-over functionality
-        if (mouseX >= badgeX && mouseX <= badgeX + 16 &&
-            mouseY >= badgeY && mouseY <= badgeY + 16) {
+        // Hover-over tooltip
+        boolean overBadge = mouseX >= badgeX && mouseX <= badgeX + 16 && mouseY >= badgeY && mouseY <= badgeY + 16;
+        if (overBadge) {
             if (level >= LevelManager.MAX_LEVEL) {
                 context.drawTooltip(client.textRenderer, Text.literal("You have reached the maximum level!"), mouseX, mouseY);
                 return;

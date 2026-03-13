@@ -1,50 +1,5 @@
 {
   "name": "Collector's Intuition",
-  "description": "Your connection to items lets you sense uncollected treasures through walls within 30 blocks.",
-  "type": "apoli:multiple",
-  "glow": {
-    "type": "apoli:action_over_time",
-    "interval": 1,
-    "entity_action": {
-      "type": "apoli:area_of_effect",
-      "radius": 30,
-      "bientity_action": {
-        "type": "apoli:target_action",
-        "action": {
-          "type": "apoli:apply_effect",
-          "effects": [
-            {
-              "effect": "minecraft:glowing",
-              "duration": 5,
-              "amplifier": 0,
-              "is_ambient": true,
-              "show_particles": false,
-              "show_icon": false
-            }
-          ]
-        }
-      },
-      "bientity_condition": {
-        "type": "apoli:and",
-        "conditions": [
-          {
-            "type": "apoli:target_condition",
-            "condition": {
-              "type": "apoli:entity_type",
-              "entity_type": "minecraft:item"
-            }
-          },
-          {
-            "type": "apoli:target_condition",
-            "condition": {
-              "type": "apoli:command",
-              "command": "execute if entity @s[nbt={Item:{id:\"minecraft:diamond\"}}] run function esspack:allay_essence/check_collected",
-              "comparison": "==",
-              "compare_to": 0
-            }
-          }
-        ]
-      }
-    }
-  }
+  "description": "Your connection to items lets you sense uncollected treasures. Dropped items glow with an outline only you can see within 30 blocks.",
+  "type": "apoli:simple"
 }

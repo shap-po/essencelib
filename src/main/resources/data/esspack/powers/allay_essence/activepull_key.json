@@ -1,0 +1,37 @@
+{
+  "type": "shappoli:action_on_trinket_key_press",
+  "hidden": true,
+  "key": "essencelib:essencelib",
+  "continuous": true,
+  "cooldown": 1,
+  "item_condition": {
+    "type": "shappoli:has_trinket_power",
+    "power": "esspack:allay_essence/activepull"
+  },
+  "entity_action": {
+    "type": "apoli:if_else",
+    "condition": {
+      "type": "essencelib:mana",
+      "comparison": ">=",
+      "compare_to": 0.5
+    },
+    "if_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "essencelib:consume_mana",
+          "amount": 0.5
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:allay_essence/activepull_magnet_resource",
+          "change": 1
+        }
+      ]
+    },
+    "else_action": {
+      "type": "apoli:execute_command",
+      "command": "title @s actionbar {\"translate\":\"message.essencelib.insufficient_mana\",\"color\":\"red\"}"
+    }
+  }
+}

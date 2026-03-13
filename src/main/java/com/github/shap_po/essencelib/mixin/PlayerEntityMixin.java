@@ -30,8 +30,8 @@ public abstract class PlayerEntityMixin {
             // Set initial values
             if (maxMana.getBaseValue() <= 0) maxMana.setBaseValue(100);
             if (currentMana.getBaseValue() <= 0) currentMana.setBaseValue(0);
-            // Set base regen to 10 mana per minute (better starting point)
-            if (manaRegen.getBaseValue() <= 0) manaRegen.setBaseValue(10.0);
+            // Slow natural base regen (~2 mana/min) so users don't waste mana or hunt for regen items
+            if (manaRegen.getBaseValue() <= 0) manaRegen.setBaseValue(0.4);
 
             // Send initial values to client
             if (player instanceof ServerPlayerEntity serverPlayer) {

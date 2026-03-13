@@ -2,72 +2,21 @@
   "type": "apoli:multiple",
   "name": "Collector's Rush",
   "description": "Gain speed and haste from discovering new items. Your collection drive drains over time - keep finding new items to maintain the buffs!",
-  "resource": {
+  "collection_charge": {
     "type": "apoli:resource",
     "name": "esspack:collection_charge",
     "min": 0,
     "max": 600,
-    "initial_value": 300,
+    "initial_value": 450,
     "hud_render": {
       "should_render": true,
-      "sprite_location": "origins:textures/gui/resource_bar.png",
+      "sprite_location": "apoli:textures/gui/resource_bar.png",
       "bar_index": 2,
       "condition": {
-        "type": "apoli:compare_resource",
-        "resource": "*",
+        "type": "apoli:resource",
+        "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
         "comparison": "<",
         "compare_to": 600
-      }
-    }
-  },
-  "item_pickup": {
-    "type": "apoli:action_on_item_pickup",
-    "entity_action": {
-      "type": "apoli:if_else",
-      "condition": {
-        "type": "apoli:and",
-        "conditions": [
-          {
-            "type": "apoli:compare_resource",
-            "resource": "esspack:collection_charge",
-            "comparison": "<",
-            "compare_to": 600
-          },
-          {
-            "type": "apoli:inverted",
-            "condition": {
-              "type": "apoli:nbt",
-              "nbt": "{RecentItems:[{id:\"{{item}}\"}]}",
-              "target": "storage",
-              "storage": "esspack:memory"
-            }
-          }
-        ]
-      },
-      "if_action": {
-        "type": "apoli:sequence",
-        "actions": [
-          {
-            "type": "apoli:execute_command",
-            "command": "data modify storage esspack:memory RecentItems append value {id:\"{{item}}\", Time:{{world_time}}}"
-          },
-          {
-            "type": "apoli:change_resource",
-            "resource": "esspack:collection_charge",
-            "operation": "add",
-            "value": 100
-          },
-          {
-            "type": "apoli:change_resource",
-            "resource": "essencelib:current_mana",
-            "operation": "add",
-            "value": 15
-          },
-          {
-            "type": "apoli:execute_command",
-            "command": "particle minecraft:note ~ ~1 ~ 0.5 0.5 0.5 1 3"
-          }
-        ]
       }
     }
   },
@@ -76,48 +25,79 @@
     "interval": 20,
     "entity_action": {
       "type": "apoli:change_resource",
-      "resource": "esspack:collection_charge",
-      "operation": "add",
-      "value": -1
+      "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+      "change": -1
     }
   },
   "low_charge_warning": {
     "type": "apoli:action_over_time",
-    "interval": 100,
+    "interval": 1200,
     "condition": {
-      "type": "apoli:compare_resource",
-      "resource": "esspack:collection_charge",
+      "type": "apoli:resource",
+      "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
       "comparison": "<=",
-      "compare_to": 200
+      "compare_to": 0
     },
     "entity_action": {
       "type": "apoli:execute_command",
-      "command": "title @s actionbar {\"text\":\"Collection Drive Low - Find new items!\",\"color\":\"red\"}"
+      "command": "title @s actionbar {\"text\":\"Collection Drive Empty - Hunt for new items!\",\"color\":\"red\"}"
+    }
+  },
+  "low_charge_mana_drain": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+      "comparison": "<=",
+      "compare_to": 0
+    },
+    "modifier": {
+      "id": "esspack:low_collection_mana_drain",
+      "attribute": "essencelib:mana_regen",
+      "operation": "ADD_VALUE",
+      "amount": -1,
+      "name": "Low collection mana drain"
+    }
+  },
+  "low_charge_stamina_drain": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+      "comparison": "<=",
+      "compare_to": 0
+    },
+    "modifier": {
+      "id": "esspack:low_collection_stamina_drain",
+      "attribute": "puffish_attributes:player.stamina",
+      "operation": "ADD_MULTIPLIED_TOTAL",
+      "amount": -0.15,
+      "name": "Low collection stamina drain"
     }
   },
   "boost_effects": {
     "type": "apoli:action_over_time",
     "interval": 20,
     "condition": {
-      "type": "apoli:compare_resource",
-      "resource": "esspack:collection_charge",
+      "type": "apoli:resource",
+      "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
       "comparison": ">=",
-      "compare_to": 300
+      "compare_to": 450
     },
     "entity_action": {
       "type": "apoli:apply_effect",
       "effects": [
         {
-          "effect": "minecraft:haste",
-          "duration": 40,
+          "id": "minecraft:haste",
           "amplifier": 0,
+          "duration": 40,
           "is_ambient": true,
           "show_particles": false
         },
         {
-          "effect": "minecraft:speed",
-          "duration": 40,
+          "id": "minecraft:speed",
           "amplifier": 0,
+          "duration": 40,
           "is_ambient": true,
           "show_particles": false
         }
@@ -128,57 +108,53 @@
     "type": "apoli:action_over_time",
     "interval": 20,
     "condition": {
-      "type": "apoli:compare_resource",
-      "resource": "esspack:collection_charge",
+      "type": "apoli:resource",
+      "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
       "comparison": ">=",
-      "compare_to": 500
+      "compare_to": 525
     },
     "entity_action": {
       "type": "apoli:apply_effect",
       "effects": [
         {
-          "effect": "minecraft:haste",
-          "duration": 40,
+          "id": "minecraft:haste",
           "amplifier": 1,
+          "duration": 40,
           "is_ambient": true,
           "show_particles": false
         },
         {
-          "effect": "minecraft:speed",
-          "duration": 40,
+          "id": "minecraft:speed",
           "amplifier": 1,
+          "duration": 40,
           "is_ambient": true,
           "show_particles": false
         }
       ]
     }
   },
-  "crash_penalty": {
-    "type": "apoli:action_over_time",
-    "interval": 20,
+  "high_charge_mana_regen": {
+    "type": "apoli:conditioned_attribute",
     "condition": {
-      "type": "apoli:compare_resource",
-      "resource": "esspack:collection_charge",
-      "comparison": "<=",
-      "compare_to": 0
+      "type": "apoli:resource",
+      "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+      "comparison": ">=",
+      "compare_to": 450
     },
-    "entity_action": {
-      "type": "apoli:apply_effect",
-      "effect": {
-        "effect": "minecraft:mining_fatigue",
-        "duration": 40,
-        "amplifier": 0,
-        "is_ambient": true,
-        "show_particles": false
-      }
+    "modifier": {
+      "id": "esspack:high_collection_mana_regen",
+      "attribute": "essencelib:mana_regen",
+      "operation": "ADD_VALUE",
+      "amount": 8,
+      "name": "High collection mana regen"
     }
   },
   "item_cooldown": {
     "type": "apoli:action_over_time",
-    "interval": 200,
+    "interval": 6000,
     "entity_action": {
       "type": "apoli:execute_command",
-      "command": "data remove storage esspack:memory RecentItems[0]"
+      "command": "execute if data storage esspack:memory RecentItems[0] run data remove storage esspack:memory RecentItems[0]"
     }
   },
   "hidden": true

@@ -20,7 +20,7 @@ public class ManaEntityConditionType extends EntityConditionType {
             .add("compare_to", SerializableDataTypes.FLOAT),
         data -> new ManaEntityConditionType(
             data.get("comparison"),
-            data.getInt("compare_to")
+            data.getFloat("compare_to")
         ),
         (conditionType, serializableData) -> serializableData.instance()
             .set("comparison", conditionType.comparison)
@@ -28,9 +28,9 @@ public class ManaEntityConditionType extends EntityConditionType {
     );
 
     private final Comparison comparison;
-    private final int compareTo;
+    private final float compareTo;
 
-    public ManaEntityConditionType(Comparison comparison, int compareTo) {
+    public ManaEntityConditionType(Comparison comparison, float compareTo) {
         this.comparison = comparison;
         this.compareTo = compareTo;
     }

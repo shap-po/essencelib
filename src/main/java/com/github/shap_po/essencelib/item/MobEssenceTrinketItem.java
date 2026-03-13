@@ -2,6 +2,7 @@ package com.github.shap_po.essencelib.item;
 
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import dev.emi.trinkets.api.SlotReference;
+import dev.emi.trinkets.api.TrinketsApi;
 import dev.emi.trinkets.api.TrinketItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -15,6 +16,7 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
 
@@ -57,9 +59,43 @@ public class MobEssenceTrinketItem extends TrinketItem {
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, world, entity, slot, selected);
 
-        if (entity instanceof LivingEntity && stack.getComponents().getOrDefault(ModDataComponentTypes.AUTO_EQUIP, true) && !(entity instanceof PlayerEntity player && player.isCreative())) {
-            MobEssenceTrinketItem.equipItem((LivingEntity) entity, stack);
+        if (entity instanceof LivingEntity living && stack.getOrDefault(ModDataComponentTypes.AUTO_EQUIP, true) && !(entity instanceof PlayerEntity player && player.isCreative())) {
+            if (!hasEssenceEquipped(living, stack.get(ModDataComponentTypes.ESSENCE_ID))) {
+                TrinketItem.equipItem(living, stack);
+            }
         }
+    }
+
+    /** Returns true if the player already has an essence with this ID (equipped or in inventory). */
+    public static boolean hasEssenceInPossession(PlayerEntity player, Identifier essenceId) {
+        if (essenceId == null) return false;
+        if (hasEssenceEquipped(player, essenceId)) return true;
+        for (int i = 0; i < player.getInventory().size(); i++) {
+            ItemStack s = player.getInventory().getStack(i);
+            if (!s.isEmpty() && s.getItem() instanceof MobEssenceTrinketItem) {
+                if (essenceId.equals(s.get(ModDataComponentTypes.ESSENCE_ID))) return true;
+            }
+        }
+        return false;
+    }
+
+    /** Returns true if the entity already has an essence with this ID equipped in a trinket slot. */
+    public static boolean hasEssenceEquipped(LivingEntity entity, Identifier essenceId) {
+        if (essenceId == null) return false;
+        return TrinketsApi.getTrinketComponent(entity)
+            .map(comp -> comp.getInventory().values().stream()
+                .flatMap(group -> group.values().stream())
+                .anyMatch(inv -> {
+                    for (int i = 0; i < inv.size(); i++) {
+                        ItemStack s = inv.getStack(i);
+                        if (!s.isEmpty() && s.getItem() instanceof MobEssenceTrinketItem) {
+                            Identifier id = s.get(ModDataComponentTypes.ESSENCE_ID);
+                            if (essenceId.equals(id)) return true;
+                        }
+                    }
+                    return false;
+                }))
+            .orElse(false);
     }
 }
 

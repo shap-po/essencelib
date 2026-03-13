@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.command;
 
 import com.github.shap_po.essencelib.command.argument.EssenceArgumentType;
+import com.github.shap_po.essencelib.item.MobEssenceTrinketItem;
 import com.github.shap_po.essencelib.component.LevelComponent;
 import com.github.shap_po.essencelib.essence.Essence;
 import com.github.shap_po.essencelib.essence.EssenceManager;
@@ -106,6 +107,11 @@ public class EssenceLibCommand {
 
         ServerPlayerEntity serverPlayerEntity = EntityArgumentType.getPlayer(context, "player");
         Essence essence = EssenceArgumentType.getEssence(context, "essence");
+
+        if (MobEssenceTrinketItem.hasEssenceInPossession(serverPlayerEntity, essence.getId())) {
+            source.sendError(Text.translatable("commands.essencelib.give.duplicate", serverPlayerEntity.getDisplayName()));
+            return 0;
+        }
 
         ItemStack stack = essence.toItemStack();
 

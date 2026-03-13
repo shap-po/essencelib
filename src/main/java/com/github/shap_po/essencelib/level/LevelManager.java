@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.level;
 
 import com.github.shap_po.essencelib.EssenceLib;
+import com.github.shap_po.essencelib.collector.CollectorRushCapacity;
 import com.github.shap_po.essencelib.component.LevelComponent;
 import com.github.shap_po.essencelib.registry.ModTags;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -75,7 +76,8 @@ public class LevelManager implements SimpleSynchronousResourceReloadListener {
 
     @Override
     public void reload(ResourceManager manager) {
-        totalEntityCount = null; // reset count so it will be recalculated
+        totalEntityCount = null;
+        CollectorRushCapacity.invalidateCache();
         setUpRequiredKills();
         EssenceLib.LOGGER.info("Reloaded leveling data.");
     }
@@ -87,6 +89,33 @@ public class LevelManager implements SimpleSynchronousResourceReloadListener {
 
     private void setUpRequiredKills() {
         REQUIRED_KILLS.clear();
-        REQUIRED_KILLS.addAll(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)); // TODO: calculate by formula
+        int total = getTotalEntityCount();
+        
+        // We set the maximum level requirement to 80% of the total available entities.
+        // This ensures players don't need to kill literally every single entity (some might be unobtainable or boss-only).
+        double maxRequirement = total * 0.80;
+        
+        // First level requires 5 or more kills, scaling with total mob count (e.g. ~5% of mobs, min 5)
+        int firstLevelKills = Math.max(5, (int) Math.ceil(total * 0.05));
+
+        for (int i = 1; i <= MAX_LEVEL; i++) {
+            if (i == 1) {
+                REQUIRED_KILLS.add(firstLevelKills);
+            } else {
+                double fraction = (double) (i - 1) / (MAX_LEVEL - 1);
+                // Squaring the fraction gives a curve that requires less kills early on and scales up steeply later.
+                int requiredKills = (int) Math.round(maxRequirement * Math.pow(fraction, 2.0));
+                
+                // Ensure strictly increasing required kills so you don't get stuck at levels
+                int previous = REQUIRED_KILLS.get(i - 2);
+                if (requiredKills <= previous) {
+                    requiredKills = previous + 1;
+                }
+                
+                REQUIRED_KILLS.add(requiredKills);
+            }
+        }
+        
+        EssenceLib.LOGGER.info("Calculated required kills for leveling: {}", REQUIRED_KILLS);
     }
 }

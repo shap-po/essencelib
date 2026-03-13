@@ -1,0 +1,48 @@
+{
+    "schemaVersion": 1,
+    "id": "lootbeams",
+    "version": "3.6.1-mc1.21-.1",
+    "accessWidener": "lootbeams.accesswidener",
+    "name": "LootBeams",
+    "description": "Renders highly configurable colored beams on dropped items!",
+    "authors": [
+        "EnsoX"
+    ],
+    "contributors": [
+        "VanderCat",
+        "Grend (aka AHilyard)",
+        "IMS (aka IMS212)"
+    ],
+    "contact": {
+        "homepage": "https://t.me/ensox"
+    },
+
+    "license": "MIT",
+    "icon": "assets/lootbeams/icon.png",
+
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            "com.lootbeams.LootBeams"
+        ],
+        "modmenu": [
+            "com.lootbeams.compat.modmenu.LootBeamsModMenuEntry"
+        ]
+    },
+    "mixins": [
+        "mixin.lootbeams.json"
+    ],
+
+    "depends": {
+        "fabricloader": ">=0.12.0",
+        "fabric": "*",
+        "minecraft": ">1.19.3"
+    },
+    "suggests": {
+        "clothconfig": "*",
+        "modmenu": "*"
+    },
+    "custom": {
+
+    }
+}

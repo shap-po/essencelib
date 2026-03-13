@@ -17,7 +17,7 @@
     {
       "id": "3",
       "attribute": "additionalentityattributes:player.collection_range",
-      "amount": 5,
+      "amount": 1,
       "operation": "ADD_VALUE"
     },
     {
@@ -47,9 +47,10 @@
   ],
   "powers": [
     "*:allay_essence/activepull",
+    "*:allay_essence/activepull_key",
     "*:allay_essence/item_whisperer",
     "*:allay_essence/hoarder_lifestyle"
   ],
   "dropped_by": "minecraft:allay",
-  "chance": 0
+  "chance": 1.0
 }

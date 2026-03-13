@@ -34,9 +34,10 @@
       "environment": "client"
     }
   ],
-  "custom": {
+    "custom": {
     "cardinal-components": [
-      "essencelib:level"
+      "essencelib:level",
+      "essencelib:collector_rush"
     ]
   },
   "depends": {
@@ -45,6 +46,8 @@
     "java": ">=21",
     "fabric-api": "*",
     "apoli": "*",
-    "shappoli": "*"
+    "origins": "*",
+    "shappoli": "*",
+    "lootbeams": "*"
   }
 }

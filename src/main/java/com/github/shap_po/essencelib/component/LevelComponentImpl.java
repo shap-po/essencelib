@@ -39,7 +39,7 @@ import net.minecraft.util.Identifier;
 public class LevelComponentImpl implements LevelComponent {
     private final PlayerEntity provider;
     private final Set<Identifier> uniqueKills = new HashSet<>();
-    private int level = 1;
+    private int level = 0;
 
     public LevelComponentImpl(PlayerEntity provider) {
         this.provider = provider;
@@ -115,6 +115,7 @@ public class LevelComponentImpl implements LevelComponent {
     @Override
     public void updateLevel(boolean shouldSync) {
         int newLevel = LevelManager.getLevel(provider);
+        applySlotCount(newLevel);  // Always apply so level 0 = 0 slots
         if (newLevel == level) {
             return;
         }
@@ -128,16 +129,17 @@ public class LevelComponentImpl implements LevelComponent {
         }
     }
 
+    private void applySlotCount(int level) {
+        if (!(provider instanceof ServerPlayerEntity player)) return;
+        if (player.networkHandler == null) return; // Not fully joined - defer to JOIN event
+        TrinketInventory trinketInventory = getTrinketInventory();
+        if (trinketInventory == null) return;
+        // Level 0 = 0 slots; level 1 = 1 slot, level 2 = 2 slots, ... level 10 = 10 slots
+        setSlotCount(trinketInventory, level);
+    }
+
     private void handleLevelChange(boolean isLevelUp) {
         if (!(provider instanceof ServerPlayerEntity player)) return;
-
-        TrinketInventory trinketInventory = getTrinketInventory();
-        if (trinketInventory == null) {
-            EssenceLib.LOGGER.warn("Could not level-up player {}. No trinket inventory found.", player.getName().getString());
-            return;
-        }
-        // Add an essence/soul slot
-        setSlotCount(trinketInventory, level - 1);
 
         if (!isLevelUp) {
             return;
@@ -200,6 +202,8 @@ public class LevelComponentImpl implements LevelComponent {
         }
 
         level = compoundTag.getInt("level");
+        // Recalculate level from kills on load (e.g. new players with 0 kills → level 0)
+        updateLevel(false);
     }
 
     @Override
