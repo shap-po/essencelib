@@ -1,0 +1,32 @@
+{
+  "esspack:allay_essence/hoarder_lifestyle_collection_charge": {
+    "label": "💠 Collector",
+    "max": 100,
+    "start_color": "#FF6DE9FF",
+    "end_color": "#FF2D8EFF",
+    "track_bg_color": "#66101822",
+    "border_color": "#AA2A3550",
+    "icon_item": "minecraft:experience_bottle",
+    "enabled": true
+  },
+  "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve": {
+    "label": "🛡 Resolve",
+    "max": 100,
+    "start_color": "#FFFFC66A",
+    "end_color": "#FFC77933",
+    "track_bg_color": "#661B1308",
+    "border_color": "#AA7E5A2A",
+    "icon_item": "minecraft:shield",
+    "enabled": true
+  },
+  "esspack:armadillo_essence/scute_rebound_momentum": {
+    "label": "⚡ Rebound",
+    "max": 120,
+    "start_color": "#FFFFEA7A",
+    "end_color": "#FFD39A27",
+    "track_bg_color": "#661B1808",
+    "border_color": "#AAA0782A",
+    "icon_item": "minecraft:armadillo_scute",
+    "enabled": true
+  }
+}

@@ -13,7 +13,8 @@ import java.util.List;
 public record EssenceTooltipData(
     Text name,
     List<PowerEntry> powers,
-    List<Text> stats
+    List<Text> stats,
+    List<Text> footerHints
 ) implements TooltipData {
 
     public record PowerEntry(

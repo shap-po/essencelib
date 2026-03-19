@@ -22,20 +22,37 @@ public class TrinketKeyBindingGenerator {
     private static JsonObject createTrinketKeyBinding(int index, String group, String slotName) {
         JsonObject slot = new JsonObject();
         slot.add("group", new JsonPrimitive(group));
-        slot.add("slot", new JsonPrimitive(slotName));
+        slot.add("name", new JsonPrimitive(slotName));
         slot.add("index", new JsonPrimitive(index));
 
-        JsonObject key = new JsonObject();
-        key.add("key", new JsonPrimitive(slotTranslationKey(index)));
+        JsonArray slots = new JsonArray();
+        slots.add(slot);
+
+        JsonArray keys = new JsonArray();
+        // Add both continuous and non-continuous versions for slot-specific key
+        keys.add(createKeyRef(slotTranslationKey(index), false));
+        keys.add(createKeyRef(slotTranslationKey(index), true));
 
         JsonObject trinketKeyBinding = new JsonObject();
-        trinketKeyBinding.add("slot", slot);
-        trinketKeyBinding.add("key", key);
+        trinketKeyBinding.add("slots", slots);
+        trinketKeyBinding.add("keys", keys);
 
         return trinketKeyBinding;
     }
 
+    private static JsonObject createKeyRef(String keyTranslation, boolean continuous) {
+        JsonObject key = new JsonObject();
+        key.add("key", new JsonPrimitive(keyTranslation));
+        key.add("category", new JsonPrimitive(EssenceLib.KEYBINDINGS_CATEGORY));
+        key.add("continuous", new JsonPrimitive(continuous));
+        return key;
+    }
+
     public static String slotTranslationKey(int index) {
         return "key." + EssenceLib.MOD_ID + ".active.slot_" + index;
+    }
+
+    public static String trinketKeyBindingId() {
+        return EssenceLib.MOD_ID;
     }
 }

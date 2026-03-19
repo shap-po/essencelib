@@ -94,14 +94,15 @@
     {
       "id": "essences",
       "name": "*",
-      "color": "#8A2BE2.",
+      "color": "#4AA3FF",
+      "animated_color": "3_#7FDBFF_#4AA3FF_#6A7CFF_#4FE3FF",
       "config": {
-        "beam_height": 10,
-        "beam_alpha": 0.6,
-        "render_item_rarity": true,
+        "beam_height": 11,
+        "beam_alpha": 0.72,
+        "render_item_rarity": false,
         "glow_effect_texture": "lootbeams:magic_cir",
         "glow_effect_radius": 2,
-        "glow_effect_alpha": 0.6,
+        "glow_effect_alpha": 0.78,
         "animate_glow": false
       },
       "selectors": [

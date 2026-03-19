@@ -1,0 +1,52 @@
+{
+  "type": "shappoli:action_on_trinket_key_press",
+  "hidden": true,
+  "key": "essencelib:essencelib",
+  "continuous": false,
+  "cooldown": 5,
+  "item_condition": {
+    "type": "shappoli:has_trinket_power",
+    "power": "esspack:armadillo_essence/armadillo_ball_up"
+  },
+  "entity_action": {
+    "type": "apoli:if_else",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "essencelib:mana",
+          "comparison": ">=",
+          "compare_to": 10
+        },
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+          "comparison": "<=",
+          "compare_to": 0
+        }
+      ]
+    },
+    "if_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "essencelib:consume_mana",
+          "amount": 10
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+          "change": 100
+        },
+        {
+          "type": "apoli:execute_command",
+          "command": "title @s actionbar {\"text\":\"Ball Up Active\",\"color\":\"gold\"}"
+        }
+      ]
+    },
+    "else_action": {
+      "type": "apoli:execute_command",
+      "command": "title @s actionbar {\"text\":\"Ball Up unavailable (already active or low mana)\",\"color\":\"red\"}"
+    }
+  }
+}

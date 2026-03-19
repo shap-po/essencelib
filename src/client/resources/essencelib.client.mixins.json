@@ -3,7 +3,10 @@
   "package": "com.github.shap_po.essencelib.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "ClientPlayNetworkHandlerMixin",
     "HandledScreenAccessor",
+    "HandledScreenDownedLockMixin",
+    "HandledScreenInvoker",
     "InventoryScreenMixin",
     "ItemEntityAccessor",
     "ItemEntityRendererAccessor",

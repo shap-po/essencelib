@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * Disables Loot Beams tooltip for essence items - we use our own floating tooltip instead.
  */
-@Mixin(targets = "com.lootbeams.renderers.TooltipRenderer", remap = false)
+@Mixin(value = com.lootbeams.renderers.TooltipRenderer.class, remap = false)
 public abstract class LootBeamsTooltipRendererMixin {
 
     @Inject(method = "renderWorldPositionTooltip", at = @At("HEAD"), cancellable = true, remap = false)

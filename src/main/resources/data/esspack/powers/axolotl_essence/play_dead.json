@@ -1,0 +1,87 @@
+{
+  "type": "apoli:multiple",
+  "name": "Play Dead",
+  "description": "Feign death for 5 seconds. You are immobilized and gain resistance, regeneration, and invisibility. Costs 25 mana to activate and 8 mana per second while active.",
+  "play_dead_state": {
+    "type": "apoli:resource",
+    "name": "esspack:axolotl_play_dead_state",
+    "min": 0,
+    "max": 100,
+    "initial_value": 0,
+    "hud_render": {
+      "should_render": true,
+      "sprite_location": "apoli:textures/gui/resource_bar.png",
+      "bar_index": 3,
+      "condition": {
+        "type": "apoli:resource",
+        "resource": "esspack:axolotl_essence/play_dead_play_dead_state",
+        "comparison": ">",
+        "compare_to": 0
+      }
+    }
+  },
+  "play_dead_tick": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:axolotl_essence/play_dead_play_dead_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "apoli:execute_command",
+          "command": "effect give @s minecraft:slowness 1 10 true"
+        },
+        {
+          "type": "apoli:execute_command",
+          "command": "effect give @s minecraft:resistance 2 0 true"
+        },
+        {
+          "type": "apoli:execute_command",
+          "command": "effect give @s minecraft:regeneration 1 0 true"
+        },
+        {
+          "type": "apoli:execute_command",
+          "command": "effect give @s minecraft:invisibility 1 0 true"
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:axolotl_essence/play_dead_play_dead_state",
+          "change": -1
+        }
+      ]
+    }
+  },
+  "play_dead_mana_drain": {
+    "type": "apoli:action_over_time",
+    "interval": 20,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:axolotl_essence/play_dead_play_dead_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:if_else",
+      "condition": {
+        "type": "essencelib:mana",
+        "comparison": ">=",
+        "compare_to": 8
+      },
+      "if_action": {
+        "type": "essencelib:consume_mana",
+        "amount": 8
+      },
+      "else_action": {
+        "type": "apoli:change_resource",
+        "resource": "esspack:axolotl_essence/play_dead_play_dead_state",
+        "change": -100
+      }
+    }
+  },
+  "hidden": true
+}

@@ -1,0 +1,144 @@
+{
+  "type": "apoli:multiple",
+  "name": "Ball Up",
+  "description": "Curl into a defensive ball for 5 seconds. While curled, you are nearly immobile and ineffective at combat/mining, but far harder to kill.",
+  "ball_state": {
+    "type": "apoli:resource",
+    "name": "esspack:armadillo_ball_state",
+    "min": 0,
+    "max": 100,
+    "initial_value": 0,
+    "hud_render": {
+      "should_render": true,
+      "sprite_location": "apoli:textures/gui/resource_bar.png",
+      "bar_index": 2,
+      "condition": {
+        "type": "apoli:resource",
+        "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+        "comparison": ">",
+        "compare_to": 0
+      }
+    }
+  },
+  "force_reset_on_zero": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+      "comparison": "<=",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+      "operation": "set",
+      "change": 0
+    }
+  },
+  "curl_tick": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "apoli:execute_command",
+          "command": "effect give @s minecraft:slowness 1 10 true"
+        },
+        {
+          "type": "apoli:execute_command",
+          "command": "effect give @s minecraft:weakness 1 4 true"
+        },
+        {
+          "type": "apoli:execute_command",
+          "command": "effect give @s minecraft:mining_fatigue 1 4 true"
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+          "change": -1
+        }
+      ]
+    }
+  },
+  "curl_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "modifier": {
+      "id": "esspack:armadillo_curl_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_value",
+      "amount": 8,
+      "name": "Armadillo Curl Armor"
+    }
+  },
+  "curl_knockback": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "modifier": {
+      "id": "esspack:armadillo_curl_knockback",
+      "attribute": "minecraft:generic.knockback_resistance",
+      "operation": "add_value",
+      "amount": 0.5,
+      "name": "Armadillo Curl Knockback Resist"
+    }
+  },
+  "curl_melee_resistance": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "modifier": {
+      "id": "esspack:armadillo_curl_melee_resistance",
+      "attribute": "puffish_attributes:player.melee_resistance",
+      "operation": "add_multiplied_total",
+      "amount": 0.2,
+      "name": "Armadillo Curl Melee Resistance"
+    }
+  },
+  "curl_visual": {
+    "type": "essencelib:modify_player_model",
+    "model": "essencelib:armadillo_ball",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+      "comparison": ">",
+      "compare_to": 0
+    }
+  },
+  "curl_resistance": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:execute_command",
+      "command": "effect give @s minecraft:resistance 1 0 true"
+    }
+  },
+  "hidden": true
+}

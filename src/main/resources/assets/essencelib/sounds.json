@@ -1,0 +1,11 @@
+{
+  "nuisance.allay_laugh": {
+    "subtitle": "subtitles.entity.allay.ambient_with_item",
+    "sounds": [
+      {
+        "name": "essencelib:nuisance/allay_laugh",
+        "stream": false
+      }
+    ]
+  }
+}

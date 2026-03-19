@@ -5,24 +5,23 @@ import net.fabricmc.api.Environment;
 import net.minecraft.entity.ItemEntity;
 
 /**
- * Holds the ItemEntity currently being rendered (for Collector's Intuition outline).
- * Set/cleared by ItemEntityRendererMixin; read by CollectorIntuitionItemRendererMixin.
+ * Per-thread render context for the currently rendered ItemEntity.
  */
 @Environment(EnvType.CLIENT)
 public final class ItemEntityRenderContext {
 
-    private static final ThreadLocal<ItemEntity> CURRENT = ThreadLocal.withInitial(() -> null);
+    private static final ThreadLocal<ItemEntity> CURRENT = new ThreadLocal<>();
 
     public static void set(ItemEntity entity) {
         CURRENT.set(entity);
     }
 
-    public static void clear() {
-        CURRENT.remove();
-    }
-
     public static ItemEntity get() {
         return CURRENT.get();
+    }
+
+    public static void clear() {
+        CURRENT.remove();
     }
 
     private ItemEntityRenderContext() {}

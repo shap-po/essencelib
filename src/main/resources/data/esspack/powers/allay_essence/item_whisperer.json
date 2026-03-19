@@ -1,5 +1,5 @@
 {
   "name": "Collector's Intuition",
-  "description": "Your connection to items lets you sense uncollected treasures. Dropped items glow with an outline only you can see within 30 blocks.",
+  "description": "Item entities glow through walls in a range that scales with your collection-range instinct.",
   "type": "apoli:simple"
 }

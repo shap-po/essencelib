@@ -1,0 +1,14 @@
+{
+  "type": "apoli:action_over_time",
+  "interval": 40,
+  "condition": {
+    "type": "apoli:resource",
+    "resource": "esspack:axolotl_essence/hydration_lifestyle",
+    "comparison": "<=",
+    "compare_to": 0
+  },
+  "entity_action": {
+    "type": "apoli:execute_command",
+    "command": "effect give @s minecraft:wither 2 0 true"
+  }
+}

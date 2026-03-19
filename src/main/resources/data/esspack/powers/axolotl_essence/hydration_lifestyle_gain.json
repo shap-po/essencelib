@@ -1,0 +1,21 @@
+{
+  "type": "apoli:action_over_time",
+  "interval": 20,
+  "condition": {
+    "type": "apoli:or",
+    "conditions": [
+      {
+        "type": "origins:submerged_in",
+        "fluid": "minecraft:water"
+      },
+      {
+        "type": "origins:in_rain"
+      }
+    ]
+  },
+  "entity_action": {
+    "type": "apoli:change_resource",
+    "resource": "esspack:axolotl_essence/hydration_lifestyle",
+    "change": 5
+  }
+}

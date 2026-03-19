@@ -1,0 +1,30 @@
+{
+  "power_feels": {
+    "esspack:allay_essence/activepull": "Loose treasure tears toward your hands and rewards a fast looter's pace, letting you secure drops before anyone else can react. It pairs well with your lighter movement and scavenger reach, but your thinner guard and weaker direct strikes make greedy dives risky if enemies collapse on you.",
+    "esspack:allay_essence/item_whisperer": "Hidden loot glints through walls, so routes, side paths, and missed value become much easier to read in real time. The feeling is sharp, curious, and opportunistic, but this insight does not fix your fragility in open combat, so you win by positioning and tempo rather than trading blows.",
+    "esspack:allay_essence/hoarder_lifestyle_collection_charge": "Keep feeding the hunt and your body feels quick, sustained, and efficient, turning constant pickups into momentum and pressure. If the flow dries up, the same essence turns restless and draining, leaving your stamina rhythm unstable and your confidence in prolonged fights noticeably worse.",
+    "esspack:armadillo_essence/armadillo_ball_up": "You fold into dense living armor and feel almost impossible to displace, turning burst damage and knockback into manageable pressure. The cost is severe tempo loss: movement, mining, and offense nearly stall while curled, so timing and positioning decide whether this saves you or traps you.",
+    "esspack:armadillo_essence/scute_rebound": "Trading hits builds pressure in your frame, then releases it as a short burst of faster steps and heavier melee follow-through. It gives your slow baseline a controlled spike window, but only if you stay in the fight long enough to charge it without overextending.",
+    "esspack:armadillo_essence/threat_rhythm_lifestyle": "Holding enemy focus steadies your body, hardens your frontline presence, and makes sustained pressure feel more controlled. If you lose threat and drift out of the brawl, resolve falls and the essence turns heavy, dragging your movement, swing pace, and stamina into a sluggish state.",
+    "esspack:axolotl_essence/play_dead": "When pressed, your body goes still and fades from sight, trading all action for heavy resistance and slow recovery. It buys time at the cost of mana and control—use it when escape or backup is close.",
+    "esspack:axolotl_essence/amphibious": "Water becomes a second home: you breathe and see clearly in the depths, and move through it with ease. On land you feel slightly slower and less guarded, as if part of you is still waiting for the next dive.",
+    "esspack:axolotl_essence/hydration_lifestyle": "Staying wet keeps you strong and quick; drying out pulls you down with weakness and, if pushed too far, a creeping drain. The essence rewards a rhythm of returning to water or rain and punishes long stretches on dry ground."
+  },
+  "essence_power_order": {
+    "esspack:allay_essence": [
+      "esspack:allay_essence/activepull",
+      "esspack:allay_essence/item_whisperer",
+      "esspack:allay_essence/hoarder_lifestyle_collection_charge"
+    ],
+    "esspack:armadillo_essence": [
+      "esspack:armadillo_essence/armadillo_ball_up",
+      "esspack:armadillo_essence/scute_rebound",
+      "esspack:armadillo_essence/threat_rhythm_lifestyle"
+    ],
+    "esspack:axolotl_essence": [
+      "esspack:axolotl_essence/play_dead",
+      "esspack:axolotl_essence/amphibious",
+      "esspack:axolotl_essence/hydration_lifestyle"
+    ]
+  }
+}

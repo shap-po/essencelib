@@ -1,0 +1,37 @@
+{
+  "profiles": {
+    "essencelib:collector_intuition_item_outline": {
+      "required_power": "esspack:allay_essence/item_whisperer",
+      "target_type": "item",
+      "range_attribute": "additionalentityattributes:player.collection_range",
+      "base_range": 30.0,
+      "range_per_attribute": 4.0,
+      "min_range": 12.0,
+      "max_range": 64.0
+    },
+    "essencelib:aggro_mob_detector": {
+      "required_power": "esspack:armadillo_essence/threat_rhythm_lifestyle",
+      "target_type": "mob",
+      "base_range": 24.0,
+      "range_per_attribute": 0.0,
+      "min_range": 8.0,
+      "max_range": 64.0
+    },
+    "essencelib:researcher_player_detector": {
+      "required_power": "esspack:allay_essence/item_whisperer",
+      "target_type": "player",
+      "base_range": 18.0,
+      "range_per_attribute": 0.0,
+      "min_range": 8.0,
+      "max_range": 48.0
+    },
+    "essencelib:block_detector": {
+      "required_power": "esspack:allay_essence/item_whisperer",
+      "target_type": "block",
+      "base_range": 20.0,
+      "range_per_attribute": 0.0,
+      "min_range": 6.0,
+      "max_range": 48.0
+    }
+  }
+}

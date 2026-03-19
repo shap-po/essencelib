@@ -1,0 +1,13 @@
+{
+  "type": "apoli:resource",
+  "name": "Hydration",
+  "description": "Hydration fills in water or rain and drains on dry land. Stay wet for strength and speed; run dry for weakness and damage.",
+  "min": 0,
+  "max": 100,
+  "initial_value": 50,
+  "hud_render": {
+    "should_render": true,
+    "sprite_location": "apoli:textures/gui/resource_bar.png",
+    "bar_index": 4
+  }
+}

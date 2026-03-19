@@ -5,8 +5,15 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ArgumentTypesMixin",
+    "AllayEntitySBLMixin",
+    "AllayEntityMixin",
+    "ScreenHandlerInventorySyncMixin",
+    "ShappoliTrinketItemPowersComponentMixin",
+    "ServerPlayerInteractionManagerMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",
+    "PlayerEntityInteractMixin",
+    "PlayerEntityDownedLockMixin",
     "PlayerEntityMixin",
     "TrinketItemPowersComponentAccessor",
     "TrinketKeyBindingManagerMixin"
@@ -15,7 +22,12 @@
     "defaultRequire": 1
   },
   "client": [
-    "CollectorIntuitionHaloMixin",
+    "client.AllayEntityModelMixin",
+    "client.ItemEntityGlowMixin",
+    "client.EntityRenderDispatcherGlowMixin",
+    "client.EntityRenderDispatcherSilhouetteMixin",
+    "client.LivingEntityRendererFeatureAdder",
+    "client.PlayerEntityRendererMixin",
     "ItemEntityRendererMixin",
     "MobEssenceTrinketItemTooltipMixin",
     "TrinketItemPowersComponentMixin",

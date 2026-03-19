@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.collector;
 
 import com.github.shap_po.essencelib.component.CollectorRushComponent;
+import com.github.shap_po.essencelib.config.ServerAbilityHookConfig;
 import com.github.shap_po.essencelib.registry.ManaAttributeRegistry;
 import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerManager;
@@ -24,32 +25,30 @@ import java.util.Set;
  */
 public final class CollectorRushHelper {
 
-    private static final Identifier HOARDER_COLLECTION_CHARGE =
-        Identifier.of("esspack", "allay_essence/hoarder_lifestyle_collection_charge");
-
     /**
      * Triggers Collector's Rush (charge, mana, particle) only for NEW items.
      * Call when addCollectedItem returns true.
      */
     public static void triggerRushForNewItemPickup(@Nullable PlayerEntity player, ItemStack stack) {
         if (player == null || player.getWorld().isClient() || stack == null || stack.isEmpty()) return;
+        ServerAbilityHookConfig.Config cfg = ServerAbilityHookConfig.get();
 
-        Power power = PowerManager.getNullable(HOARDER_COLLECTION_CHARGE);
+        Power power = PowerManager.getNullable(cfg.collectorRushChargePower());
         if (power == null) return;
 
         PowerType powerType = PowerUtil.getNullablePowerType(power, player);
         if (powerType == null) return;
 
         int current = PowerUtil.getResourceValue(powerType);
-        if (current >= 600) return;
+        if (current >= 100) return;
 
-        PowerUtil.setResourceValue(powerType, 600);
+        PowerUtil.setResourceValue(powerType, 100);
 
         if (player instanceof LivingEntity living) {
             EntityAttributeInstance mana = living.getAttributeInstance(ManaAttributeRegistry.getCurrentManaEntry());
             if (mana != null) {
                 double max = living.getAttributeValue(ManaAttributeRegistry.getMaxManaEntry());
-                mana.setBaseValue(Math.min(max, mana.getBaseValue() + 15));
+                mana.setBaseValue(Math.min(max, mana.getBaseValue() + cfg.collectorRushManaOnNewItem()));
             }
         }
 
@@ -58,7 +57,15 @@ public final class CollectorRushHelper {
         if (player.getServer() != null) {
             player.getServer().getCommandManager().executeWithPrefix(
                 player.getCommandSource().withSilent(),
-                "data modify storage esspack:memory RecentItems append value {id:\"" + itemId + "\",Time:" + worldTime + "}"
+                "data modify storage "
+                    + cfg.collectorMemoryStorage()
+                    + " "
+                    + cfg.collectorMemoryListKey()
+                    + " append value {id:\""
+                    + itemId
+                    + "\",Time:"
+                    + worldTime
+                    + "}"
             );
         }
     }

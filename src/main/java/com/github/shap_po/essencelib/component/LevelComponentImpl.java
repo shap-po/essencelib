@@ -1,16 +1,11 @@
 package com.github.shap_po.essencelib.component;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.github.shap_po.essencelib.EssenceLib;
@@ -18,6 +13,7 @@ import com.github.shap_po.essencelib.level.LevelManager;
 import com.github.shap_po.shappoli.integration.trinkets.util.TrinketsSlotModifierUtil;
 import com.google.common.collect.ImmutableSet;
 
+import dev.emi.trinkets.TrinketPlayerScreenHandler;
 import dev.emi.trinkets.api.TrinketInventory;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.entity.Entity;
@@ -36,9 +32,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
+import com.github.shap_po.essencelib.networking.s2c.LevelUpToastS2CPacket;
+import com.github.shap_po.essencelib.networking.s2c.UniqueKillToastS2CPacket;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+
 public class LevelComponentImpl implements LevelComponent {
     private final PlayerEntity provider;
     private final Set<Identifier> uniqueKills = new HashSet<>();
+    private final Map<Identifier, Integer> killCounts = new HashMap<>();
     private int level = 0;
 
     public LevelComponentImpl(PlayerEntity provider) {
@@ -55,11 +56,18 @@ public class LevelComponentImpl implements LevelComponent {
     }
 
     @Override
+    public int getKillCount(Identifier id) {
+        return killCounts.getOrDefault(id, 0);
+    }
+
+    @Override
     public void addUniqueKill(Identifier id) {
-        if (uniqueKills.contains(id)) {
-            return;
+        boolean isNew = uniqueKills.add(id);
+        killCounts.merge(id, 1, Integer::sum);
+
+        if (isNew && provider instanceof ServerPlayerEntity serverPlayer) {
+            ServerPlayNetworking.send(serverPlayer, new UniqueKillToastS2CPacket(id));
         }
-        uniqueKills.add(id);
 
         updateLevel(false);
         sync();
@@ -76,6 +84,7 @@ public class LevelComponentImpl implements LevelComponent {
             return;
         }
         uniqueKills.remove(id);
+        killCounts.remove(id);
 
         updateLevel(false);
         sync();
@@ -102,6 +111,7 @@ public class LevelComponentImpl implements LevelComponent {
             return;
         }
         uniqueKills.clear();
+        killCounts.clear();
 
         updateLevel(false);
         sync();
@@ -130,12 +140,21 @@ public class LevelComponentImpl implements LevelComponent {
     }
 
     private void applySlotCount(int level) {
-        if (!(provider instanceof ServerPlayerEntity player)) return;
-        if (player.networkHandler == null) return; // Not fully joined - defer to JOIN event
+        // Apply on both client and server so slot counts stay in sync (prevents InventoryS2CPacket
+        // IndexOutOfBounds when server has more slots than client)
+        if (provider.getWorld().isClient) return; // Client: do nothing, let server sync
+        if (provider instanceof ServerPlayerEntity player && player.networkHandler == null) return; // Server: defer until joined
         TrinketInventory trinketInventory = getTrinketInventory();
         if (trinketInventory == null) return;
-        // Level 0 = 0 slots; level 1 = 1 slot, level 2 = 2 slots, ... level 10 = 10 slots
-        setSlotCount(trinketInventory, level);
+        // Slot has base amount 1; modifier adjusts: level 0 -> -1 (0 slots), level 1 -> 0 (1 slot), level 2 -> 1 (2 slots), etc.
+        setSlotCount(trinketInventory, level - 1);
+
+        // Force Trinkets screen-slot layout refresh so client and server agree on slot count immediately.
+        if (provider instanceof ServerPlayerEntity serverPlayer
+            && serverPlayer.playerScreenHandler instanceof TrinketPlayerScreenHandler trinketScreen) {
+            trinketScreen.trinkets$updateTrinketSlots(false);
+            serverPlayer.playerScreenHandler.sendContentUpdates();
+        }
     }
 
     private void handleLevelChange(boolean isLevelUp) {
@@ -146,6 +165,9 @@ public class LevelComponentImpl implements LevelComponent {
         }
 
         int uniqueKills = LevelManager.getCurrentUniqueKillsCount(player);
+
+        // Send toast packet
+        ServerPlayNetworking.send(player, new LevelUpToastS2CPacket(level));
 
         player.networkHandler.sendPacket(new TitleS2CPacket(
             Text.literal("Level Up!").formatted(Formatting.GOLD, Formatting.BOLD, Formatting.UNDERLINE)
@@ -166,11 +188,13 @@ public class LevelComponentImpl implements LevelComponent {
     }
 
     private @Nullable TrinketInventory getTrinketInventory() {
-        return TrinketsApi.getTrinketComponent(provider).map(
-            comp -> comp.getInventory()
-                .getOrDefault("soul", null)
-                .getOrDefault("essence", null)
-        ).orElse(null);
+        return TrinketsApi.getTrinketComponent(provider)
+            .map(comp -> {
+                var inv = comp.getInventory();
+                var soul = inv != null ? inv.get("soul") : null;
+                return soul != null ? soul.get("essence") : null;
+            })
+            .orElse(null);
     }
 
     private Identifier getEntityId(Entity entity) {
@@ -185,6 +209,7 @@ public class LevelComponentImpl implements LevelComponent {
     @Override
     public void readFromNbt(@NotNull NbtCompound compoundTag, RegistryWrapper.WrapperLookup lookup) {
         uniqueKills.clear();
+        killCounts.clear();
         NbtList killsTag = compoundTag.getList("unique_kills", NbtElement.STRING_TYPE);
 
         for (int i = 0; i < killsTag.size(); i++) {
@@ -201,6 +226,21 @@ public class LevelComponentImpl implements LevelComponent {
             uniqueKills.add(identifier);
         }
 
+        // Load kill counts (new format); fallback: 1 per unique kill for backward compat
+        NbtCompound countsTag = compoundTag.getCompound("kill_counts");
+        if (!countsTag.isEmpty()) {
+            for (String key : countsTag.getKeys()) {
+                Identifier identifier = Identifier.tryParse(key);
+                if (identifier != null) {
+                    killCounts.put(identifier, countsTag.getInt(key));
+                }
+            }
+        } else {
+            for (Identifier id : uniqueKills) {
+                killCounts.put(id, 1);
+            }
+        }
+
         level = compoundTag.getInt("level");
         // Recalculate level from kills on load (e.g. new players with 0 kills → level 0)
         updateLevel(false);
@@ -215,6 +255,13 @@ public class LevelComponentImpl implements LevelComponent {
         }
 
         compoundTag.put("unique_kills", list);
+
+        NbtCompound countsTag = new NbtCompound();
+        for (Map.Entry<Identifier, Integer> e : killCounts.entrySet()) {
+            countsTag.putInt(e.getKey().toString(), e.getValue());
+        }
+        compoundTag.put("kill_counts", countsTag);
+
         compoundTag.putInt("level", level);
     }
 

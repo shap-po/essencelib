@@ -1,42 +1,45 @@
 package com.github.shap_po.essencelib.screen;
 
 import com.github.shap_po.essencelib.client.ClientManaData;
+import com.github.shap_po.essencelib.component.DownedComponent;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ClientPlayerEntity;
 
 public class ManaHudRenderer implements HudRenderCallback {
-    private static final int BAR_WIDTH = 182;  // Match experience bar width
-    private static final int BAR_HEIGHT = 3;   // Make it thinner to fit
-    
-    // Modify pulse speeds for slower animation
-    private static final float PULSE_SPEED = 0.015f;         // Much slower pulse (was 0.035f)
-    private static final float GRADIENT_SPEED_1 = 0.001f;    // Slower ethereal base (was 0.002f)
-    private static final float GRADIENT_SPEED_2 = 0.002f;    // Slower magical flow (was 0.004f)
-    private static final float GRADIENT_SPEED_3 = 0.004f;    // Slower sparkles (was 0.008f)
-    
-    // More magical color scheme with varying transparency
-    private static final int BACKGROUND = 0x15101820;  // Even more transparent, slight blue tint
-    private static final int BORDER_COLOR = 0x20000060;  // Slightly more visible border with purple tint
-    
-    // First gradient layer (deep, slow-moving base)
-    private static final int MANA_1_START = 0x501E88E5;  // Increased opacity for base
-    private static final int MANA_1_MID = 0x502B4FD1;    // More vibrant purple
-    private static final int MANA_1_END = 0x501A237E;    // Deep magical purple
-    
-    // Second gradient layer (bright magical flow)
-    private static final int MANA_2_START = 0x4000FFFF;  // Brighter cyan
-    private static final int MANA_2_MID = 0x4000BFFF;    // Sky blue
-    private static final int MANA_2_END = 0x4000FFFF;    // Back to cyan
-    
-    // Third gradient layer (sparkly highlights)
-    private static final int MANA_3_START = 0x25FFFFFF;  // Brighter sparkles
-    private static final int MANA_3_MID = 0x2500FFFF;    // Cyan sparkle
-    private static final int MANA_3_END = 0x25FFFFFF;    // Back to white
-    
-    // Modify glow constants
-    private static final int GLOW_COLOR_BRIGHT = 0x90FFFFFF;  // Brighter center
-    private static final int GLOW_COLOR_DIM = 0x5000FFFF;    // More visible outer glow
+    private static final int BAR_WIDTH = 182;              // Match vanilla XP width
+    private static final int MANA_HEIGHT = 3;              // 2-3px peek above XP
+    private static final int XP_BASE_Y_OFFSET = 32;        // Vanilla XP baseline
+    private static final int ABOVE_XP_GAP = 0;             // Tucked directly against XP
+    // Position controls: tweak these two values only.
+    private static final int OFFSET_X = 0;                 // -left, +right
+    private static final int OFFSET_Y = 10;                 // -up, +down
+
+    private static final float PULSE_SPEED = 0.015f;
+    private static final float GRADIENT_SPEED_1 = 0.0010f;
+    private static final float GRADIENT_SPEED_2 = 0.0020f;
+    private static final float GRADIENT_SPEED_3 = 0.0035f;
+
+    // Minimal look: thin animated line + subtle edge accents.
+    private static final int TRACK_BACKGROUND = 0x2810182A;
+    private static final int EDGE_DARK = 0xB01C2840;
+    private static final int EDGE_BRIGHT = 0xD090C8FF;
+
+    private static final int MANA_1_START = 0xD01E8FFF;
+    private static final int MANA_1_MID = 0xD02F73FF;
+    private static final int MANA_1_END = 0xD01A47E0;
+
+    private static final int MANA_2_START = 0xA000F4FF;
+    private static final int MANA_2_MID = 0xA000CFFF;
+    private static final int MANA_2_END = 0xA000F4FF;
+
+    private static final int MANA_3_START = 0x45FFFFFF;
+    private static final int MANA_3_MID = 0x4500FFFF;
+    private static final int MANA_3_END = 0x45FFFFFF;
+
+    private static final int GLOW_COLOR_BRIGHT = 0xB0FFFFFF;
+    private static final int GLOW_COLOR_DIM = 0x7000E8FF;
 
     private float gradientOffset1 = 0f;
     private float gradientOffset2 = 0f;
@@ -48,15 +51,13 @@ public class ManaHudRenderer implements HudRenderCallback {
     private float previousMana = 0;
     private float previousMax = 0;
 
-    // Add wave constants
-    private static final float WAVE_AMPLITUDE_1 = 0.04f;  // Slightly reduced for subtlety
-    private static final float WAVE_AMPLITUDE_2 = 0.03f;
-    private static final float WAVE_AMPLITUDE_3 = 0.015f; // More subtle sparkles
-    private static final float WAVE_FREQUENCY_1 = 5.0f;   // Slower waves
-    private static final float WAVE_FREQUENCY_2 = 7.0f;   // Medium waves
-    private static final float WAVE_FREQUENCY_3 = 11.0f;  // Fast sparkles
+    private static final float WAVE_AMPLITUDE_1 = 0.045f;
+    private static final float WAVE_AMPLITUDE_2 = 0.030f;
+    private static final float WAVE_AMPLITUDE_3 = 0.016f;
+    private static final float WAVE_FREQUENCY_1 = 5.2f;
+    private static final float WAVE_FREQUENCY_2 = 7.4f;
+    private static final float WAVE_FREQUENCY_3 = 10.4f;
 
-    // Add these non-final variables for dynamic colors
     private int currentMana1Start = MANA_1_START;
     private int currentMana2Start = MANA_2_START;
     private int currentMana3Start = MANA_3_START;
@@ -64,10 +65,13 @@ public class ManaHudRenderer implements HudRenderCallback {
     @Override
     public void onHudRender(DrawContext context, net.minecraft.client.render.RenderTickCounter tickCounter) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null) return;
+        ClientPlayerEntity player = client.player;
+        if (player == null) return;
+        if (client.options.hudHidden) return;
+        if (DownedComponent.isDowned(player)) return;
         
         // Don't render mana bar in creative mode
-        if (client.player.getAbilities().creativeMode) return;
+        if (player.getAbilities().creativeMode) return;
 
         ClientManaData.tick();
 
@@ -76,14 +80,18 @@ public class ManaHudRenderer implements HudRenderCallback {
         
         float current = ClientManaData.getCurrentMana();
         float max = ClientManaData.getMaxMana();
-        float ratio = Math.min(1.0f, max > 0 ? current / max : 0);
+        float manaRatio = Math.min(1.0f, max > 0 ? current / max : 0);
 
-        // Adjust Y position to be lower, closer to hotbar
-        int x = width / 2 - BAR_WIDTH / 2;
-        int y = height - 30;  // Move closer to hotbar (was -32)
+        // Keep the mana line directly above vanilla XP (not high on the HUD).
+        int x = width / 2 - BAR_WIDTH / 2 + OFFSET_X;
+        int xpY = height - XP_BASE_Y_OFFSET;
+        int y = xpY - MANA_HEIGHT - ABOVE_XP_GAP + OFFSET_Y;
+        if (y < 4) {
+            y = 4;
+        }
 
         // Add back pulse animation before gradient updates
-        pulseProgress += (pulseDirection ? 0.01f : -0.01f);  // Slower pulse (was 0.02f)
+        pulseProgress += (pulseDirection ? 0.01f : -0.01f);
         if (pulseProgress >= 1.0f) pulseDirection = false;
         if (pulseProgress <= 0.3f) pulseDirection = true;
 
@@ -92,22 +100,16 @@ public class ManaHudRenderer implements HudRenderCallback {
         gradientOffset2 = (gradientOffset2 + GRADIENT_SPEED_2) % 1.0f;
         gradientOffset3 = (gradientOffset3 + GRADIENT_SPEED_3) % 1.0f;
 
-        // Draw background
-        context.fill(x + 1, y - 1, x + BAR_WIDTH - 1, y, BORDER_COLOR); // Top
-        context.fill(x + 1, y + BAR_HEIGHT, x + BAR_WIDTH - 1, y + BAR_HEIGHT + 1, BORDER_COLOR); // Bottom
-        context.fill(x - 1, y + 1, x, y + BAR_HEIGHT - 1, BORDER_COLOR); // Left
-        context.fill(x + BAR_WIDTH, y + 1, x + BAR_WIDTH + 1, y + BAR_HEIGHT - 1, BORDER_COLOR); // Right
+        // Minimal track with only edge details.
+        context.fill(x, y, x + BAR_WIDTH, y + MANA_HEIGHT, TRACK_BACKGROUND);
+        context.fill(x - 1, y, x, y + MANA_HEIGHT, EDGE_DARK);
+        context.fill(x + BAR_WIDTH, y, x + BAR_WIDTH + 1, y + MANA_HEIGHT, EDGE_DARK);
+        context.fill(x - 1, y, x, y + 1, EDGE_BRIGHT);
+        context.fill(x + BAR_WIDTH, y, x + BAR_WIDTH + 1, y + 1, EDGE_BRIGHT);
 
-        // Rounded corners
-        context.fill(x, y, x + 1, y + 1, BORDER_COLOR); // Top-left
-        context.fill(x + BAR_WIDTH - 1, y, x + BAR_WIDTH, y + 1, BORDER_COLOR); // Top-right
-        context.fill(x, y + BAR_HEIGHT - 1, x + 1, y + BAR_HEIGHT, BORDER_COLOR); // Bottom-left
-        context.fill(x + BAR_WIDTH - 1, y + BAR_HEIGHT - 1, x + BAR_WIDTH, y + BAR_HEIGHT, BORDER_COLOR); // Bottom-right
-
-        context.fill(x, y, x + BAR_WIDTH, y + BAR_HEIGHT, BACKGROUND);
-
-        if (ratio > 0) {
-            int filledWidth = (int)(BAR_WIDTH * ratio);
+        // --- MANA BAR ---
+        if (manaRatio > 0) {
+            int filledWidth = (int)(BAR_WIDTH * manaRatio);
             
             for (int i = 0; i < filledWidth; i++) {
                 float pos = (float)i / BAR_WIDTH;
@@ -137,51 +139,58 @@ public class ManaHudRenderer implements HudRenderCallback {
                 // Blend all three colors
                 int finalColor = blendColors(color1, color2, color3);
                 
-                if (i == 0 || i == filledWidth - 1) {
-                    context.fill(x + i, y + 1, x + i + 1, y + BAR_HEIGHT - 1, finalColor);
-                } else {
-                    context.fill(x + i, y, x + i + 1, y + BAR_HEIGHT, finalColor);
+                // 3px stacked shading: glossy top, vivid core, deeper base.
+                int topColor = interpolateColor(finalColor, 0xD0E8FFFF, 0.35f);
+                int coreColor = finalColor;
+                int baseColor = interpolateColor(finalColor, 0xB000163A, 0.45f);
+
+                context.fill(x + i, y, x + i + 1, y + 1, topColor);
+                if (MANA_HEIGHT > 2) {
+                    context.fill(x + i, y + 1, x + i + 1, y + MANA_HEIGHT - 1, coreColor);
+                }
+                context.fill(x + i, y + MANA_HEIGHT - 1, x + i + 1, y + MANA_HEIGHT, baseColor);
+
+                // Tiny traveling sparkle for extra life in thin space.
+                if (((i + (int)(gradientOffset3 * 1200)) % 17) == 0) {
+                    context.fill(x + i, y, x + i + 1, y + 1, 0xD0FFFFFF);
                 }
             }
+
+            // Subtle aura line above the strip, tied to pulse.
+            int auraColor = interpolateColor(0x3000E8FF, 0x12008CD0, pulseProgress);
+            context.fill(x, y - 1, x + filledWidth, y, auraColor);
             
-            // Add back the glow effect for regeneration
             boolean isIncreasing = current > previousMana || (max > previousMax && current >= previousMana);
-            if (isIncreasing && ratio < 0.99f) {
-                // Brighter pulse effect
+            if (isIncreasing && manaRatio < 0.99f) {
                 pulseProgress += (pulseDirection ? PULSE_SPEED : -PULSE_SPEED);
                 if (pulseProgress >= 1.0f) pulseDirection = false;
                 if (pulseProgress <= 0.2f) pulseDirection = true;
 
-                // Pulse between bright white and dim cyan
                 int tipGlow = interpolateColor(GLOW_COLOR_BRIGHT, GLOW_COLOR_DIM, pulseProgress);
-                int outerGlow = interpolateColor(GLOW_COLOR_DIM, 0x00000000, pulseProgress); // Fade to transparent
+                int outerGlow = interpolateColor(GLOW_COLOR_DIM, 0x00000000, pulseProgress);
                 
-                // Small circular glow effect with outward radiation
-                int glowX = x + filledWidth;
-                int glowY = y + (BAR_HEIGHT / 2); // Center vertically
+                int glowX = x + Math.max(0, filledWidth - 1);
+                int glowY = y + (MANA_HEIGHT / 2);
                 
-                // Center dot
                 context.fill(glowX, glowY, glowX + 1, glowY + 1, tipGlow);
-                
-                // Outer glow (radiating effect)
-                context.fill(glowX - 1, glowY, glowX, glowY + 1, outerGlow); // Left
-                context.fill(glowX + 1, glowY, glowX + 2, glowY + 1, outerGlow); // Right
-                context.fill(glowX, glowY - 1, glowX + 1, glowY, outerGlow); // Top
-                context.fill(glowX, glowY + 1, glowX + 1, glowY + 2, outerGlow); // Bottom
+                context.fill(glowX - 1, glowY, glowX, glowY + 1, outerGlow);
+                context.fill(glowX + 1, glowY, glowX + 2, glowY + 1, outerGlow);
             }
 
-            // Update previous values
             previousMana = current;
             previousMax = max;
 
-            // Add subtle pulsing to the entire bar when full
-            if (ratio > 0.99f) {
+            if (manaRatio > 0.99f) {
                 float fullPulse = (float)(Math.sin(gradientOffset1 * Math.PI * 2) * 0.1 + 0.9);
                 currentMana1Start = adjustColorAlpha(MANA_1_START, fullPulse);
                 currentMana2Start = adjustColorAlpha(MANA_2_START, fullPulse);
                 currentMana3Start = adjustColorAlpha(MANA_3_START, fullPulse);
             }
+        } else {
+            previousMana = current;
+            previousMax = max;
         }
+
     }
 
     private int interpolateColor(int startColor, int endColor, float ratio) {

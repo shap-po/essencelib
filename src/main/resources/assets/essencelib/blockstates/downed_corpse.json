@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "essencelib:block/downed_corpse"
+    }
+  }
+}

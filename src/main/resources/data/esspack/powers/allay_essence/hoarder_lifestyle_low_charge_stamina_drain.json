@@ -1,0 +1,16 @@
+{
+  "type": "apoli:conditioned_attribute",
+  "condition": {
+    "type": "apoli:resource",
+    "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+    "comparison": "<=",
+    "compare_to": 0
+  },
+  "modifier": {
+    "id": "esspack:low_collection_stamina_drain",
+    "attribute": "puffish_attributes:player.stamina",
+    "operation": "add_multiplied_total",
+    "amount": -0.25,
+    "name": "Low collection stamina drain"
+  }
+}

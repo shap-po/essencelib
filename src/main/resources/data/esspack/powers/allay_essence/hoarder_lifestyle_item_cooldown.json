@@ -1,0 +1,8 @@
+{
+  "type": "apoli:action_over_time",
+  "interval": 6000,
+  "entity_action": {
+    "type": "apoli:execute_command",
+    "command": "execute if data storage esspack:memory RecentItems[0] run data remove storage esspack:memory RecentItems[0]"
+  }
+}

@@ -3,54 +3,62 @@
   "rarity": "Epic",
   "attributes": [
     {
-      "id": "1",
+      "id": "esspack:allay_essence_1",
       "attribute": "minecraft:generic.movement_speed",
       "amount": 0.15,
-      "operation": "ADD_MULTIPLIED_TOTAL"
+      "operation": "add_multiplied_total"
     },
     {
-      "id": "2",
+      "id": "esspack:allay_essence_2",
       "attribute": "puffish_attributes:player.fortune",
       "amount": 2,
-      "operation": "ADD_VALUE"
+      "operation": "add_value"
     },
     {
-      "id": "3",
+      "id": "esspack:allay_essence_3",
       "attribute": "additionalentityattributes:player.collection_range",
       "amount": 1,
-      "operation": "ADD_VALUE"
+      "operation": "add_value"
     },
     {
-      "id": "4",
+      "id": "esspack:allay_essence_4",
       "attribute": "minecraft:player.block_interaction_range",
       "amount": 2,
-      "operation": "ADD_VALUE"
+      "operation": "add_value"
     },
     {
-      "id": "5",
+      "id": "esspack:allay_essence_5",
       "attribute": "puffish_attributes:player.stamina",
       "amount": 0.1,
-      "operation": "ADD_MULTIPLIED_TOTAL"
+      "operation": "add_multiplied_total"
     },
     {
-      "id": "-1",
+      "id": "esspack:allay_essence_neg_1",
       "attribute": "minecraft:generic.armor",
       "amount": -2,
-      "operation": "ADD_VALUE"
+      "operation": "add_value"
     },
     {
-      "id": "-2",
+      "id": "esspack:allay_essence_neg_2",
       "attribute": "minecraft:generic.attack_damage",
       "amount": -0.1,
-      "operation": "ADD_MULTIPLIED_TOTAL"
+      "operation": "add_multiplied_total"
     }
   ],
   "powers": [
     "*:allay_essence/activepull",
     "*:allay_essence/activepull_key",
     "*:allay_essence/item_whisperer",
-    "*:allay_essence/hoarder_lifestyle"
+    "*:allay_essence/hoarder_lifestyle_collection_charge",
+    "*:allay_essence/hoarder_lifestyle_drain",
+    "*:allay_essence/hoarder_lifestyle_low_charge_warning",
+    "*:allay_essence/hoarder_lifestyle_low_charge_mana_drain",
+    "*:allay_essence/hoarder_lifestyle_low_charge_stamina_drain",
+    "*:allay_essence/hoarder_lifestyle_high_charge_speed",
+    "*:allay_essence/hoarder_lifestyle_high_charge_haste",
+    "*:allay_essence/hoarder_lifestyle_high_charge_mana_regen",
+    "*:allay_essence/hoarder_lifestyle_item_cooldown"
   ],
   "dropped_by": "minecraft:allay",
-  "chance": 1.0
+  "chance": 0.001
 }

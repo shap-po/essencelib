@@ -1,0 +1,270 @@
+{
+  "type": "apoli:multiple",
+  "name": "Scute Rebound",
+  "description": "Build momentum by trading blows, then release a short counter-burst with speed and melee pressure.",
+  "rebound_timer": {
+    "type": "apoli:resource",
+    "name": "esspack:scute_rebound_timer",
+    "min": 0,
+    "max": 30,
+    "initial_value": 0
+  },
+  "momentum": {
+    "type": "apoli:resource",
+    "name": "esspack:scute_rebound_momentum",
+    "min": 0,
+    "max": 120,
+    "initial_value": 0
+  },
+  "combat_state": {
+    "type": "apoli:resource",
+    "name": "esspack:scute_rebound_combat_state",
+    "min": 0,
+    "max": 100,
+    "initial_value": 0
+  },
+  "incoming_alert_gate": {
+    "type": "apoli:resource",
+    "name": "esspack:scute_rebound_incoming_alert_gate",
+    "min": 0,
+    "max": 1,
+    "initial_value": 0
+  },
+  "gain_momentum_when_hit": {
+    "type": "apoli:self_action_on_hit",
+    "cooldown": 10,
+    "entity_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_combat_state",
+          "change": 35
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_momentum",
+          "change": 8
+        }
+      ]
+    }
+  },
+  "gain_momentum_when_hurt": {
+    "type": "apoli:self_action_when_hit",
+    "cooldown": 20,
+    "entity_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_combat_state",
+          "change": 45
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_momentum",
+          "change": 16
+        }
+      ]
+    }
+  },
+  "combat_state_decay": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_combat_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_combat_state",
+      "change": -1
+    }
+  },
+  "momentum_trickle_in_combat": {
+    "type": "apoli:action_over_time",
+    "interval": 30,
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_combat_state",
+          "comparison": ">",
+          "compare_to": 0
+        },
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_momentum",
+          "comparison": "<",
+          "compare_to": 120
+        }
+      ]
+    },
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_momentum",
+      "change": 2
+    }
+  },
+  "incoming_window_alert": {
+    "type": "apoli:action_over_time",
+    "interval": 5,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_momentum",
+      "comparison": ">=",
+      "compare_to": 96
+    },
+    "entity_action": {
+      "type": "apoli:if_else",
+      "condition": {
+        "type": "apoli:resource",
+        "resource": "esspack:armadillo_essence/scute_rebound_incoming_alert_gate",
+        "comparison": "<=",
+        "compare_to": 0
+      },
+      "if_action": {
+        "type": "apoli:sequence",
+        "actions": [
+          {
+            "type": "apoli:execute_command",
+            "command": "title @s actionbar {\"text\":\"Scute Rebound Incoming\",\"color\":\"yellow\"}"
+          },
+          {
+            "type": "apoli:change_resource",
+            "resource": "esspack:armadillo_essence/scute_rebound_incoming_alert_gate",
+            "change": 1
+          }
+        ]
+      }
+    }
+  },
+  "reset_incoming_alert_gate": {
+    "type": "apoli:action_over_time",
+    "interval": 10,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_momentum",
+      "comparison": "<=",
+      "compare_to": 60
+    },
+    "entity_action": {
+      "type": "apoli:if_else",
+      "condition": {
+        "type": "apoli:resource",
+        "resource": "esspack:armadillo_essence/scute_rebound_incoming_alert_gate",
+        "comparison": ">",
+        "compare_to": 0
+      },
+      "if_action": {
+        "type": "apoli:change_resource",
+        "resource": "esspack:armadillo_essence/scute_rebound_incoming_alert_gate",
+        "change": -1
+      }
+    }
+  },
+  "trigger_rebound_window": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_momentum",
+      "comparison": ">=",
+      "compare_to": 120
+    },
+    "entity_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "apoli:execute_command",
+          "command": "title @s actionbar {\"text\":\"Rebound Window\",\"color\":\"gold\"}"
+        },
+        {
+          "type": "apoli:execute_command",
+          "command": "playsound minecraft:block.amethyst_block.chime player @s ~ ~ ~ 0.30 1.55"
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_rebound_timer",
+          "change": 30
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_momentum",
+          "change": -120
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/scute_rebound_incoming_alert_gate",
+          "change": -1
+        }
+      ]
+    }
+  },
+  "tick_rebound_window": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_rebound_timer",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_rebound_timer",
+      "change": -1
+    }
+  },
+  "rebound_speed_window": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_rebound_timer",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "modifier": {
+      "id": "esspack:armadillo_rebound_speed",
+      "attribute": "minecraft:generic.movement_speed",
+      "operation": "add_multiplied_total",
+      "amount": 0.12,
+      "name": "Scute Rebound Speed"
+    }
+  },
+  "rebound_melee_pressure": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_rebound_timer",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "modifier": {
+      "id": "esspack:armadillo_rebound_melee_damage",
+      "attribute": "puffish_attributes:player.melee_damage",
+      "operation": "add_multiplied_total",
+      "amount": 0.12,
+      "name": "Scute Rebound Damage"
+    }
+  },
+  "rebound_attack_speed_window": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/scute_rebound_rebound_timer",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "modifier": {
+      "id": "esspack:armadillo_rebound_attack_speed",
+      "attribute": "minecraft:generic.attack_speed",
+      "operation": "add_multiplied_total",
+      "amount": 0.1,
+      "name": "Scute Rebound Attack Speed"
+    }
+  }
+}

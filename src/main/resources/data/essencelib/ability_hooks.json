@@ -1,0 +1,38 @@
+{
+  "collector_intuition_power": "esspack:allay_essence/item_whisperer",
+  "collector_intuition_detection_profile": "essencelib:collector_intuition_item_outline",
+  "collector_intuition_glow_mode": "player_not_through_walls_custom",
+  "collectors_rush_power": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+  "collection_range_attribute": "additionalentityattributes:player.collection_range",
+  "collector_intuition_base_range": 30.0,
+  "collector_intuition_range_per_collection": 4.0,
+  "collector_intuition_min_range": 12.0,
+  "collector_intuition_max_range": 64.0,
+
+  "uncollected_hint_required_power": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+  "uncollected_hint_range": 10.0,
+  "uncollected_hint_interval": 30,
+  "uncollected_hint_particle": "minecraft:happy_villager",
+
+  "collector_rush_charge_power": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+  "collector_rush_mana_on_new_item": 15.0,
+  "collector_memory_storage": "esspack:memory",
+  "collector_memory_list_key": "RecentItems",
+
+  "armadillo_ball_state_power": "esspack:armadillo_essence/armadillo_ball_up_ball_state",
+  "threat_rhythm_resolve_power": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+  "threat_rhythm_aggro_timer_power": "esspack:armadillo_essence/threat_rhythm_lifestyle_aggro_timer",
+  "threat_rhythm_chased_state_power": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+  "threat_track_ticks": 100,
+  "away_distance_sq_step": 0.09,
+  "min_player_move_sq": 0.0025,
+  "away_penalty_per_step": 14,
+  "frontline_gain_interval_ticks": 8,
+  "frontline_loss_interval_ticks": 15,
+  "retreat_drain_interval_ticks": 5,
+  "retreat_drain_per_step": 4,
+  "damage_frontline_resolve_gain": 8,
+  "damage_retreat_resolve_penalty": 6,
+  "facing_target_dot_min": 0.25,
+  "hard_kite_facing_dot_max": 0.05
+}

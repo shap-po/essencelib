@@ -1,7 +1,7 @@
 {
   "type": "apoli:multiple",
   "name": "Magnetic Collection",
-  "description": "Channel your essence to pull nearby items toward you. Active while held. Costs 10 mana per second.",
+  "description": "Hold key to pull items within 28 blocks toward you. Active while held. Costs 10 mana/sec.",
   "magnet_resource": {
     "type": "apoli:resource",
     "name": "esspack:magnet_active",
@@ -25,8 +25,8 @@
           "type": "apoli:area_of_effect",
           "radius": 28,
           "bientity_action": {
-            "type": "apoli:add_velocity",
-            "z": -0.6
+            "type": "essencelib:pull_towards_actor",
+            "strength": 0.6
           },
           "bientity_condition": {
             "type": "apoli:target_condition",

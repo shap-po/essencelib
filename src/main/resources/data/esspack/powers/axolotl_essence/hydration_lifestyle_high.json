@@ -1,0 +1,54 @@
+{
+  "type": "apoli:multiple",
+  "hidden": true,
+  "high_strength": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:axolotl_essence/hydration_lifestyle",
+          "comparison": ">=",
+          "compare_to": 75
+        },
+        {
+          "type": "origins:submerged_in",
+          "fluid": "minecraft:water"
+        }
+      ]
+    },
+    "modifier": {
+      "id": "esspack:hydration_high_strength",
+      "attribute": "minecraft:generic.attack_damage",
+      "operation": "add_value",
+      "amount": 3,
+      "name": "Hydration High Strength"
+    }
+  },
+  "high_speed": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:axolotl_essence/hydration_lifestyle",
+          "comparison": ">=",
+          "compare_to": 75
+        },
+        {
+          "type": "origins:submerged_in",
+          "fluid": "minecraft:water"
+        }
+      ]
+    },
+    "modifier": {
+      "id": "esspack:hydration_high_speed",
+      "attribute": "minecraft:generic.movement_speed",
+      "operation": "add_multiplied_total",
+      "amount": 0.2,
+      "name": "Hydration High Speed"
+    }
+  }
+}

@@ -89,6 +89,12 @@ APP_BASE_NAME=${0##*/}
 APP_HOME=$( cd -P "${APP_HOME:-./}" > /dev/null && printf '%s
 ' "$PWD" ) || exit
 
+# Use project-local Gradle user home by default to avoid global cache locks.
+if [ -z "$GRADLE_USER_HOME" ]; then
+    GRADLE_USER_HOME="$APP_HOME/.gradle-verify-home"
+    export GRADLE_USER_HOME
+fi
+
 # Use the maximum available, or set MAX_FD != -1 to use that value.
 MAX_FD=maximum
 

@@ -2,10 +2,12 @@ package com.github.shap_po.essencelib.mixin;
 
 import com.github.shap_po.essencelib.collector.CollectorRushHelper;
 import com.github.shap_po.essencelib.component.CollectorRushComponent;
+import com.github.shap_po.essencelib.entity.NuisanceAllayHelper;
 import com.github.shap_po.essencelib.item.MobEssenceTrinketItem;
 import com.github.shap_po.essencelib.registry.ModTags;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import dev.emi.trinkets.api.TrinketComponent;
+import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,8 +17,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import net.minecraft.item.Items;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.item.Items;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,6 +30,8 @@ public abstract class ItemEntityMixin {
 
     @Unique
     private long sneakStartTime = -1;
+    @Unique
+    private boolean essencelib$naturalDespawnChecked = false;
 
     @Inject(method = "onPlayerCollision", at = @At("HEAD"), cancellable = true)
     private void onPlayerCollision(PlayerEntity player, CallbackInfo ci) {
@@ -37,6 +39,12 @@ public abstract class ItemEntityMixin {
         ItemStack stack = itemEntity.getStack();
 
         if (stack.getItem() instanceof MobEssenceTrinketItem) {
+            // Prevent client-side ghost/invisible item behavior by handling pickup only on server.
+            if (player.getWorld().isClient()) {
+                ci.cancel();
+                return;
+            }
+
             // Require player to be within 1 block (on top of) the essence to pick up
             if (player.squaredDistanceTo(itemEntity) > 1.0 * 1.0) {
                 ci.cancel();
@@ -63,13 +71,34 @@ public abstract class ItemEntityMixin {
                                 });
 
                             Identifier essenceId = stack.get(ModDataComponentTypes.ESSENCE_ID);
-                            if (essenceId != null && MobEssenceTrinketItem.hasEssenceInPossession(player, essenceId)) {
+                            if (essenceId != null && !player.isCreative() && MobEssenceTrinketItem.hasEssenceInPossession(player, essenceId)) {
                                 player.sendMessage(Text.literal("You already have this essence").formatted(Formatting.RED), true);
-                            } else if (hasEmptySlot) {
-                                player.getInventory().insertStack(stack);
-                                itemEntity.discard();
                             } else {
-                                player.sendMessage(Text.literal("Full of Essence").formatted(Formatting.RED), true);
+                                boolean autoEquip = stack.getOrDefault(ModDataComponentTypes.AUTO_EQUIP, true) && !player.isCreative();
+                                boolean handled = false;
+
+                                if (autoEquip && hasEmptySlot) {
+                                    // Move directly from world item to trinket slot.
+                                    ItemStack toEquip = stack.copy();
+                                    toEquip.setCount(1);
+                                    if (TrinketItem.equipItem(player, toEquip)) {
+                                        handled = true;
+                                    }
+                                }
+
+                                if (!handled) {
+                                    // Fallback: move to inventory (single source of truth, no duplicate copies).
+                                    ItemStack toInsert = stack.copy();
+                                    if (player.getInventory().insertStack(toInsert)) {
+                                        handled = true;
+                                    }
+                                }
+
+                                if (handled) {
+                                    itemEntity.discard();
+                                } else {
+                                    player.sendMessage(Text.literal("Full of Essence").formatted(Formatting.RED), true);
+                                }
                             }
                         }
                         ci.cancel();
@@ -107,6 +136,27 @@ public abstract class ItemEntityMixin {
 
         if (stack.getItem() instanceof MobEssenceTrinketItem) {
             cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "setDespawnImmediately", at = @At("HEAD"))
+    private void essencelib$spawnNuisanceAllayOnDespawn(CallbackInfo ci) {
+        ItemEntity itemEntity = (ItemEntity) (Object) this;
+        if (itemEntity.getWorld().isClient()) return;
+        NuisanceAllayHelper.maybeSpawnFromItemDespawn(itemEntity);
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void essencelib$spawnNuisanceAllayOnNaturalDespawn(CallbackInfo ci) {
+        ItemEntity itemEntity = (ItemEntity) (Object) this;
+        if (itemEntity.getWorld().isClient()) return;
+        if (essencelib$naturalDespawnChecked) return;
+        if (itemEntity.getStack().isEmpty()) return;
+
+        // Natural despawn happens around age 6000; spawn-check once right before it expires.
+        if (itemEntity.getItemAge() >= 5999) {
+            essencelib$naturalDespawnChecked = true;
+            NuisanceAllayHelper.maybeSpawnFromItemDespawn(itemEntity);
         }
     }
 

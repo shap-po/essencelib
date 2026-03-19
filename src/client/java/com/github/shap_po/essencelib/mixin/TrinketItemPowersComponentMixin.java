@@ -21,8 +21,8 @@ public abstract class TrinketItemPowersComponentMixin {
     @Inject(method = "appendTooltip", at = @At("HEAD"), cancellable = true)
     private void onAppendTooltip(PlayerEntity player, ItemStack stack, List<Text> tooltip, TooltipType type, CallbackInfo ci) {
         if (stack.getItem() instanceof com.github.shap_po.essencelib.item.MobEssenceTrinketItem) {
-            // Essence items use custom EssenceTooltipComponent via getTooltipData; don't add text here
-            tooltip.clear();
+            // Essence items use custom EssenceTooltipComponent via getTooltipData.
+            // Cancel this append pass, but keep any existing base lines intact.
             ci.cancel();
         }
     }

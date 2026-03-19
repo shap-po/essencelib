@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.util;
 
 import com.github.shap_po.essencelib.mixin.TrinketItemPowersComponentAccessor;
+import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.tooltip.EssenceTooltipData;
 import com.github.shap_po.shappoli.integration.trinkets.component.item.ShappoliTrinketsDataComponentTypes;
 import com.github.shap_po.shappoli.integration.trinkets.component.item.TrinketItemPowersComponent;
@@ -8,6 +9,7 @@ import io.github.apace100.apoli.power.Power;
 import io.github.apace100.apoli.power.PowerManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -33,6 +35,7 @@ public final class EssenceTooltipHelper {
     public static Optional<EssenceTooltipData> buildTooltipData(ItemStack stack) {
         TrinketItemPowersComponent powers = stack.get(ShappoliTrinketsDataComponentTypes.TRINKET_POWERS);
         if (powers == null) return Optional.empty();
+        boolean showExact = shouldShowExactTooltip(stack);
 
         Text name = stack.getName().copy().formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
         List<EssenceTooltipData.PowerEntry> powerEntries = new ArrayList<>();
@@ -43,20 +46,31 @@ public final class EssenceTooltipHelper {
                 && PowerTooltipSlotRegistry.hasSlot(e.powerId()))
             .toList();
 
-        addPowerEntries(visible, PowerTooltipSlotRegistry.SLOT_ACTIVE, "✦ Active", Formatting.RED, powerEntries);
-        addPowerEntries(visible, PowerTooltipSlotRegistry.SLOT_PASSIVE, "✦ Passive", Formatting.GREEN, powerEntries);
-        addPowerEntries(visible, PowerTooltipSlotRegistry.SLOT_LIFESTYLE, "✦ Lifestyle", Formatting.YELLOW, powerEntries);
+        addPowerEntries(visible, PowerTooltipSlotRegistry.SLOT_ACTIVE, "✦ Active", Formatting.RED, powerEntries, showExact);
+        addPowerEntries(visible, PowerTooltipSlotRegistry.SLOT_PASSIVE, "✦ Passive", Formatting.GREEN, powerEntries, showExact);
+        addPowerEntries(visible, PowerTooltipSlotRegistry.SLOT_LIFESTYLE, "✦ Lifestyle", Formatting.YELLOW, powerEntries, showExact);
 
         List<Text> stats = new ArrayList<>();
-        stats.add(Text.literal("Stats").formatted(Formatting.AQUA, Formatting.BOLD));
-        stats.addAll(EssenceStatHelper.buildStatLinesGrouped(stack));
+        if (showExact) {
+            stats.add(Text.literal("Stats").formatted(Formatting.AQUA, Formatting.BOLD));
+            stats.addAll(EssenceStatHelper.buildStatLinesGrouped(stack));
+        }
 
-        return Optional.of(new EssenceTooltipData(name, powerEntries, stats));
+        List<Text> footerHints = new ArrayList<>();
+        if (ActiveEssenceHelper.hasActivePower(stack)) {
+            footerHints.add(Text.translatable("tooltip.essencelib.shift_click_keybind").formatted(Formatting.GRAY, Formatting.ITALIC));
+        }
+        footerHints.add(Text.translatable("tooltip.essencelib.auto_equip_warning").formatted(Formatting.GOLD, Formatting.ITALIC));
+        if (!showExact) {
+            footerHints.add(Text.translatable("tooltip.essencelib.mage_appraisal_hint").formatted(Formatting.DARK_AQUA, Formatting.ITALIC));
+        }
+
+        return Optional.of(new EssenceTooltipData(name, powerEntries, stats, footerHints));
     }
 
     private static void addPowerEntries(List<TrinketItemPowersComponent.Entry> entries, String slot,
                                         String categoryLabel, Formatting color,
-                                        List<EssenceTooltipData.PowerEntry> out) {
+                                        List<EssenceTooltipData.PowerEntry> out, boolean showExact) {
         List<TrinketItemPowersComponent.Entry> inSlot = entries.stream()
             .filter(e -> slot.equals(PowerTooltipSlotRegistry.getSlot(e.powerId())))
             .toList();
@@ -64,9 +78,19 @@ public final class EssenceTooltipHelper {
         for (TrinketItemPowersComponent.Entry entry : inSlot) {
             Power power = PowerManager.getNullable(entry.powerId());
             if (power == null) continue;
-            String desc = power.getDescription() != null ? power.getDescription().getString() : "";
-            out.add(new EssenceTooltipData.PowerEntry(catText, power.getName(), desc));
+            String desc = showExact
+                ? (power.getDescription() != null ? power.getDescription().getString() : "")
+                : EssenceWhisperHelper.getPowerFeel(entry.powerId());
+            Text name = power.getName();
+            out.add(new EssenceTooltipData.PowerEntry(catText, name, desc));
         }
+    }
+
+    private static boolean shouldShowExactTooltip(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) return false;
+        var player = MinecraftClient.getInstance().player;
+        if (player != null && player.isCreative()) return true;
+        return stack.getOrDefault(ModDataComponentTypes.IDENTIFIED, false);
     }
 
     /**
@@ -76,6 +100,7 @@ public final class EssenceTooltipHelper {
         List<Text> tooltip = new ArrayList<>();
         TrinketItemPowersComponent powers = stack.get(ShappoliTrinketsDataComponentTypes.TRINKET_POWERS);
         if (powers == null) return tooltip;
+        boolean showExact = shouldShowExactTooltip(stack);
 
         Text firstLine = nameLine != null ? nameLine : stack.getName();
         tooltip.add(firstLine.copy().formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD));
@@ -88,16 +113,18 @@ public final class EssenceTooltipHelper {
             .filter(e -> !e.hidden() && PowerManager.getNullable(e.powerId()) != null
                 && PowerTooltipSlotRegistry.hasSlot(e.powerId()))
             .toList();
-        addPowersInSlot(visible, PowerTooltipSlotRegistry.SLOT_ACTIVE, "✦ Active", Formatting.RED, tooltip, expanded);
-        addPowersInSlot(visible, PowerTooltipSlotRegistry.SLOT_PASSIVE, "✦ Passive", Formatting.GREEN, tooltip, expanded);
-        addPowersInSlot(visible, PowerTooltipSlotRegistry.SLOT_LIFESTYLE, "✦ Lifestyle", Formatting.YELLOW, tooltip, expanded);
+        addPowersInSlot(visible, PowerTooltipSlotRegistry.SLOT_ACTIVE, "✦ Active", Formatting.RED, tooltip, expanded, showExact);
+        addPowersInSlot(visible, PowerTooltipSlotRegistry.SLOT_PASSIVE, "✦ Passive", Formatting.GREEN, tooltip, expanded, showExact);
+        addPowersInSlot(visible, PowerTooltipSlotRegistry.SLOT_LIFESTYLE, "✦ Lifestyle", Formatting.YELLOW, tooltip, expanded, showExact);
 
-        tooltip.add(Text.literal(""));
-        tooltip.add(Text.literal(SEPARATOR).formatted(Formatting.DARK_GRAY));
-        tooltip.add(Text.literal("Stats").formatted(Formatting.AQUA, Formatting.BOLD));
-        List<Text> statLines = EssenceStatHelper.buildStatLinesGrouped(stack);
-        tooltip.addAll(statLines);
-        if (!statLines.isEmpty()) tooltip.add(Text.literal(""));
+        if (showExact) {
+            tooltip.add(Text.literal(""));
+            tooltip.add(Text.literal(SEPARATOR).formatted(Formatting.DARK_GRAY));
+            tooltip.add(Text.literal("Stats").formatted(Formatting.AQUA, Formatting.BOLD));
+            List<Text> statLines = EssenceStatHelper.buildStatLinesGrouped(stack);
+            tooltip.addAll(statLines);
+            if (!statLines.isEmpty()) tooltip.add(Text.literal(""));
+        }
 
         if (expanded) {
             tooltip.add(Text.literal(SEPARATOR).formatted(Formatting.DARK_GRAY));
@@ -108,7 +135,8 @@ public final class EssenceTooltipHelper {
     }
 
     private static void addPowersInSlot(List<TrinketItemPowersComponent.Entry> entries, String slot,
-                                        String categoryLabel, Formatting color, List<Text> tooltip, boolean expanded) {
+                                        String categoryLabel, Formatting color, List<Text> tooltip, boolean expanded,
+                                        boolean showExact) {
         List<TrinketItemPowersComponent.Entry> inSlot = entries.stream()
             .filter(e -> slot.equals(PowerTooltipSlotRegistry.getSlot(e.powerId())))
             .toList();
@@ -121,11 +149,14 @@ public final class EssenceTooltipHelper {
                 .append(Text.literal(":").formatted(Formatting.DARK_GRAY))
                 .append(Text.literal(" ").append(power.getName()).formatted(Formatting.WHITE)));
 
-            if (expanded) {
+            boolean shouldShowDescription = expanded || !showExact;
+            if (shouldShowDescription) {
                 List<Text> wrapped = wrapTooltipText(
-                    power.getDescription().getString(),
+                    showExact
+                        ? (power.getDescription() != null ? power.getDescription().getString() : "")
+                        : EssenceWhisperHelper.getPowerFeel(entry.powerId()),
                     "  › ", "    ",
-                    Formatting.GRAY, Formatting.ITALIC);
+                    showExact ? Formatting.GRAY : Formatting.WHITE, showExact ? Formatting.ITALIC : Formatting.RESET);
                 tooltip.addAll(wrapped);
             }
         }

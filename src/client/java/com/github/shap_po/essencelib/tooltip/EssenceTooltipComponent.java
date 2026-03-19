@@ -3,7 +3,6 @@ package com.github.shap_po.essencelib.tooltip;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.text.Text;
@@ -15,17 +14,19 @@ import java.util.List;
 
 /**
  * Renders essence tooltip with two-column layout:
- * - Powers (left) | Stats (right). Stats disappear when Shift held.
- * - Shift: power descriptions only, wider wrap, stats hidden
+ * - Left: name, then each power with its description underneath.
+ * - Right: stats. No shift-to-expand; descriptions always visible.
  */
 @Environment(EnvType.CLIENT)
 public class EssenceTooltipComponent implements TooltipComponent {
 
     private static final int LINE_HEIGHT = 10;
     private static final int PADDING = 4;
-    private static final int COLUMN_GAP = 16;
-    private static final int DESC_WRAP_WIDTH = 26;
-    private static final int DESC_WRAP_WIDTH_SHIFT = 42;
+    private static final int COLUMN_GAP = 4;
+    private static final int DESC_WRAP_WIDTH = 42;
+    private static final int FOOTER_GAP = 4;
+    private static final int FOOTER_LINE_HEIGHT = 6;
+    private static final float FOOTER_SCALE = 0.75f;
 
     private final EssenceTooltipData data;
 
@@ -36,30 +37,34 @@ public class EssenceTooltipComponent implements TooltipComponent {
     @Override
     public int getHeight() {
         var textRenderer = net.minecraft.client.MinecraftClient.getInstance().textRenderer;
-        boolean shift = Screen.hasShiftDown();
-        List<Line> powersLines = computePowersLines(textRenderer, shift);
-        List<Line> statsLines = shift ? List.of() : data.stats().stream()
+        List<Line> powersLines = computePowersLines(textRenderer);
+        List<Line> statsLines = data.stats().stream()
             .map(t -> new Line(t, getRgb(t)))
             .toList();
-        return PADDING * 2 + Math.max(powersLines.size(), statsLines.size()) * LINE_HEIGHT;
+        int mainHeight = Math.max(powersLines.size(), statsLines.size()) * LINE_HEIGHT;
+        int footerHeight = data.footerHints().isEmpty() ? 0 : FOOTER_GAP + data.footerHints().size() * FOOTER_LINE_HEIGHT;
+        return PADDING * 2 + mainHeight + footerHeight;
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
-        boolean shift = Screen.hasShiftDown();
-        List<Line> powersLines = computePowersLines(textRenderer, shift);
+        List<Line> powersLines = computePowersLines(textRenderer);
         int powersW = powersLines.stream().mapToInt(l -> textRenderer.getWidth(l.text)).max().orElse(0);
-        int statsW = shift ? 0 : data.stats().stream()
+        int statsW = data.stats().stream()
             .mapToInt(t -> textRenderer.getWidth(t))
             .max().orElse(0);
-        return PADDING * 2 + powersW + (statsW > 0 ? COLUMN_GAP + statsW : 0);
+        int footerW = data.footerHints().stream()
+            .mapToInt(textRenderer::getWidth)
+            .max().orElse(0);
+        int footerWScaled = (int) (footerW * FOOTER_SCALE);
+        int mainW = powersW + (statsW > 0 ? COLUMN_GAP + statsW : 0);
+        return PADDING * 2 + Math.max(mainW, footerWScaled);
     }
 
     @Override
     public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix, VertexConsumerProvider.Immediate vertexConsumers) {
-        boolean shift = Screen.hasShiftDown();
-        List<Line> powersLines = computePowersLines(textRenderer, shift);
-        List<Line> statsLines = shift ? List.of() : data.stats().stream()
+        List<Line> powersLines = computePowersLines(textRenderer);
+        List<Line> statsLines = data.stats().stream()
             .map(t -> new Line(t, getRgb(t)))
             .toList();
 
@@ -81,25 +86,27 @@ public class EssenceTooltipComponent implements TooltipComponent {
             }
             yy += LINE_HEIGHT;
         }
+
+        if (!data.footerHints().isEmpty()) {
+            yy += FOOTER_GAP;
+            int fx = x + PADDING;
+            for (Text hint : data.footerHints()) {
+                int rgb = hint.getStyle().getColor() != null ? hint.getStyle().getColor().getRgb() : 0xAAAAAA;
+                drawLineScaled(textRenderer, hint, fx, yy, rgb, matrix, vertexConsumers);
+                yy += FOOTER_LINE_HEIGHT;
+            }
+        }
     }
 
-    private List<Line> computePowersLines(TextRenderer textRenderer, boolean shift) {
+    private List<Line> computePowersLines(TextRenderer textRenderer) {
         List<Line> out = new ArrayList<>();
         out.add(new Line(data.name().copy().formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD), 0xFFDD55FF));
 
-        int wrapWidth = shift ? DESC_WRAP_WIDTH_SHIFT : DESC_WRAP_WIDTH;
-        if (shift) {
-            for (EssenceTooltipData.PowerEntry p : data.powers()) {
-                out.add(new Line(Text.literal("").append(p.categoryLabel()).append(Text.literal(": ").formatted(Formatting.DARK_GRAY)).append(p.powerName()), 0xFFFFFF));
-                List<Text> wrapped = wrap(p.description(), "  › ", "    ", wrapWidth);
-                for (Text t : wrapped) {
-                    out.add(new Line(t.copy().formatted(Formatting.GRAY, Formatting.ITALIC), 0xAAAAAA));
-                }
-            }
-            out.add(new Line(Text.literal("  ► Hold Shift to pickup from ground").formatted(Formatting.LIGHT_PURPLE, Formatting.ITALIC), 0xDD55FF));
-        } else {
-            for (EssenceTooltipData.PowerEntry p : data.powers()) {
-                out.add(new Line(Text.literal("").append(p.categoryLabel()).append(Text.literal(": ").formatted(Formatting.DARK_GRAY)).append(p.powerName()), 0xFFFFFF));
+        for (EssenceTooltipData.PowerEntry p : data.powers()) {
+            out.add(new Line(Text.literal("").append(p.categoryLabel()).append(Text.literal(": ").formatted(Formatting.DARK_GRAY)).append(p.powerName()), 0xFFFFFF));
+            List<Text> wrapped = wrap(p.description(), "  › ", "    ", DESC_WRAP_WIDTH);
+            for (Text t : wrapped) {
+                out.add(new Line(t.copy().formatted(Formatting.GRAY, Formatting.ITALIC), 0xAAAAAA));
             }
         }
         return out;
@@ -107,6 +114,12 @@ public class EssenceTooltipComponent implements TooltipComponent {
 
     private void drawLine(TextRenderer textRenderer, Text text, int x, int y, int color, Matrix4f matrix, VertexConsumerProvider.Immediate vertexConsumers) {
         textRenderer.draw(text, (float) x, (float) y, color, false, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+    }
+
+    /** Draws footer text at 75% scale (fine print). */
+    private void drawLineScaled(TextRenderer textRenderer, Text text, int x, int y, int color, Matrix4f matrix, VertexConsumerProvider.Immediate vertexConsumers) {
+        Matrix4f scaled = new Matrix4f(matrix).translate(x, y, 0).scale(FOOTER_SCALE).translate(-x, -y, 0);
+        textRenderer.draw(text, (float) x, (float) y, color, false, scaled, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
     }
 
     private int getRgb(Text text) {

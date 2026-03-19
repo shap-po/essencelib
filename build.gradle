@@ -58,6 +58,18 @@ repositories {
         url "https://masa.dy.fi/maven"
     }
     maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        url "https://mvn.devos.one/releases/"
+    }
+    maven {
+        url "https://mvn.devos.one/snapshots/"
+    }
+    maven {
         url "https://jitpack.io"
     }
     maven {
@@ -68,6 +80,13 @@ repositories {
     }
     maven {
         url "https://maven.nucleoid.xyz/"
+    }
+    maven {
+        name = "GeckoLib"
+        url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/"
+        content {
+            includeGroup("software.bernie.geckolib")
+        }
     }
 }
 
@@ -125,7 +144,12 @@ dependencies {
     modImplementation "com.github.shap-po:shappoli:${project.shappoli_version}" // TODO: switch from jitpack to modrinth
     modImplementation "net.fabricmc.fabric-api:fabric-entity-events-v1:1.5.3"
     modImplementation "net.fabricmc.fabric-api:fabric-lifecycle-events-v1:1.5.7"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraft_version}:${project.geckolib_version}"
+    modImplementation "maven.modrinth:smartbrainlib:${project.smartbrainlib_version}"
     compileOnly "com.demonwav.mcdev:annotations:2.1.0"
+    clientCompileOnly "com.demonwav.mcdev:annotations:2.1.0"
+    annotationProcessor "com.demonwav.mcdev:annotations:2.1.0"
+    clientAnnotationProcessor "com.demonwav.mcdev:annotations:2.1.0"
 }
 
 processResources {
@@ -174,6 +198,8 @@ modrinth {
         required.project "fabric-api"
         required.project "origins"
         required.project "trinkets"
+        required.project "geckolib"
+        required.project "smartbrainlib"
     }
 }
 

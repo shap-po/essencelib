@@ -1,0 +1,8 @@
+{
+  "type": "apoli:resource",
+  "name": "Collector's Rush",
+  "description": "Collection drive bar drains over time. Keep collecting new items to maintain momentum and avoid low-charge penalties.",
+  "min": 0,
+  "max": 100,
+  "initial_value": 75
+}

@@ -1,5 +1,6 @@
 package com.github.shap_po.essencelib.util;
 
+import com.github.shap_po.essencelib.EssenceLib;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.fabricmc.api.EnvType;
@@ -28,7 +29,7 @@ public final class PowerTooltipSlotRegistry {
 
     public static String getSlot(Identifier powerId) {
         if (SLOTS == null) load();
-        return powerId != null ? SLOTS.getOrDefault(powerId.toString(), null) : null;
+        return powerId != null ? SLOTS.get(powerId.toString()) : null;
     }
 
     public static boolean hasSlot(Identifier powerId) {
@@ -54,7 +55,8 @@ public final class PowerTooltipSlotRegistry {
                     }
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            EssenceLib.LOGGER.warn("Could not load essence tooltip slot mapping: {}", e.getMessage());
         }
         SLOTS = map;
     }

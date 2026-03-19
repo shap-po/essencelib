@@ -40,7 +40,7 @@ public class SetEssenceLootFunction extends ConditionalLootFunction {
     @Override
     public ItemStack process(ItemStack stack, LootContext context) {
         return essenceRef.getOptionalEssence()
-            .map(essence -> essence.applyToItemStack(stack))
+            .map(essence -> essence.applyToItemStack(stack, context.getRandom()))
             .orElse(stack);
     }
 }

@@ -1,0 +1,16 @@
+{
+  "type": "apoli:conditioned_attribute",
+  "condition": {
+    "type": "apoli:resource",
+    "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+    "comparison": "<=",
+    "compare_to": 0
+  },
+  "modifier": {
+    "id": "esspack:low_collection_mana_drain",
+    "attribute": "essencelib:mana_regen",
+    "operation": "add_value",
+    "amount": -2.5,
+    "name": "Low collection mana drain"
+  }
+}

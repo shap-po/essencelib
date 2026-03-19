@@ -1,5 +1,11 @@
 {
   "esspack:allay_essence/activepull": "active",
   "esspack:allay_essence/item_whisperer": "passive",
-  "esspack:allay_essence/hoarder_lifestyle": "lifestyle"
+  "esspack:allay_essence/hoarder_lifestyle_collection_charge": "lifestyle",
+  "esspack:armadillo_essence/armadillo_ball_up": "active",
+  "esspack:armadillo_essence/scute_rebound": "passive",
+  "esspack:armadillo_essence/threat_rhythm_lifestyle": "lifestyle",
+  "esspack:axolotl_essence/play_dead": "active",
+  "esspack:axolotl_essence/amphibious": "passive",
+  "esspack:axolotl_essence/hydration_lifestyle": "lifestyle"
 }

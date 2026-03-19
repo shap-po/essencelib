@@ -1,0 +1,14 @@
+{
+  "type": "apoli:action_over_time",
+  "interval": 1200,
+  "condition": {
+    "type": "apoli:resource",
+    "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+    "comparison": "<=",
+    "compare_to": 0
+  },
+  "entity_action": {
+    "type": "apoli:execute_command",
+    "command": "title @s actionbar {\"text\":\"Collection Drive Empty - Hunt for new items!\",\"color\":\"red\"}"
+  }
+}

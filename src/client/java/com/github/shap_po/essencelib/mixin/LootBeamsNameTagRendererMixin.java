@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * Disables Loot Beams nametag for essence items - we use our own floating tooltip instead.
  */
-@Mixin(targets = "com.lootbeams.renderers.NameTagRenderer", remap = false)
+@Mixin(value = com.lootbeams.renderers.NameTagRenderer.class, remap = false)
 public abstract class LootBeamsNameTagRendererMixin {
 
     @Inject(method = "renderNameTags", at = @At("HEAD"), cancellable = true, remap = false)

@@ -1,0 +1,62 @@
+{
+  "name": "Armadillo Essence",
+  "rarity": "Epic",
+  "attributes": [
+    {
+      "id": "esspack:armadillo_essence_1",
+      "attribute": "minecraft:generic.armor",
+      "amount": 4,
+      "operation": "add_value"
+    },
+    {
+      "id": "esspack:armadillo_essence_2",
+      "attribute": "minecraft:generic.knockback_resistance",
+      "amount": 0.2,
+      "operation": "add_value"
+    },
+    {
+      "id": "esspack:armadillo_essence_3",
+      "attribute": "puffish_attributes:player.fall_reduction",
+      "amount": 0.25,
+      "operation": "add_multiplied_total"
+    },
+    {
+      "id": "esspack:armadillo_essence_4",
+      "attribute": "puffish_attributes:player.stamina",
+      "amount": 0.1,
+      "operation": "add_multiplied_total"
+    },
+    {
+      "id": "esspack:armadillo_essence_5",
+      "attribute": "puffish_attributes:player.melee_resistance",
+      "amount": 0.08,
+      "operation": "add_multiplied_total"
+    },
+    {
+      "id": "esspack:armadillo_essence_neg_1",
+      "attribute": "minecraft:generic.movement_speed",
+      "amount": -0.1,
+      "operation": "add_multiplied_total"
+    },
+    {
+      "id": "esspack:armadillo_essence_neg_2",
+      "attribute": "minecraft:generic.attack_speed",
+      "amount": -0.12,
+      "operation": "add_multiplied_total"
+    },
+    {
+      "id": "esspack:armadillo_essence_neg_3",
+      "attribute": "puffish_attributes:player.mining_speed",
+      "amount": -0.1,
+      "operation": "add_multiplied_total"
+    }
+  ],
+  "powers": [
+    "*:armadillo_essence/armadillo_ball_up",
+    "*:armadillo_essence/armadillo_ball_up_key",
+    "*:armadillo_essence/scute_rebound",
+    "*:armadillo_essence/threat_rhythm_lifestyle"
+  ],
+  "dropped_by": "minecraft:armadillo",
+  "chance": 0.001
+}

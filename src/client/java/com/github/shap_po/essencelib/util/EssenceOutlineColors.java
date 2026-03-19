@@ -1,5 +1,6 @@
 package com.github.shap_po.essencelib.util;
 
+import com.github.shap_po.essencelib.EssenceLib;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.fabricmc.api.EnvType;
@@ -33,20 +34,27 @@ public final class EssenceOutlineColors {
                 collectedG = get(o, "g", 255);
                 collectedB = get(o, "b", 255);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            EssenceLib.LOGGER.warn("Could not load essence outline colors: {}", e.getMessage());
         }
     }
 
     private static int get(JsonObject o, String key, int def) {
-        return o.has(key) ? o.get(key).getAsInt() : def;
+        if (!o.has(key)) return def;
+        return Math.max(0, Math.min(255, o.get(key).getAsInt()));
     }
 
-    /** Uncollected (new) items - warm yellow-orange. */
+    /** Default color when only Collector's Intuition (no collected/uncollected distinction). */
+    public static int getDefaultArgb() {
+        return 0xFF << 24 | (uncollectedR << 16) | (uncollectedG << 8) | uncollectedB;
+    }
+
+    /** Uncollected (new) items - warm yellow-orange. Only when player has both abilities. */
     public static int getUncollectedArgb() {
         return 0x60 << 24 | (uncollectedR << 16) | (uncollectedG << 8) | uncollectedB;
     }
 
-    /** Collected items - white. */
+    /** Collected items - white. Only when player has both abilities. */
     public static int getCollectedArgb() {
         return 0x40 << 24 | (collectedR << 16) | (collectedG << 8) | collectedB;
     }

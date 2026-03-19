@@ -1,0 +1,34 @@
+{
+  "type": "apoli:action_over_time",
+  "interval": 40,
+  "condition": {
+    "type": "apoli:and",
+    "conditions": [
+      {
+        "type": "apoli:resource",
+        "resource": "esspack:axolotl_essence/hydration_lifestyle",
+        "comparison": "<",
+        "compare_to": 25
+      },
+      {
+        "type": "apoli:resource",
+        "resource": "esspack:axolotl_essence/hydration_lifestyle",
+        "comparison": ">",
+        "compare_to": 0
+      }
+    ]
+  },
+  "entity_action": {
+    "type": "apoli:sequence",
+    "actions": [
+      {
+        "type": "apoli:execute_command",
+        "command": "effect give @s minecraft:weakness 3 0 true"
+      },
+      {
+        "type": "apoli:execute_command",
+        "command": "effect give @s minecraft:slowness 3 0 true"
+      }
+    ]
+  }
+}

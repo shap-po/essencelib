@@ -33,11 +33,15 @@ public interface LevelComponent extends AutoSyncedComponent {
     @SuppressWarnings("ConstantValue")
     static Optional<LevelComponent> getOptional(@Nullable PlayerEntity entity) {
         EssenceLib.LOGGER.debug("Getting UniqueKillsCounterComponent from entity: {} {}", KEY, entity);
-        if (entity != null && entity.asComponentProvider().getComponentContainer() != null) {
-            return KEY.maybeGet(entity);
+        if (entity == null) {
+            return Optional.empty();
         }
-
-        return Optional.empty();
+        try {
+            // Avoid dropping early lifecycle events (e.g. first kill after spawn) when container timing is transient.
+            return KEY.maybeGet(entity);
+        } catch (Throwable ignored) {
+            return Optional.empty();
+        }
     }
 
     /**
@@ -54,6 +58,11 @@ public interface LevelComponent extends AutoSyncedComponent {
     }
 
     ImmutableSet<Identifier> getUniqueKills();
+
+    /**
+     * Gets the number of times the player has killed this entity type.
+     */
+    int getKillCount(Identifier id);
 
     void addUniqueKill(Identifier id);
 

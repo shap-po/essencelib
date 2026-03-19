@@ -2,7 +2,6 @@ package com.github.shap_po.essencelib.mixin;
 
 import com.github.shap_po.essencelib.item.MobEssenceTrinketItem;
 import com.github.shap_po.essencelib.util.EssenceTooltipHelper;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -20,7 +19,7 @@ import java.util.List;
  * - Never cache (onEntityLoad): ensures we always compute fresh tooltip with current Shift state.
  * - Always return fresh (getTooltipFromCache): so the look-at nametag updates every frame.
  */
-@Mixin(targets = "com.lootbeams.managers.TooltipManager", remap = false)
+@Mixin(value = com.lootbeams.managers.TooltipManager.class, remap = false)
 public abstract class LootBeamsTooltipManagerMixin {
 
     @Inject(method = "onEntityLoad(Lnet/minecraft/entity/ItemEntity;Lnet/minecraft/client/world/ClientWorld;)V", at = @At("HEAD"), cancellable = true, remap = false)
@@ -36,9 +35,8 @@ public abstract class LootBeamsTooltipManagerMixin {
         if (itemStack == null || itemStack.isEmpty()) return;
         if (!(itemStack.getItem() instanceof MobEssenceTrinketItem)) return;
 
-        // Always return fresh tooltip so Shift state updates every frame; never use cache.
-        boolean expanded = Screen.hasShiftDown();
-        List<Text> lines = EssenceTooltipHelper.buildTooltipLines(itemStack, expanded, null);
+        // Always show full tooltip with descriptions; no shift-to-expand.
+        List<Text> lines = EssenceTooltipHelper.buildTooltipLines(itemStack, true, null);
         cir.setReturnValue(lines.isEmpty() ? List.of(itemStack.getName()) : lines);
         cir.cancel();
     }

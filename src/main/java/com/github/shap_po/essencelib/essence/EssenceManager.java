@@ -2,6 +2,7 @@ package com.github.shap_po.essencelib.essence;
 
 import com.github.shap_po.essencelib.EssenceLib;
 import com.github.shap_po.essencelib.networking.s2c.SyncEssencesS2CPacket;
+import com.github.shap_po.essencelib.registry.PowerSlotRegistry;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -127,6 +128,7 @@ public class EssenceManager extends IdentifiableMultiJsonDataLoader implements I
 
     @Override
     protected void apply(MultiJsonDataContainer prepared, ResourceManager manager, Profiler profiler) {
+        PowerSlotRegistry.load(manager);
         EssenceLib.LOGGER.info("Reading essences data from data packs...");
 
         DynamicRegistryManager dynamicRegistries = CalioServer.getDynamicRegistries().orElse(null);

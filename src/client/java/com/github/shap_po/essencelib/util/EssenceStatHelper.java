@@ -113,6 +113,7 @@ public final class EssenceStatHelper {
             case "generic.movement_speed" -> "essencelib.speed";
             case "generic.luck" -> "essencelib.luck";
             case "generic.max_health" -> "essencelib.max_health";
+            case "generic.knockback_resistance" -> "essencelib.knockback_resist";
             case "crit_chance" -> "essencelib.critical_chance";
             case "reach_distance" -> "essencelib.reach";
             case "life_steal" -> "essencelib.life_steal";

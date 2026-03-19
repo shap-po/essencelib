@@ -14,7 +14,7 @@
     "issues": "https://github.com/shap-po/essencelib/issues"
   },
   "license": "MIT",
-  "icon": "assets/essencelib/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -37,7 +37,9 @@
     "custom": {
     "cardinal-components": [
       "essencelib:level",
-      "essencelib:collector_rush"
+      "essencelib:collector_rush",
+      "essencelib:downed",
+      "essencelib:restrained"
     ]
   },
   "depends": {
@@ -48,6 +50,8 @@
     "apoli": "*",
     "origins": "*",
     "shappoli": "*",
-    "lootbeams": "*"
+    "lootbeams": "*",
+    "geckolib": "*",
+    "smartbrainlib": "*"
   }
 }

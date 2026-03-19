@@ -1,6 +1,7 @@
 package com.github.shap_po.essencelib.essence;
 
 import com.github.shap_po.essencelib.EssenceLib;
+import com.github.shap_po.essencelib.registry.PowerSlotRegistry;
 import com.github.shap_po.essencelib.registry.ModDataComponentTypes;
 import com.github.shap_po.essencelib.registry.ModItems;
 import com.github.shap_po.shappoli.integration.trinkets.component.item.ShappoliTrinketsDataComponentTypes;
@@ -24,11 +25,15 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Essence implements Validatable {
     public static final CompoundSerializableDataType<Essence> DATA_TYPE = SerializableDataType.compound(
@@ -42,6 +47,7 @@ public class Essence implements Validatable {
 
             .add("dropped_by", SerializableDataTypes.ENTITY_TYPE, null)
             .add("chance", SerializableDataTypes.DOUBLE, null)
+            .add("color", SerializableDataTypes.INT, -1) // Default -1 if unspecified
 
             .add("replace", SerializableDataTypes.BOOLEAN, false)
             .add("can_unequip", SerializableDataTypes.BOOLEAN, false)
@@ -57,6 +63,7 @@ public class Essence implements Validatable {
 
             data.get("dropped_by"),
             data.get("chance"),
+            data.getInt("color"),
 
             data.getBoolean("replace"),
             data.getBoolean("can_unequip"),
@@ -69,6 +76,8 @@ public class Essence implements Validatable {
 
             .set("powers", essence.powers)
             .set("attributes", essence.attributes)
+
+            .set("color", essence.color)
 
             .set("replace", essence.replace)
             .set("can_unequip", essence.canUnequip)
@@ -83,6 +92,7 @@ public class Essence implements Validatable {
     private final List<AttributedEntityAttributeModifier> attributes;
     private final @Nullable EntityType<?> droppedBy;
     private final @Nullable Double chance;
+    private final int color;
     private final boolean replace;
     private final boolean canUnequip;
     private final boolean autoEquip;
@@ -95,6 +105,7 @@ public class Essence implements Validatable {
         @Nullable List<AttributedEntityAttributeModifier> attributes,
         @Nullable EntityType<?> droppedBy,
         @Nullable Double chance,
+        int color,
         boolean replace,
         boolean canUnequip,
         boolean autoEquip
@@ -109,6 +120,7 @@ public class Essence implements Validatable {
 
         this.droppedBy = droppedBy;
         this.chance = chance;
+        this.color = color;
 
         this.replace = replace;
         this.canUnequip = canUnequip;
@@ -156,6 +168,10 @@ public class Essence implements Validatable {
         return chance;
     }
 
+    public int getColor() {
+        return color;
+    }
+
     public boolean hasDropRules() {
         return droppedBy != null || chance != null;
     }
@@ -177,15 +193,19 @@ public class Essence implements Validatable {
     }
 
     public ComponentMap.Builder toComponent() {
+        return toComponent(powerReferences);
+    }
+
+    private ComponentMap.Builder toComponent(List<PowerReference> refs) {
         ComponentMap.Builder builder = ComponentMap.builder();
 
         builder.add(ModDataComponentTypes.ESSENCE_ID, id);
-        builder.add(DataComponentTypes.ITEM_NAME, Text.of(name));
+        builder.add(DataComponentTypes.ITEM_NAME, Text.of(name).copy().withColor(color));
         builder.add(DataComponentTypes.RARITY, rarity);
 
-        if (!powerReferences.isEmpty()) {
+        if (!refs.isEmpty()) {
             TrinketItemPowersComponent.Builder itemPowers = TrinketItemPowersComponent.builder();
-            for (PowerReference powerReference : powerReferences) {
+            for (PowerReference powerReference : refs) {
                 itemPowers.add(powerReference.id(), false, false, false);
             }
             builder.add(ShappoliTrinketsDataComponentTypes.TRINKET_POWERS, itemPowers.build());
@@ -201,6 +221,7 @@ public class Essence implements Validatable {
 
         builder.add(ModDataComponentTypes.CAN_UNEQUIP, canUnequip);
         builder.add(ModDataComponentTypes.AUTO_EQUIP, autoEquip);
+        builder.add(ModDataComponentTypes.IDENTIFIED, false);
 
         return builder;
     }
@@ -214,6 +235,103 @@ public class Essence implements Validatable {
     public ItemStack applyToItemStack(ItemStack stack) {
         stack.applyComponentsFrom(toComponent().build());
         return stack;
+    }
+
+    /**
+     * Selects which power references to put on the item.
+     */
+    private List<PowerReference> selectPowerRefs(@Nullable Random random) {
+        if (random == null || powerReferences.isEmpty()) return powerReferences;
+        
+        List<String> availableSlots = new ArrayList<>();
+        Map<String, List<PowerReference>> slotMap = new HashMap<>();
+
+        for (PowerReference ref : powerReferences) {
+            String s = PowerSlotRegistry.getSlot(ref.id());
+            if (s != null) {
+                if (!slotMap.containsKey(s)) {
+                    availableSlots.add(s);
+                    slotMap.put(s, new ArrayList<>());
+                }
+                slotMap.get(s).add(ref);
+            }
+        }
+
+        if (availableSlots.isEmpty()) {
+            return powerReferences; // Fallback if no slotted powers
+        }
+
+        // Pick one slot type at random (e.g. active, passive, or lifestyle)
+        String pickedSlot = availableSlots.get(random.nextInt(availableSlots.size()));
+        
+        List<PowerReference> result = new ArrayList<>();
+        if (slotMap.containsKey(pickedSlot)) {
+            result.addAll(slotMap.get(pickedSlot));
+        }
+        appendSupplementalPowersForSlot(result, pickedSlot);
+        
+        return result;
+    }
+
+    /**
+     * Selects power references for a specific slot (active/passive/lifestyle).
+     * Returns empty list if slot is invalid or essence has no powers in that slot.
+     */
+    private List<PowerReference> selectPowerRefsBySlot(String slot) {
+        if (slot == null || powerReferences.isEmpty()) return powerReferences;
+        List<PowerReference> out = new ArrayList<>();
+        boolean hasAnySlotted = false;
+        for (PowerReference ref : powerReferences) {
+            String s = PowerSlotRegistry.getSlot(ref.id());
+            if (s != null) {
+                hasAnySlotted = true;
+            }
+            if (slot.equals(s)) out.add(ref);
+        }
+        // Keep backward compatibility for packs that do not define any slot mappings.
+        return !hasAnySlotted ? powerReferences : out;
+    }
+
+    /**
+     * Appends unslotted helper powers for a selected slot.
+     * - Lifestyle slot receives unslotted lifestyle auxiliaries (drains/warnings/buffs bundles).
+     * - Active/Passive receive only explicit key helpers (e.g. *_key).
+     */
+    private void appendSupplementalPowersForSlot(List<PowerReference> refs, @Nullable String slot) {
+        for (PowerReference ref : powerReferences) {
+            if (PowerSlotRegistry.getSlot(ref.id()) != null || refs.contains(ref)) continue;
+            boolean isKeyHelper = ref.id().getPath().endsWith("_key");
+            if (PowerSlotRegistry.SLOT_LIFESTYLE.equals(slot) || isKeyHelper) {
+                refs.add(ref);
+            }
+        }
+    }
+
+    /**
+     * Applies this essence to the stack. When slotOverride is "active", "passive", or "lifestyle",
+     * uses only that slot's powers. When slotOverride is null, picks one slot at random (equal chance).
+     * When random is null and slotOverride is null, uses all powers.
+     */
+    public ItemStack applyToItemStack(ItemStack stack, @Nullable Random random, @Nullable String slotOverride) {
+        List<PowerReference> refs;
+        if (slotOverride != null && (PowerSlotRegistry.SLOT_ACTIVE.equals(slotOverride)
+                || PowerSlotRegistry.SLOT_PASSIVE.equals(slotOverride)
+                || PowerSlotRegistry.SLOT_LIFESTYLE.equals(slotOverride))) {
+            refs = new ArrayList<>(selectPowerRefsBySlot(slotOverride));
+            appendSupplementalPowersForSlot(refs, slotOverride);
+        } else if (random != null) {
+            refs = selectPowerRefs(random);
+        } else {
+            return applyToItemStack(stack);
+        }
+        stack.applyComponentsFrom(toComponent(refs).build());
+        return stack;
+    }
+
+    /** @deprecated Use {@link #applyToItemStack(ItemStack, Random, String)} */
+    @Deprecated
+    public ItemStack applyToItemStack(ItemStack stack, @Nullable Random random) {
+        return applyToItemStack(stack, random, null);
     }
 
     @Override

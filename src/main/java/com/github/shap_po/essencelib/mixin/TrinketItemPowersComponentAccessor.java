@@ -5,8 +5,8 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(TrinketItemPowersComponent.class)
+@Mixin(value = TrinketItemPowersComponent.class, remap = false)
 public interface TrinketItemPowersComponentAccessor {
-    @Accessor("entries")
+    @Accessor(value = "entries", remap = false)
     ObjectLinkedOpenHashSet<TrinketItemPowersComponent.Entry> getEntries();
 } 

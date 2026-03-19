@@ -1,0 +1,9 @@
+{
+  "type": "apoli:action_over_time",
+  "interval": 120,
+  "entity_action": {
+    "type": "apoli:change_resource",
+    "resource": "esspack:allay_essence/hoarder_lifestyle_collection_charge",
+    "change": -1
+  }
+}

@@ -1,6 +1,7 @@
-# gradle
+﻿# gradle
 
 .gradle/
+.gradle-verify-home/
 build/
 out/
 classes/
@@ -23,6 +24,13 @@ classes/
 bin/
 .classpath
 .project
+
+# cursor / AI tooling
+
+.cursor/
+_tmp_*
+com/demonwav/
+generate_armadillo_texture.py
 
 # macos
 

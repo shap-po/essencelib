@@ -1,0 +1,582 @@
+{
+  "type": "apoli:multiple",
+  "name": "Threat Rhythm",
+  "description": "Resolve rises while enemies are focused on you and falls when threat slips away. Stable resolve rewards true frontline play.",
+  "resolve": {
+    "type": "apoli:resource",
+    "name": "esspack:threat_rhythm_resolve",
+    "min": 0,
+    "max": 100,
+    "initial_value": 50
+  },
+  "aggro_timer": {
+    "type": "apoli:resource",
+    "name": "esspack:threat_rhythm_aggro_timer",
+    "min": 0,
+    "max": 100,
+    "initial_value": 0
+  },
+  "chased_state": {
+    "type": "apoli:resource",
+    "name": "esspack:threat_rhythm_chased_state",
+    "min": 0,
+    "max": 100,
+    "initial_value": 0
+  },
+  "gain_aggro_when_targeted": {
+    "type": "apoli:self_action_when_hit",
+    "cooldown": 5,
+    "damage_condition": {
+      "type": "apoli:attacker"
+    },
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_aggro_timer",
+      "change": 60
+    }
+  },
+  "pull_threat_when_striking": {
+    "type": "apoli:self_action_on_hit",
+    "cooldown": 10,
+    "entity_action": {
+      "type": "apoli:sequence",
+      "actions": [
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_aggro_timer",
+          "change": 14
+        },
+        {
+          "type": "apoli:change_resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+          "change": 6
+        }
+      ]
+    }
+  },
+  "decay_aggro_timer": {
+    "type": "apoli:action_over_time",
+    "interval": 3,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_aggro_timer",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_aggro_timer",
+      "change": -1
+    }
+  },
+  "decay_chased_state": {
+    "type": "apoli:action_over_time",
+    "interval": 1,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+      "comparison": ">",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+      "change": -1
+    }
+  },
+  "drain_resolve_when_safe": {
+    "type": "apoli:action_over_time",
+    "interval": 20,
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_aggro_timer",
+      "comparison": "<=",
+      "compare_to": 0
+    },
+    "entity_action": {
+      "type": "apoli:change_resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "change": -4
+    }
+  },
+  "resolve_25_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 25
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_25_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_multiplied_total",
+      "amount": 0.1,
+      "name": "Threat Rhythm Resolve 25 Armor"
+    }
+  },
+  "resolve_50_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 50
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_50_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_multiplied_total",
+      "amount": 0.1,
+      "name": "Threat Rhythm Resolve 50 Armor"
+    }
+  },
+  "resolve_75_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 75
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_75_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_multiplied_total",
+      "amount": 0.1,
+      "name": "Threat Rhythm Resolve 75 Armor"
+    }
+  },
+  "resolve_100_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 100
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_100_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_multiplied_total",
+      "amount": 0.1,
+      "name": "Threat Rhythm Resolve 100 Armor"
+    }
+  },
+  "resolve_25_flat_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 25
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_25_flat_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_value",
+      "amount": 1,
+      "name": "Threat Rhythm Resolve 25 Flat Armor"
+    }
+  },
+  "resolve_50_flat_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 50
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_50_flat_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_value",
+      "amount": 1,
+      "name": "Threat Rhythm Resolve 50 Flat Armor"
+    }
+  },
+  "resolve_75_flat_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 75
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_75_flat_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_value",
+      "amount": 1,
+      "name": "Threat Rhythm Resolve 75 Flat Armor"
+    }
+  },
+  "resolve_100_flat_armor": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 100
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_100_flat_armor",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_value",
+      "amount": 2,
+      "name": "Threat Rhythm Resolve 100 Flat Armor"
+    }
+  },
+  "resolve_25_knockback": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 25
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_25_knockback",
+      "attribute": "minecraft:generic.knockback_resistance",
+      "operation": "add_value",
+      "amount": 0.03,
+      "name": "Threat Rhythm Resolve 25 Knockback"
+    }
+  },
+  "resolve_50_knockback": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 50
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_50_knockback",
+      "attribute": "minecraft:generic.knockback_resistance",
+      "operation": "add_value",
+      "amount": 0.03,
+      "name": "Threat Rhythm Resolve 50 Knockback"
+    }
+  },
+  "resolve_75_knockback": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 75
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_75_knockback",
+      "attribute": "minecraft:generic.knockback_resistance",
+      "operation": "add_value",
+      "amount": 0.02,
+      "name": "Threat Rhythm Resolve 75 Knockback"
+    }
+  },
+  "resolve_100_knockback": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 100
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_100_knockback",
+      "attribute": "minecraft:generic.knockback_resistance",
+      "operation": "add_value",
+      "amount": 0.02,
+      "name": "Threat Rhythm Resolve 100 Knockback"
+    }
+  },
+  "resolve_25_melee_resistance": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 25
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_25_melee_resistance",
+      "attribute": "puffish_attributes:player.melee_resistance",
+      "operation": "add_multiplied_total",
+      "amount": 0.04,
+      "name": "Threat Rhythm Resolve 25 Melee Resistance"
+    }
+  },
+  "resolve_50_melee_resistance": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 50
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_50_melee_resistance",
+      "attribute": "puffish_attributes:player.melee_resistance",
+      "operation": "add_multiplied_total",
+      "amount": 0.04,
+      "name": "Threat Rhythm Resolve 50 Melee Resistance"
+    }
+  },
+  "resolve_75_melee_resistance": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 75
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_75_melee_resistance",
+      "attribute": "puffish_attributes:player.melee_resistance",
+      "operation": "add_multiplied_total",
+      "amount": 0.04,
+      "name": "Threat Rhythm Resolve 75 Melee Resistance"
+    }
+  },
+  "resolve_100_melee_resistance": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 100
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_100_melee_resistance",
+      "attribute": "puffish_attributes:player.melee_resistance",
+      "operation": "add_multiplied_total",
+      "amount": 0.04,
+      "name": "Threat Rhythm Resolve 100 Melee Resistance"
+    }
+  },
+  "resolve_25_mana_regen": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 25
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_25_mana_regen",
+      "attribute": "essencelib:mana_regen",
+      "operation": "add_value",
+      "amount": 2,
+      "name": "Threat Rhythm Resolve 25 Mana Regen"
+    }
+  },
+  "resolve_50_mana_regen": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 50
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_50_mana_regen",
+      "attribute": "essencelib:mana_regen",
+      "operation": "add_value",
+      "amount": 2,
+      "name": "Threat Rhythm Resolve 50 Mana Regen"
+    }
+  },
+  "resolve_75_mana_regen": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 75
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_75_mana_regen",
+      "attribute": "essencelib:mana_regen",
+      "operation": "add_value",
+      "amount": 2,
+      "name": "Threat Rhythm Resolve 75 Mana Regen"
+    }
+  },
+  "resolve_100_mana_regen": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:resource",
+      "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+      "comparison": ">=",
+      "compare_to": 100
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_resolve_100_mana_regen",
+      "attribute": "essencelib:mana_regen",
+      "operation": "add_value",
+      "amount": 2,
+      "name": "Threat Rhythm Resolve 100 Mana Regen"
+    }
+  },
+  "broken_stamina": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+          "comparison": "<=",
+          "compare_to": 25
+        },
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+          "comparison": ">",
+          "compare_to": 0
+        }
+      ]
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_broken_stamina",
+      "attribute": "puffish_attributes:player.stamina",
+      "operation": "add_multiplied_total",
+      "amount": -0.08,
+      "name": "Threat Rhythm Broken Stamina"
+    }
+  },
+  "broken_knockback": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+          "comparison": "<=",
+          "compare_to": 25
+        },
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+          "comparison": ">",
+          "compare_to": 0
+        }
+      ]
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_broken_knockback",
+      "attribute": "minecraft:generic.knockback_resistance",
+      "operation": "add_value",
+      "amount": -0.05,
+      "name": "Threat Rhythm Broken Knockback"
+    }
+  },
+  "broken_melee_resistance": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+          "comparison": "<=",
+          "compare_to": 25
+        },
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+          "comparison": ">",
+          "compare_to": 0
+        }
+      ]
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_broken_melee_resistance",
+      "attribute": "puffish_attributes:player.melee_resistance",
+      "operation": "add_multiplied_total",
+      "amount": -0.06,
+      "name": "Threat Rhythm Broken Melee Resistance"
+    }
+  },
+  "broken_mobility": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+          "comparison": "<=",
+          "compare_to": 25
+        },
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+          "comparison": ">",
+          "compare_to": 0
+        }
+      ]
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_broken_mobility",
+      "attribute": "minecraft:generic.movement_speed",
+      "operation": "add_multiplied_total",
+      "amount": -0.04,
+      "name": "Threat Rhythm Broken Mobility"
+    }
+  },
+  "broken_armor_collapse": {
+    "type": "apoli:conditioned_attribute",
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+          "comparison": "<=",
+          "compare_to": 10
+        },
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+          "comparison": ">",
+          "compare_to": 0
+        }
+      ]
+    },
+    "modifier": {
+      "id": "esspack:threat_rhythm_broken_armor_collapse",
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_multiplied_total",
+      "amount": -0.12,
+      "name": "Threat Rhythm Broken Armor Collapse"
+    }
+  },
+  "low_resolve_warning": {
+    "type": "apoli:action_over_time",
+    "interval": 1200,
+    "condition": {
+      "type": "apoli:and",
+      "conditions": [
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_resolve",
+          "comparison": "<=",
+          "compare_to": 25
+        },
+        {
+          "type": "apoli:resource",
+          "resource": "esspack:armadillo_essence/threat_rhythm_lifestyle_chased_state",
+          "comparison": ">",
+          "compare_to": 0
+        }
+      ]
+    },
+    "entity_action": {
+      "type": "apoli:execute_command",
+      "command": "title @s actionbar {\"text\":\"Resolve Broken - Draw enemy focus to recover.\",\"color\":\"red\"}"
+    }
+  }
+}

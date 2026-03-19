@@ -29,6 +29,11 @@ public class MobEssenceTrinketItem extends TrinketItem {
         super(new Settings().maxDamage(1200).rarity(Rarity.RARE));
     }
 
+    @Override
+    public boolean hasGlint(ItemStack stack) {
+        return true;
+    }
+
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
@@ -58,12 +63,8 @@ public class MobEssenceTrinketItem extends TrinketItem {
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, world, entity, slot, selected);
-
-        if (entity instanceof LivingEntity living && stack.getOrDefault(ModDataComponentTypes.AUTO_EQUIP, true) && !(entity instanceof PlayerEntity player && player.isCreative())) {
-            if (!hasEssenceEquipped(living, stack.get(ModDataComponentTypes.ESSENCE_ID))) {
-                TrinketItem.equipItem(living, stack);
-            }
-        }
+        // Auto-equip is handled explicitly on pickup in ItemEntityMixin.
+        // Keeping it out of inventoryTick avoids accidental duplicate equip/copy behavior.
     }
 
     /** Returns true if the player already has an essence with this ID (equipped or in inventory). */
@@ -97,6 +98,7 @@ public class MobEssenceTrinketItem extends TrinketItem {
                 }))
             .orElse(false);
     }
+
 }
 
 

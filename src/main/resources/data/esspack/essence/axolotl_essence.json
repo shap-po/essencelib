@@ -1,0 +1,61 @@
+{
+  "name": "Axolotl Essence",
+  "rarity": "Rare",
+  "attributes": [
+    {
+      "id": "esspack:axolotl_essence_1",
+      "attribute": "additionalentityattributes:generic.water_speed",
+      "amount": 0.2,
+      "operation": "add_multiplied_total"
+    },
+    {
+      "id": "esspack:axolotl_essence_2",
+      "attribute": "additionalentityattributes:player.water_visibility",
+      "amount": 0.5,
+      "operation": "add_value"
+    },
+    {
+      "id": "esspack:axolotl_essence_3",
+      "attribute": "minecraft:generic.max_health",
+      "amount": 4,
+      "operation": "add_value"
+    },
+    {
+      "id": "esspack:axolotl_essence_4",
+      "attribute": "minecraft:generic.attack_damage",
+      "amount": 1,
+      "operation": "add_value"
+    },
+    {
+      "id": "esspack:axolotl_essence_neg_1",
+      "attribute": "minecraft:generic.movement_speed",
+      "amount": -0.1,
+      "operation": "add_multiplied_total"
+    },
+    {
+      "id": "esspack:axolotl_essence_neg_2",
+      "attribute": "puffish_attributes:player.stamina",
+      "amount": -0.1,
+      "operation": "add_multiplied_total"
+    },
+    {
+      "id": "esspack:axolotl_essence_neg_3",
+      "attribute": "minecraft:generic.armor",
+      "amount": -2,
+      "operation": "add_value"
+    }
+  ],
+  "powers": [
+    "*:axolotl_essence/play_dead",
+    "*:axolotl_essence/play_dead_key",
+    "*:axolotl_essence/amphibious",
+    "*:axolotl_essence/hydration_lifestyle",
+    "*:axolotl_essence/hydration_lifestyle_gain",
+    "*:axolotl_essence/hydration_lifestyle_drain",
+    "*:axolotl_essence/hydration_lifestyle_high",
+    "*:axolotl_essence/hydration_lifestyle_low",
+    "*:axolotl_essence/hydration_lifestyle_empty"
+  ],
+  "dropped_by": "minecraft:axolotl",
+  "chance": 0.001
+}
