@@ -8,9 +8,7 @@
     "HandledScreenDownedLockMixin",
     "HandledScreenInvoker",
     "InventoryScreenMixin",
-    "ItemEntityAccessor",
-    "ItemEntityRendererAccessor",
-    "ItemEntityRendererInvoker"
+    "ItemEntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -21,7 +21,6 @@ import com.github.shap_po.essencelib.tooltip.EssenceTooltipData;
 import com.github.shap_po.essencelib.registry.EssenceLibParticles;
 import com.github.shap_po.essencelib.particle.EssenceWispParticle;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.particle.SimpleParticleType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -61,9 +60,6 @@ public class EssenceLibClient implements ClientModInitializer {
         ManaAttributeRegistry.initialize();
         ModPacketsS2C.register();
         EssenceOutlineColors.load();
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-            com.github.shap_po.essencelib.util.EssenceDummyEntityCache.clear();
-        });
         HandledScreens.register(ModScreenHandlers.DOWNED_LOOT, DownedPlayerLootScreen::new);
         net.minecraft.client.render.block.entity.BlockEntityRendererFactories.register(
             ModBlockEntities.GUILLOTINE,
@@ -86,9 +82,6 @@ public class EssenceLibClient implements ClientModInitializer {
         // everyone_not_through_walls_custom | default_minecraft_glow.
         // Uncollected item particles: subtle hint for new items to discover (Collector's Rush / lifestyle)
         com.github.shap_po.essencelib.render.UncollectedItemParticleRenderer.register();
-        // Essence orb: colored dust + end rod particles around dropped essence items
-        com.github.shap_po.essencelib.render.EssenceOrbParticles.register();
-        
         // Essence wisp: vanilla-style particle (end-rod-like glow)
         ParticleFactoryRegistry.getInstance().<SimpleParticleType>register(EssenceLibParticles.ESSENCE_WISP,
             spriteProvider -> new EssenceWispParticle.Factory(spriteProvider));
@@ -152,6 +145,6 @@ public class EssenceLibClient implements ClientModInitializer {
             }
         });
 
-        // Essence in-world orb + particles are handled by SoulOrbEntityRenderer and EssenceOrbParticles.
+        // Essence in-world orb + particles are handled by SoulOrbEntityRenderer.
     }
 }

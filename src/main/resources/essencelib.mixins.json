@@ -32,7 +32,6 @@
     "MobEssenceTrinketItemTooltipMixin",
     "TrinketItemPowersComponentMixin",
     "LootBeamsTooltipManagerMixin",
-    "LootBeamsViewHelperMixin",
     "LootBeamsTooltipRendererMixin",
     "LootBeamsNameTagRendererMixin"
   ]

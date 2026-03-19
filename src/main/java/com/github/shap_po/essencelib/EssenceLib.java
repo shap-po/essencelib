@@ -18,7 +18,6 @@ import com.github.shap_po.essencelib.item.MobEssenceTrinketItem;
 import com.github.shap_po.essencelib.level.LevelManager;
 import com.github.shap_po.essencelib.loot.function.ModLootFunctionTypes;
 import com.github.shap_po.essencelib.networking.ModPackets;
-import com.github.shap_po.essencelib.networking.ModPacketsC2S;
 import com.github.shap_po.essencelib.registry.EssenceLibParticles;
 import com.github.shap_po.essencelib.registry.ManaAttributeRegistry;
 import com.github.shap_po.essencelib.registry.ModBlockEntities;
@@ -85,10 +84,6 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
         ModSounds.register();
         ModScreenHandlers.register();
 
-        // Register attributes
-        LOGGER.debug("Registering attributes...");
-        ManaAttributeRegistry.register();
-
         // Register Apoli additions
         EssenceLibConditionTypes.register();
         EssenceLibEntityActionTypes.register();
@@ -98,7 +93,6 @@ public class EssenceLib implements ModInitializer, EntityComponentInitializer {
         // Register networking before it's needed
         LOGGER.debug("Setting up networking...");
         ModPackets.register();
-        ModPacketsC2S.register();
 
         // Register other components
         LOGGER.debug("Registering components...");
